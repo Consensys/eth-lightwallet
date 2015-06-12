@@ -1,0 +1,52 @@
+{
+  "name": "ethlightjs",
+  "version": "0.0.1",
+  "description": "A light weight ethereum javascript wallet.",
+  "main": "index.js",
+  "scripts": {
+    "build-js": "browserify index.js | uglifyjs -mc > ethlightjs.min.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ethereum",
+    "blockchain",
+    "transactions",
+    "contracts"
+  ],
+  "contributors": [
+    {
+      "name": "Christian Lundkvist",
+      "email": "christian.lundkvist@gmail.com"
+    },
+    {
+      "name": "Tyler Clark",
+      "email": "tysclark@gmail.com"
+    },
+    {
+      "name": "Joel Torstensson",
+      "email": "me@joeltorstensson.se"
+    },
+    {
+      "name": "Zach Ferland",
+      "email": "zachferland@gmail.com"
+    }
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "bitcore": "^0.12.8",
+    "bitcore-mnemonic": "^0.11.0",
+    "crypto-js": "^3.1.5",
+    "elliptic": "^3.1.0",
+    "ethereumjs-tx": "^0.2.2",
+    "rlp": "^1.0.0",
+    "secp256k1": "0.0.15",
+    "sha3": "^1.1.0",
+    "web3": "^0.6.0"
+  },
+  "devDependencies": {
+    "browserify": "^10.2.4",
+    "chai": "^3.0.0",
+    "mocha": "^2.2.5",
+    "uglify-js": "^2.4.23"
+  }
+}
