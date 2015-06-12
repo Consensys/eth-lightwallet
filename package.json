@@ -4,7 +4,7 @@
   "description": "A light weight ethereum javascript wallet.",
   "main": "index.js",
   "scripts": {
-    "build-js": "browserify index.js | uglifyjs -mc > ethlightjs.min.js",
+    "build-js": "browserify index.js --s ethlightjs | uglifyjs -mc > ethlightjs.min.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
