@@ -123,4 +123,12 @@ RLP-encoded hex string defining the transaction.
 
 See the file `example_usage.js`.
 
+## Tests
+
+Run all tests:
+
+```
+npm run test
+```
+
 ## License
