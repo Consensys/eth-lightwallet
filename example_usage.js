@@ -63,7 +63,7 @@ txOptions.nonce += 1
 txOptions.value = 1000000000000000000
 txOptions.data = undefined
 txOptions.to = 'eba8cdda5058cd20acbe5d1af35a71cfc442450e'
-var valueTx = txutils.sendValueTx(txOptions)
+var valueTx = txutils.valueTx(txOptions)
 
 var signedValueTx = keystore.signTx(valueTx, 'mypassword', sendingAddr)
 console.log('Value TX: ' + signedValueTx)
