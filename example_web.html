@@ -6,6 +6,7 @@
     <div id="signedTx"></div>
     <script>
       var keystore = ethlightjs.keystore
+      var txutils = ethlightjs.txutils
       var seed = 'unhappy nerve cancel reject october fix vital pulse cash behind curious bicycle'
       keystore.setSeed(seed, 'mypassword')
 
@@ -25,7 +26,7 @@
 	      to: '6c19d6af83d0d335a006ae424a426ef4d139d827'
 	  }
 	  
-	  var tx = ethlightjs.functionTx(abi, 'register', [123], txOptions)
+	  var tx = txutils.functionTx(abi, 'register', [123], txOptions)
 	  document.getElementById('tx').innerHTML = 'TX: ' + tx
 	  var addr = keystore.getAddresses()[0]
 	  var signedTx = keystore.signTx(tx, 'mypassword', addr)
