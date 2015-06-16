@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build-js": "browserify index.js --s ethlightjs | uglifyjs -mc > ethlightjs.min.js",
-    "test": "./node_modules/.bin/mocha --reporter list"
+    "test": "./node_modules/.bin/mocha --reporter spec",
+    "coverage": "istanbul cover _mocha -- -R spec; open coverage/lcov-report/index.html"
   },
   "keywords": [
     "ethereum",
@@ -44,6 +45,7 @@
   "devDependencies": {
     "browserify": "^10.2.4",
     "chai": "^3.0.0",
+    "istanbul": "^0.3.15",
     "mocha": "^2.2.5",
     "uglify-js": "^2.4.23"
   }
