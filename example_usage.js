@@ -3,9 +3,8 @@
 // Create the contract, register the key 123, set the value 456
 
 var web3 = require('web3')
-var lw = require('ethlightjs')
-var keystore = lw.keystore
-var txutils = lw.txutils
+var ethlightjs = require('ethlightjs')
+var txutils = ethlightjs.txutils
 
 web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
 
@@ -15,7 +14,7 @@ var source = '\ncontract NameCoin {\n\n    struct Item {\n\taddress owner;\n\tui
 //keystore.addPrivateKey(privkey, 'mypassword')
 
 var seed = 'unhappy nerve cancel reject october fix vital pulse cash behind curious bicycle'
-keystore.setSeed(seed, 'mypassword')
+var keystore = new ethlightjs.keystore(seed, 'mypassword')
 
 var sendingAddr = keystore.getAddresses()[0]
 console.log(sendingAddr)
