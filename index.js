@@ -1,6 +1,5 @@
-var ethlightjs = {};
-
-ethlightjs.txutils = require('./lib/lightwalletutils.js');
-ethlightjs.keystore = require('./lib/keystore.js');
-
-module.exports = ethlightjs;
+module.exports = {
+  txutils: require('./lib/txutils.js'),
+  keystore: require('./lib/keystore.js'),
+  helpers: require('./lib/helpers.js')
+}
