@@ -129,6 +129,7 @@ Run all tests:
 
 ```
 npm run test
+npm run coverage
 ```
 
 ## License
