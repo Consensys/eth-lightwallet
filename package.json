@@ -4,7 +4,7 @@
   "description": "A light weight ethereum javascript wallet.",
   "main": "index.js",
   "scripts": {
-    "build-js": "browserify index.js --s ethlightjs | uglifyjs -mc > ethlightjs.min.js",
+    "build-js": "browserify index.js --s ethlightjs -t [ envify --NODE_ENV browser ] | uglifyjs -mc > ethlightjs.min.js",
     "test": "./node_modules/.bin/mocha --reporter spec",
     "coverage": "istanbul cover _mocha -- -R spec; open coverage/lcov-report/index.html"
   },
@@ -39,12 +39,14 @@
     "crypto-js": "^3.1.5",
     "elliptic": "^3.1.0",
     "ethereumjs-tx": "^0.2.2",
+    "node-persist": "0.0.3",
     "rlp": "^1.0.0",
     "web3": "^0.6.0"
   },
   "devDependencies": {
     "browserify": "^10.2.4",
     "chai": "^3.0.0",
+    "envify": "^3.4.0",
     "istanbul": "^0.3.15",
     "mocha": "^2.2.5",
     "uglify-js": "^2.4.23"
