@@ -1,0 +1,38 @@
+{
+  "valid": [
+    {"abi" : [{"constant":true,"inputs":[{"name":"key","type":"uint256"}],"name":"getValue","outputs":[{"name":"value","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"key","type":"uint256"},{"name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"type":"function"},{"constant":false,"inputs":[{"name":"key","type":"uint256"},{"name":"newValue","type":"uint256"}],"name":"setValue","outputs":[],"type":"function"},{"constant":true,"inputs":[{"name":"key","type":"uint256"}],"name":"getOwner","outputs":[{"name":"owner","type":"address"}],"type":"function"},{"constant":false,"inputs":[{"name":"key","type":"uint256"}],"name":"register","outputs":[],"type":"function"}],
+     "func": "getValue",
+     "types": [ "uint256" ],
+     "args": [ 234 ],
+     "funcTx": "f88a018609184e72a000832dc6c0946c19d6af83d0d335a006ae424a426ef4d139d82780a40ff4c91600000000000000000000000000000000000000000000000000000000000000ea1ca00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000000",
+     "fromAddress": "fd888462ba01400a37768e53791df4617c23cd08",
+     "contractAddress": "501593b1087f3a542500e19e644268187e5a591c",
+     "txObject": {
+              "gasPrice": 10000000000000,
+              "gasLimit": 3000000,
+              "value": 0,
+              "nonce": 1,
+              "to": "6c19d6af83d0d335a006ae424a426ef4d139d827"
+              }
+    },
+    {"abi" : [{"constant":true,"inputs":[{"name":"key","type":"uint256"}],"name":"getValue","outputs":[{"name":"value","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"key","type":"uint256"},{"name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"type":"function"},{"constant":false,"inputs":[{"name":"key","type":"uint256"},{"name":"newValue","type":"uint256"}],"name":"setValue","outputs":[],"type":"function"},{"constant":true,"inputs":[{"name":"key","type":"uint256"}],"name":"getOwner","outputs":[{"name":"owner","type":"address"}],"type":"function"},{"constant":false,"inputs":[{"name":"key","type":"uint256"}],"name":"register","outputs":[],"type":"function"}],
+     "func": "transferOwnership",
+     "types": [ "uint256", "address" ],
+     "args": [ 234, "0x34bc4a62ba01400a37768e342a1df4617c77cd03" ],
+     "funcTx": "f8ac0985174876e8008333e140946c19d6af83d0d335a006ae424a426ef4d139d827821756b84429507f7300000000000000000000000000000000000000000000000000000000000000ea00000000000000000000000034bc4a62ba01400a37768e342a1df4617c77cd031ca00000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000000",
+     "fromAddress": "fd888462ba01400a37768e53791df4617c77cd08",
+     "contractAddress": "ddfca315a51a2e058f10353f484594da3e2703b8",
+     "txObject": {
+              "gasPrice": 100000000000,
+              "gasLimit": 3400000,
+              "value": 5974,
+              "nonce": 9,
+              "to": "6c19d6af83d0d335a006ae424a426ef4d139d827"
+              }
+    }
+  ],
+  "invalid": [
+
+  ]
+}
+
