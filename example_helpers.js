@@ -8,7 +8,7 @@ var txutils = ethlightjs.txutils
 var helpers = ethlightjs.helpers
 var web3api = require('ethlightjs/lib/blockchainapi/web3api')
 
-web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"));
+web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"))
 
 var source = '\ncontract NameCoin {\n\n    struct Item {\n\taddress owner;\n\tuint value;\n    }\n\n    mapping (uint => Item) registry;\n\n    function register(uint key) {\n\tif (registry[key].owner == 0) {\n\t    registry[key].owner = msg.sender;\n\t}\n    }\n\n    function transferOwnership(uint key, address newOwner) {\n\tif (registry[key].owner == msg.sender) {\n\t    registry[key].owner = newOwner;\n\t}\n    }\n\n    function setValue(uint key, uint newValue) {\n\tif (registry[key].owner == msg.sender) {\n\t    registry[key].value = newValue;\n\t}\n    }\n\n    function getValue(uint key) constant returns (uint value) {\n\treturn registry[key].value;\n    }\n\n    function getOwner(uint key) constant returns (address owner) {\n\treturn registry[key].owner;\n    }\n}\n'
 
@@ -50,13 +50,13 @@ helpers.sendFunctionTx(abi, contractAddr, 'setValue', [123, 456], sendingAddr, t
 var blockNumber = web3.eth.blockNumber
 var b = blockNumber
 console.log('Waiting for blocks...')
-while (b == blockNumber) {
-    b = web3.eth.blockNumber
-}
-console.log('New blocks found. Waiting for some more blocks...')
-blockNumber = b
-while (b == blockNumber) {
-    b = web3.eth.blockNumber
+
+for (var i=0; i<3; i++) {
+    blockNumber = b
+    while (b == blockNumber) {
+	b = web3.eth.blockNumber
+    }
+    console.log('New blocks found. Waiting for some more blocks...')
 }
 
 var contractAddr = contractAddr

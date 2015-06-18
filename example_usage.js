@@ -21,8 +21,8 @@ var sendingAddr = keystore.getAddresses()[0]
 console.log(sendingAddr)
 var nonce = web3.eth.getTransactionCount('0x' + sendingAddr)
 console.log('Nonce: ' + nonce)
-//var code = web3.eth.compile.solidity(source).NameCoin.code.slice(2)
 var code = web3.eth.compile.solidity(source).NameCoin.code.slice(2)
+console.log('Code: ' + code)
 
 txOptions = {
     gasPrice: 10000000000000,
@@ -75,14 +75,14 @@ console.log('Value TX: ' + signedValueTx)
 // Check that the owner is sendingAddr
 var blockNumber = web3.eth.blockNumber
 var b = blockNumber
+
 console.log('Waiting for blocks...')
+for (var i=0; i<3; i++) {
+blockNumber = b
 while (b == blockNumber) {
     b = web3.eth.blockNumber
 }
 console.log('New blocks found. Waiting for some more blocks...')
-blockNumber = b
-while (b == blockNumber) {
-    b = web3.eth.blockNumber
 }
 
 var contractAddr = contractData.addr
