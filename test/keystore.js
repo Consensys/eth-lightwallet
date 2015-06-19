@@ -48,17 +48,6 @@ describe("Keystore", function() {
   });
 
 
-  describe("setSeed", function() {
-    it('throws when a seed has already been set', function() {
-      expect(function(){
-        keyStore.setSeed(fixtures.valid[0].mnSeed, fixtures.valid[0].password);
-        keyStore.setSeed(fixtures.valid[1].mnSeed, fixtures.valid[1].password);
-
-      }).to.throw(/Seed has already been set/)
-    })
-
-  });
-
   describe("generateNewAddress", function() {
 
   });
@@ -68,7 +57,10 @@ describe("Keystore", function() {
 
     // Example
     it("should be empty if no keys have been created", function() {
-      expect(keyStore.getAddresses()).to.have.length(0);
+	seed = 'unhappy nerve cancel reject october fix vital pulse cash behind curious bicycle'
+	pw = 'mypassword'
+	var ks = new keyStore(seed, pw)
+      expect(ks.getAddresses()).to.have.length(0);
     });
 
   });
