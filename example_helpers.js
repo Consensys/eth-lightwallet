@@ -2,13 +2,12 @@
 // Example usage of helpers: Name Registry
 // Create the contract, register the key 123, set the value 456
 
-var web3 = require('web3')
 var ethlightjs = require('ethlightjs')
 var txutils = ethlightjs.txutils
 var helpers = ethlightjs.helpers
-var web3api = require('ethlightjs/lib/blockchainapi/web3api')
 
-web3.setProvider(new web3.providers.HttpProvider("http://localhost:8545"))
+var web3api = new ethlightjs.blockchainapi.web3api("http://localhost:8545");
+var web3 = web3api.getWeb3();
 
 var source = '\ncontract NameCoin {\n\n    struct Item {\n\taddress owner;\n\tuint value;\n    }\n\n    mapping (uint => Item) registry;\n\n    function register(uint key) {\n\tif (registry[key].owner == 0) {\n\t    registry[key].owner = msg.sender;\n\t}\n    }\n\n    function transferOwnership(uint key, address newOwner) {\n\tif (registry[key].owner == msg.sender) {\n\t    registry[key].owner = newOwner;\n\t}\n    }\n\n    function setValue(uint key, uint newValue) {\n\tif (registry[key].owner == msg.sender) {\n\t    registry[key].value = newValue;\n\t}\n    }\n\n    function getValue(uint key) constant returns (uint value) {\n\treturn registry[key].value;\n    }\n\n    function getOwner(uint key) constant returns (address owner) {\n\treturn registry[key].owner;\n    }\n}\n'
 
@@ -17,6 +16,7 @@ var source = '\ncontract NameCoin {\n\n    struct Item {\n\taddress owner;\n\tui
 
 var seed = 'unhappy nerve cancel reject october fix vital pulse cash behind curious bicycle'
 var keystore = new ethlightjs.keystore(seed, 'mypassword')
+keystore.generateNewAddress('mypassword')
 
 var sendingAddr = keystore.getAddresses()[0]
 console.log(sendingAddr)
@@ -25,9 +25,9 @@ console.log('Nonce: ' + nonce)
 console.log('Balance: ' + web3api.getBalance(sendingAddr))
 var compiled = web3.eth.compile.solidity(source)
 var code = compiled.NameCoin.code.slice(2)
+console.log(compiled.NameCoin.info.abiDefinition)
 
 txOptions = {
-    gasLimit: 3000000,
     nonce: nonce
 }
 
