@@ -6,10 +6,13 @@ var ethlightjs = require('ethlightjs')
 var txutils = ethlightjs.txutils
 var helpers = ethlightjs.helpers
 
-var web3api = new ethlightjs.blockchainapi.web3api("http://localhost:8545");
+//var web3api = new ethlightjs.blockchainapi.web3api("http://104.236.65.136:8545")
+var web3api = new ethlightjs.blockchainapi.web3api("http://localhost:8545")
 var web3 = web3api.getWeb3();
 
 var source = '\ncontract NameCoin {\n\n    struct Item {\n\taddress owner;\n\tuint value;\n    }\n\n    mapping (uint => Item) registry;\n\n    function register(uint key) {\n\tif (registry[key].owner == 0) {\n\t    registry[key].owner = msg.sender;\n\t}\n    }\n\n    function transferOwnership(uint key, address newOwner) {\n\tif (registry[key].owner == msg.sender) {\n\t    registry[key].owner = newOwner;\n\t}\n    }\n\n    function setValue(uint key, uint newValue) {\n\tif (registry[key].owner == msg.sender) {\n\t    registry[key].value = newValue;\n\t}\n    }\n\n    function getValue(uint key) constant returns (uint value) {\n\treturn registry[key].value;\n    }\n\n    function getOwner(uint key) constant returns (address owner) {\n\treturn registry[key].owner;\n    }\n}\n'
+
+var code = '6060604052610381806100136000396000f30060606040526000357c0100000000000000000000000000000000000000000000000000000000900480630ff4c9161461006557806329507f731461008c5780637b8d56e3146100a5578063c41a360a146100be578063f207564e146100fb57610063565b005b610076600480359060200150610308565b6040518082815260200191505060405180910390f35b6100a36004803590602001803590602001506101b3565b005b6100bc60048035906020018035906020015061026e565b005b6100cf600480359060200150610336565b604051808273ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b61010c60048035906020015061010e565b005b60006000600050600083815260200190815260200160002060005060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1614156101af57336000600050600083815260200190815260200160002060005060000160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908302179055505b5b50565b3373ffffffffffffffffffffffffffffffffffffffff166000600050600084815260200190815260200160002060005060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16141561026957806000600050600084815260200190815260200160002060005060000160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908302179055505b5b5050565b3373ffffffffffffffffffffffffffffffffffffffff166000600050600084815260200190815260200160002060005060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff161415610303578060006000506000848152602001908152602001600020600050600101600050819055505b5b5050565b600060006000506000838152602001908152602001600020600050600101600050549050610331565b919050565b60006000600050600083815260200190815260200160002060005060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff16905061037c565b91905056'
 
 //var privkey = '2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824'
 //keystore.addPrivateKey(privkey, 'mypassword')
@@ -23,11 +26,9 @@ console.log(sendingAddr)
 var nonce = web3api.getNonce(sendingAddr)
 console.log('Nonce: ' + nonce)
 console.log('Balance: ' + web3api.getBalance(sendingAddr))
-var compiled = web3.eth.compile.solidity(source)
-var code = compiled.NameCoin.code.slice(2)
-console.log(compiled.NameCoin.info.abiDefinition)
 
 txOptions = {
+    gasLimit: 1000000,
     nonce: nonce
 }
 
@@ -59,7 +60,7 @@ for (var i=0; i<3; i++) {
     console.log('New blocks found. Waiting for some more blocks...')
 }
 
-var contractAddr = contractAddr
+//var contractAddr = '86e0497e32a8e1d79fe38ab87dc80140df5470d9'
 var myContract = web3.eth.contract(abi).at('0x' + contractAddr)
 var owner = myContract.getOwner(123)
 console.log('Owner: ' + owner)
