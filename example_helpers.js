@@ -6,8 +6,8 @@ var ethlightjs = require('ethlightjs')
 var txutils = ethlightjs.txutils
 var helpers = ethlightjs.helpers
 
-//var web3api = new ethlightjs.blockchainapi.web3api("http://104.236.65.136:8545")
-var web3api = new ethlightjs.blockchainapi.web3api("http://localhost:8545")
+var web3api = new ethlightjs.blockchainapi.web3api("http://104.236.65.136:8545")
+//var web3api = new ethlightjs.blockchainapi.web3api("http://localhost:8545")
 var web3 = web3api.getWeb3();
 
 var source = '\ncontract NameCoin {\n\n    struct Item {\n\taddress owner;\n\tuint value;\n    }\n\n    mapping (uint => Item) registry;\n\n    function register(uint key) {\n\tif (registry[key].owner == 0) {\n\t    registry[key].owner = msg.sender;\n\t}\n    }\n\n    function transferOwnership(uint key, address newOwner) {\n\tif (registry[key].owner == msg.sender) {\n\t    registry[key].owner = newOwner;\n\t}\n    }\n\n    function setValue(uint key, uint newValue) {\n\tif (registry[key].owner == msg.sender) {\n\t    registry[key].value = newValue;\n\t}\n    }\n\n    function getValue(uint key) constant returns (uint value) {\n\treturn registry[key].value;\n    }\n\n    function getOwner(uint key) constant returns (address owner) {\n\treturn registry[key].owner;\n    }\n}\n'
@@ -32,7 +32,7 @@ txOptions = {
     nonce: nonce
 }
 
-// create, sign and inject transaction
+// create, sign and inject transaction creating the contract
 var contractAddr = helpers.sendCreateContractTx(code, sendingAddr, txOptions, web3api, keystore, 'mypassword')
 console.log('Contract address: ' + contractAddr)
 
@@ -46,6 +46,10 @@ helpers.sendFunctionTx(abi, contractAddr, 'register', [123], sendingAddr, txOpti
 // TX to set the value corresponding to key 123 to 456
 txOptions.nonce += 1
 helpers.sendFunctionTx(abi, contractAddr, 'setValue', [123, 456], sendingAddr, txOptions, web3api, keystore, 'mypassword')
+
+// TX to send some value to the newly created contract
+txOptions.nonce += 1
+helpers.sendValueTx(sendingAddr, contractAddr, 1000000000000, txOptions, web3api, keystore, 'mypassword')
 
 // Check that the owner is sendingAddr
 var blockNumber = web3.eth.blockNumber
@@ -68,3 +72,7 @@ console.log('Owner: ' + owner)
 // Check the value of key 123
 var val = myContract.getValue(123)
 console.log('Value: ' + val)
+
+// Check the balance of the contract
+var bal = web3api.getBalance(contractAddr)
+console.log('Contract balance: ' + bal)
