@@ -1,6 +1,7 @@
 var expect = require('chai').expect
 var keyStore = require('../lib/keystore')
 var fixtures = require('./fixtures/keystore')
+var bitcore = require('bitcore')
 
 describe("Keystore", function() {
 
@@ -60,7 +61,12 @@ describe("Keystore", function() {
     fixtures.valid.forEach(function (f) {
       it('generates valid address from private key ' + '"' + f.HDPrivKey.substring(0,15) + '..."', function () {
         var address1 = keyStore._computeAddressFromPrivKey(f.HDPrivKey)
+        var buffer = new Buffer(f.HDPrivKey)
+        var bitcorePub = new bitcore.HDPrivateKey(f.xHDPrivKey).publicKey
+        var pubkey = keyStore._uncompressPubKey(bitcorePub)
+        var address2 = keyStore._computeAddressFromPubKey(pubkey)
         expect(address1).to.equal(f.address)
+        expect(address2).to.equal(f.address)
       })
     })
   });
