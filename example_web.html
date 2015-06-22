@@ -1,11 +1,9 @@
 <html>
   <body>
     <script src="ethlightjs.min.js"></script>
-    <script src="web3.min.js"></script>
     <script>
       var helpers = ethlightjs.helpers
       var web3api = new ethlightjs.blockchainapi.web3api("http://104.236.65.136:8545")
-      var web3 = web3api.getWeb3()
       var password = 'mypassword'
       var keystore = undefined
       var addresses = undefined
@@ -15,8 +13,8 @@
 	  keystore = new ethlightjs.keystore(seed, password)
 	  for (var i=0; i<3; i++) {
 	      var addr = keystore.generateNewAddress(password)
-	      var bal = web3.eth.getBalance(addr)
-	      document.getElementById('addr'+i).innerHTML = addr + ' (' + (bal.toNumber() / 1.0e18) + ' ETH)'
+	      var bal = web3api.getBalance(addr)
+	      document.getElementById('addr'+i).innerHTML = addr + ' (' + (bal / 1.0e18) + ' ETH)'
 	  }
 	  addresses = keystore.getAddresses()
       }
