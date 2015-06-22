@@ -1,0 +1,86 @@
+<html>
+  <body>
+    <script src="ethlightjs.min.js"></script>
+
+    <script>
+      var helpers = ethlightjs.helpers
+      var web3api = new ethlightjs.blockchainapi.web3api("http://104.236.65.136:8545")
+      var api = new ethlightjs.blockchainapi.blockappsapi()
+      var web3 = web3api.getWeb3()
+      var password = 'mypassword'
+      var keystore = undefined
+      var addresses = undefined
+
+
+      function checkNonce(){
+           var addr = document.getElementById('sendFrom').value
+           console.log("addr is " + addr)
+           var nonce = api.getNonce(addr, function(nonce){
+               document.getElementById('nonce').value = nonce
+              console.log("nonce is: " + nonce)
+        })
+      }
+
+      function setSeed() {
+	  var seed = document.getElementById('seed').value
+	  keystore = new ethlightjs.keystore(seed, password)
+	 
+	      var addr0 = keystore.generateNewAddress(password)
+ 
+        var bal0 = api.getBalance(addr0, function(bal){
+          document.getElementById('addr0').innerHTML = addr0 + ' (' + (bal / 1.0e18) + ' ETH)'
+        })
+
+        var addr1 = keystore.generateNewAddress(password)
+        var bal1 = api.getBalance(addr1, function(bal){
+          document.getElementById('addr1').innerHTML = addr1 + ' (' + (bal / 1.0e18) + ' ETH)'
+        })        
+	      
+        var addr2 = keystore.generateNewAddress(password)
+        var bal2 = api.getBalance(addr2, function(bal){
+          document.getElementById('addr2').innerHTML = addr2 + ' (' + (bal / 1.0e18) + ' ETH)'
+        })        
+        
+	  
+	      addresses = keystore.getAddresses()
+      }
+
+      function randomSeed() {
+	  var randomSeed = ethlightjs.keystore.generateRandomSeed()
+	  document.getElementById('seed').value = randomSeed
+      }
+
+      function sendEth() {
+      	  var fromAddr = document.getElementById('sendFrom').value
+      	  var toAddr = document.getElementById('sendTo').value
+      	  var valueEth = document.getElementById('sendValueAmount').value
+      	  var value = parseFloat(valueEth)*1.0e18// what is the right conversion here?
+      	  console.log('**' + fromAddr + '**')
+          var accNonce = parseInt(document.getElementById('nonce').value)
+          console.log(accNonce)
+      	  txObj = {gasLimit: 30000, nonce: accNonce}
+      	  helpers.sendValueTx (fromAddr, toAddr, value, txObj, api, keystore, password)
+      }
+      
+    </script>
+    <h1>LightWallet</h1>
+    <h2>Seed</h2>
+    <div><input type="text" id="seed" value="unhappy nerve cancel reject october fix vital pulse cash behind curious bicycle"></input><button onclick="setSeed()">Set Seed</button><button onclick="randomSeed()">Random Seed</button></div>
+    <div>
+    
+    <h2>Addresses</h2>
+    <div id="addr0"></div>
+    <div id="addr1"></div>
+    <div id="addr2"></div>
+    <div id="signedTx"></div>
+    <div id="balance"></div>
+    <h2>Send Ether</h2>
+    <div>From: <input type="text" id="sendFrom" value="dedb49385ad5b94a16f236a6890cf9e0b1e30392"></input></div>
+    <div><button onclick="checkNonce()">Check nonce</button></div>
+    <div>To: <input type="text" id="sendTo" value="88ada7b45ac3ef7ba179378fa830c639e514d067"></input></div>
+    <div>Ether: <input type="text" id="sendValueAmount" value="1"></div>
+    <div>Nonce: <input type="number" id="nonce" value=0></div>
+    <div><button onclick="sendEth()">Send Ether</button></div>
+
+  </body>
+</html>

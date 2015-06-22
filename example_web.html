@@ -1,39 +1,37 @@
 <html>
   <body>
     <script src="ethlightjs.min.js"></script>
-    <script src="web3.min.js"></script>
     <script>
       var helpers = ethlightjs.helpers
       var web3api = new ethlightjs.blockchainapi.web3api("http://104.236.65.136:8545")
-      var web3 = web3api.getWeb3()
       var password = 'mypassword'
       var keystore = undefined
       var addresses = undefined
 
       function setSeed() {
-	  var seed = document.getElementById('seed').value
-	  keystore = new ethlightjs.keystore(seed, password)
-	  for (var i=0; i<3; i++) {
-	      var addr = keystore.generateNewAddress(password)
-	      var bal = web3.eth.getBalance(addr)
-	      document.getElementById('addr'+i).innerHTML = addr + ' (' + (bal.toNumber() / 1.0e18) + ' ETH)'
-	  }
-	  addresses = keystore.getAddresses()
+    var seed = document.getElementById('seed').value
+    keystore = new ethlightjs.keystore(seed, password)
+    for (var i=0; i<3; i++) {
+        var addr = keystore.generateNewAddress(password)
+        var bal = web3api.getBalance(addr)
+        document.getElementById('addr'+i).innerHTML = addr + ' (' + (bal / 1.0e18) + ' ETH)'
+    }
+    addresses = keystore.getAddresses()
       }
 
       function randomSeed() {
-	  var randomSeed = ethlightjs.keystore.generateRandomSeed()
-	  document.getElementById('seed').value = randomSeed
+    var randomSeed = ethlightjs.keystore.generateRandomSeed()
+    document.getElementById('seed').value = randomSeed
       }
 
       function sendEth() {
-	  var fromAddr = document.getElementById('sendFrom').value
-	  var toAddr = document.getElementById('sendTo').value
-	  var valueEth = document.getElementById('sendValueAmount').value
-	  var value = parseFloat(valueEth)*1.0e18
-	  console.log('**' + fromAddr + '**')
-	  txObj = {gasLimit: 30000}
-	  helpers.sendValueTx (fromAddr, toAddr, value, txObj, web3api, keystore, password)
+    var fromAddr = document.getElementById('sendFrom').value
+    var toAddr = document.getElementById('sendTo').value
+    var valueEth = document.getElementById('sendValueAmount').value
+    var value = parseFloat(valueEth)*1.0e18
+    console.log('**' + fromAddr + '**')
+    txObj = {gasLimit: 30000}
+    helpers.sendValueTx (fromAddr, toAddr, value, txObj, web3api, keystore, password)
       }
       
     </script>
