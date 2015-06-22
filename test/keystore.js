@@ -12,7 +12,8 @@ describe("Keystore", function() {
 
       // No values are set
       expect(ks.encSeed).to.equal(undefined)
-      expect(ks.encPrivKeys).to.deep.equal({})
+      expect(ks.encMasterPriv).to.equal(undefined)
+      expect(ks.masterPub).to.equal(undefined)
       expect(ks.addresses).to.deep.equal([])
     });
 
@@ -24,7 +25,7 @@ describe("Keystore", function() {
     it("returns keystore with an encrypted seed set when give mnemonic and password", function() {
       var ks = new keyStore(fixtures.valid[0].mnSeed, fixtures.valid[0].password)
       expect(ks.encSeed).to.not.equal(undefined);
-      expect(keyStore._decryptSeed(ks.encSeed, fixtures.valid[0].password)).to.equal(fixtures.valid[0].mnSeed);
+      expect(keyStore._decryptString(ks.encSeed, fixtures.valid[0].password)).to.equal(fixtures.valid[0].mnSeed);
     });
 
     it("throws error if invalid mnemonic is given", function() {
@@ -41,39 +42,25 @@ describe("Keystore", function() {
 
   // Can't directly test the encrypt/decrypt functions
   // since salt and iv is used.
-  describe("_encryptSeed _decryptSeed", function() {
+  describe("_encryptString _decryptString", function() {
 
     fixtures.valid.forEach(function (f) {
       it('encrypts the seed then returns same seed decrypted ' + '"' + f.mnSeed.substring(0,25) + '..."', function () {
 
-        var encryptedSeed = keyStore._encryptSeed(f.mnSeed, f.password)
-        var decryptedSeed = keyStore._decryptSeed(encryptedSeed, f.password)
+        var encryptedString = keyStore._encryptString(f.mnSeed, f.password)
+        var decryptedString = keyStore._decryptString(encryptedString, f.password)
 
-        expect(decryptedSeed).to.equal(f.mnSeed)
+        expect(decryptedString).to.equal(f.mnSeed)
       })
     })
 
   });
 
-  describe("_encryptKey _decryptKey", function() {
-
-    fixtures.valid.forEach(function (f) {
-      it('encrypts the key then returns same key decrypted ' + '"' + f.pubKeyHex.substring(0,15) + '..."', function () {
-
-        var encryptedKey = keyStore._encryptKey(f.pubKeyHex, f.password)
-        var decryptedKey = keyStore._decryptKey(encryptedKey, f.password)
-
-        expect(decryptedKey).to.equal(f.pubKeyHex)
-      })
-    })
-
-  });
-
-  describe("_computeAddressFromPrivKey", function() {
+  describe("_computeAddressFromPrivKey _computeAddressFromPubKey", function() {
     fixtures.valid.forEach(function (f) {
       it('generates valid address from private key ' + '"' + f.HDPrivKey.substring(0,15) + '..."', function () {
-        var address = keyStore._computeAddressFromPrivKey(f.HDPrivKey)
-        expect(address).to.equal(f.address)
+        var address1 = keyStore._computeAddressFromPrivKey(f.HDPrivKey)
+        expect(address1).to.equal(f.address)
       })
     })
   });
@@ -115,7 +102,7 @@ describe("Keystore", function() {
   describe("generateNewAddress", function() {
     it("returns a new address, next in hd wallet with hdindex 0", function() {
       var ks = new keyStore(fixtures.valid[0].mnSeed, fixtures.valid[0].password)
-      var newAddress = ks.generateNewAddress(fixtures.valid[0].password)
+      var newAddress = ks.generateNewAddress()
       expect(newAddress).to.equal(fixtures.valid[0].address)
     });
   });
@@ -135,41 +122,6 @@ describe("Keystore", function() {
       var ks = new keyStore(fixtures.valid[0].mnSeed, fixtures.valid[0].password)
       expect(ks.getSeed(fixtures.valid[0].password)).to.equal(fixtures.valid[0].mnSeed)
     });
-  });
-
-  describe("_generatePrivKey", function() {
-
-    var ks = new keyStore(fixtures.valid[0].mnSeed, fixtures.valid[0].password)
-
-    // Add children key sets to test this more completely
-    // fixtures.valid.forEach(function (f) {
-    //   it('returns next private key in hd wallet with hdIndex ' + f.HDIndex, function() {
-    //      var pk = ks._generatePrivKey(fixtures.valid[0].password)
-    //      expect(pk).to.equal(fixtures.valid[0].HDPrivKey)
-    //   });
-    // })
-
-    it('returns next private key in hd wallet with hdIndex 0', function() {
-        var pk = ks._generatePrivKey(fixtures.valid[0].password)
-        expect(pk).to.equal(fixtures.valid[0].HDPrivKey)
-
-    });
-
-  });
-
-  describe("_addKeyPair", function() {
-    var fixture = fixtures.valid[0]
-    it('adds both private key and public key pair to keystore obj', function() {
-      var ks = new keyStore(fixture.mnSeed, fixture.password)
-      ks._addKeyPair(fixture.HDPrivKey, fixture.address, fixture.password)
-
-      expect(ks.addresses).to.include(fixture.address)
-
-      var decFromKS = keyStore._decryptKey(ks.encPrivKeys[fixture.address], fixture.password)
-      expect(decFromKS).to.equal(fixture.HDPrivKey)
-    });
-
-    //loop and add each, at each check if the priv/pub key is in keystore now
   });
 
   describe("signTx", function() {
