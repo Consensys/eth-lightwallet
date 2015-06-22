@@ -27,9 +27,14 @@ To build a node package:
 npm install path/to/LightWallet
 ```
 
+To create a keystore, and sign and send a transaction:
+
+
+
+
 ## `keystore` Function definitions
 
-These are the interface functions for the keystore object. The keystore object holds a 12-word seed according to [BIP32][] spec. From this seed you can generate addresses and private keys, and use the private keys to sign transactions.
+These are the interface functions for the keystore object. The keystore object holds a 12-word seed according to [BIP39][] spec. From this seed you can generate addresses and private keys, and use the private keys to sign transactions.
 
 Note: Addresses and RLP encoded data are in the form of hex-strings. Hex-strings do not start with `0x`.
 
@@ -67,6 +72,10 @@ Returns a list of hex-string addresses currently stored in the keystore.
 ### `keystore.getSeed(password)`
 
 Given the password, decrypts and returns the users 12-word seed.
+
+### `keystore.exportPrivateKey(address, password)`
+
+Given the password, decrypts and returns the private key corresponding to `address`. This should be done sparingly as the recommended practice is for the `keystore` to sign transactions using `keystore.signTx`, so there is normally no need to export private keys.
 
 ### `keystore.signTx(rawTx, password, signingAddress)`
 
@@ -150,11 +159,11 @@ They use an object `blockchainApi` that define the following functions:
 * `blockchainApi.getBalance(address)`: Returns the balance of an address
 * `blockchainApi.injectTransaction(rawTx)`: Injects a signed transaction into the network
 
-We include two APIs: `web3api` and `blockappsapi` with predefined functions.
+We include two APIs: `web3api` and `blockappsapi` with predefined functions calling either an ethereum client or the blockapps backend.
 
 ### `helpers.sendFunctionTx(abi, contractAddr, functionName, args, fromAddr, txObject, blockchainApi, keystore, password)`
 
-Creates, signs, and sends a transaction calling a function `functionName` conforming to `abi` of a contract at address `contractAddr` with arguments `args`. Returns the hash of the transaction.
+Creates, signs, and sends a transaction calling a function `functionName` conforming to `abi` of a contract at address `contractAddr` with arguments `args`. Returns the hash of the transaction. The `abi` is a JSON object specifying the ABI of the contract.
 
 The object `txObject` contains the following optional arguments:
 
@@ -167,7 +176,7 @@ If the arguments are not provided default values will be used.
 
 ### `helpers.sendCreateContractTx(bytecode, fromAddr, txObject, blockchainApi, keystore, password)`
 
-Signs and sends a transaction creating the contract with code `bytecode`. The object `txObject` contains optional arguments as described in the `helpers.sendFunctionTx()` section. Returns the address of the newly created contract.
+Signs and sends a transaction creating the contract with compiled code `bytecode`. The object `txObject` contains optional arguments as described in the `helpers.sendFunctionTx()` section. Returns the address of the newly created contract.
 
 ### `helpers.sendValueTx(fromAddr, toAddr, value, txObject, blockchainApi, keystore, password)`
 
@@ -178,6 +187,8 @@ Signs and send a transaction sending `value` wei from `fromAddr` to `toAddr`. Th
 See the file `example_usage.js` for usage of `keystore` and `txutils`.
 
 See the file `example_helpers.js` for using the `helpers` functions.
+
+See the file `example_web.html` for an example of how to use the LightWallet functionality in the browser.
 
 ## Tests
 

@@ -12,6 +12,7 @@ describe("Keystore", function() {
 
       // No values are set
       expect(ks.encSeed).to.equal(undefined)
+      expect(ks.encMasterPriv).to.equal(undefined)
       expect(ks.encPrivKeys).to.deep.equal({})
       expect(ks.addresses).to.deep.equal([])
     });
@@ -24,7 +25,7 @@ describe("Keystore", function() {
     it("returns keystore with an encrypted seed set when give mnemonic and password", function() {
       var ks = new keyStore(fixtures.valid[0].mnSeed, fixtures.valid[0].password)
       expect(ks.encSeed).to.not.equal(undefined);
-      expect(keyStore._decryptSeed(ks.encSeed, fixtures.valid[0].password)).to.equal(fixtures.valid[0].mnSeed);
+      expect(keyStore._decryptString(ks.encSeed, fixtures.valid[0].password)).to.equal(fixtures.valid[0].mnSeed);
     });
 
     it("throws error if invalid mnemonic is given", function() {
@@ -41,15 +42,15 @@ describe("Keystore", function() {
 
   // Can't directly test the encrypt/decrypt functions
   // since salt and iv is used.
-  describe("_encryptSeed _decryptSeed", function() {
+  describe("_encryptString _decryptString", function() {
 
     fixtures.valid.forEach(function (f) {
       it('encrypts the seed then returns same seed decrypted ' + '"' + f.mnSeed.substring(0,25) + '..."', function () {
 
-        var encryptedSeed = keyStore._encryptSeed(f.mnSeed, f.password)
-        var decryptedSeed = keyStore._decryptSeed(encryptedSeed, f.password)
+        var encryptedString = keyStore._encryptString(f.mnSeed, f.password)
+        var decryptedString = keyStore._decryptString(encryptedString, f.password)
 
-        expect(decryptedSeed).to.equal(f.mnSeed)
+        expect(decryptedString).to.equal(f.mnSeed)
       })
     })
 
@@ -88,6 +89,7 @@ describe("Keystore", function() {
       expect(deserKS.encSeed).to.deep.equal(origKS.encSeed)
       expect(deserKS.hdIndex).to.equal(origKS.hdIndex)
       expect(deserKS.encPrivKeys).to.deep.equal(origKS.encPrivKeys)
+      expect(deserKS.encMasterPriv).to.deep.equal(origKS.encMasterPriv)
       expect(deserKS.addresses).to.deep.equal(origKS.addresses)
     });
 
@@ -106,6 +108,7 @@ describe("Keystore", function() {
       expect(deserKS.encSeed).to.deep.equal(origKS.encSeed)
       expect(deserKS.hdIndex).to.equal(origKS.hdIndex)
       expect(deserKS.encPrivKeys).to.deep.equal(origKS.encPrivKeys)
+      expect(deserKS.encMasterPriv).to.deep.equal(origKS.encMasterPriv)
       expect(deserKS.addresses).to.deep.equal(origKS.addresses)
 
     });
@@ -136,6 +139,25 @@ describe("Keystore", function() {
       expect(ks.getSeed(fixtures.valid[0].password)).to.equal(fixtures.valid[0].mnSeed)
     });
   });
+
+  describe("exportPrivateKey", function() {
+      it('exports the private key corresponding to an address', function() {
+	  var pw = fixtures.valid[0].password
+	  var ks = new keyStore(fixtures.valid[0].mnSeed, pw)
+	  var addr0 = ks.generateNewAddress(pw)
+	  var addr1 = ks.generateNewAddress(pw)
+	  
+	  var exportedPriv0 = ks.exportPrivateKey(addr0, pw)
+	  var exportedPriv1 = ks.exportPrivateKey(addr1, pw)
+
+	  var addrFromExported0 = keyStore._computeAddressFromPrivKey(exportedPriv0)
+	  var addrFromExported1 = keyStore._computeAddressFromPrivKey(exportedPriv1)
+
+	  expect(addrFromExported0).to.equal(addr0)
+	  expect(addrFromExported1).to.equal(addr1)
+      });
+  });
+    
 
   describe("_generatePrivKey", function() {
 
