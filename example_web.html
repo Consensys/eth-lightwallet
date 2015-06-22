@@ -1,41 +1,55 @@
 <html>
   <body>
     <script src="ethlightjs.min.js"></script>
-    <div id="addr"></div>
-    <div id="tx"></div> 
-    <div id="signedTx"></div>
+    <script src="web3.min.js"></script>
     <script>
-      var keystore = ethlightjs.keystore
-      var txutils = ethlightjs.txutils
-      var seed = 'unhappy nerve cancel reject october fix vital pulse cash behind curious bicycle'
-      keystore.setSeed(seed, 'mypassword')
+      var helpers = ethlightjs.helpers
+      var web3api = new ethlightjs.blockchainapi.web3api("http://104.236.65.136:8545")
+      var web3 = web3api.getWeb3()
+      var password = 'mypassword'
+      var keystore = undefined
+      var addresses = undefined
 
-      function newAddr() {
-	  keystore.generateNewAddress('mypassword')
-	  var addresses = keystore.getAddresses()
-	  document.getElementById('addr').innerHTML = 'Addr: ' + addresses[addresses.length-1]
-      }
-
-      function getTx() {
-	  var abi = [{"constant":false,"inputs":[{"name":"key","type":"uint256"}],"name":"register","outputs":[],"type":"function"}]
-	  var txOptions = {
-	      gasPrice: 10000000000000,
-	      gasLimit: 3000000,
-	      value: 0,
-	      nonce: 1,
-	      to: '6c19d6af83d0d335a006ae424a426ef4d139d827'
+      function setSeed() {
+	  var seed = document.getElementById('seed').value
+	  keystore = new ethlightjs.keystore(seed, password)
+	  for (var i=0; i<3; i++) {
+	      var addr = keystore.generateNewAddress(password)
+	      var bal = web3.eth.getBalance(addr)
+	      document.getElementById('addr'+i).innerHTML = addr + ' (' + (bal.toNumber() / 1.0e18) + ' ETH)'
 	  }
-	  
-	  var tx = txutils.functionTx(abi, 'register', [123], txOptions)
-	  document.getElementById('tx').innerHTML = 'TX: ' + tx
-	  var addr = keystore.getAddresses()[0]
-	  var signedTx = keystore.signTx(tx, 'mypassword', addr)
-	  document.getElementById('signedTx').innerHTML = 'Signed TX: ' + signedTx
+	  addresses = keystore.getAddresses()
       }
 
+      function randomSeed() {
+	  var randomSeed = ethlightjs.keystore.generateRandomSeed()
+	  document.getElementById('seed').value = randomSeed
+      }
+
+      function sendEth() {
+	  var fromAddr = document.getElementById('sendFrom').value
+	  var toAddr = document.getElementById('sendTo').value
+	  var valueEth = document.getElementById('sendValueAmount').value
+	  var value = parseFloat(valueEth)*1.0e18
+	  console.log('**' + fromAddr + '**')
+	  txObj = {gasLimit: 30000}
+	  helpers.sendValueTx (fromAddr, toAddr, value, txObj, web3api, keystore, password)
+      }
+      
     </script>
-    <div><button onClick='newAddr()'>New addr</button></div>
-    <div><button onClick='getTx()'>Show TX</button></div>
+    <h1>LightWallet</h1>
+    <h2>Seed</h2>
+    <div><input type="text" id="seed"></input><button onclick="setSeed()">Set Seed</button><button onclick="randomSeed()">Random Seed</button></div>
+    <h2>Addresses</h2>
+    <div id="addr0"></div>
+    <div id="addr1"></div>
+    <div id="addr2"></div>
+    <div id="signedTx"></div>
+    <h2>Send Ether</h2>
+    <div>From: <input type="text" id="sendFrom"></input></div>
+    <div>To: <input type="text" id="sendTo"></input></div>
+    <div>Ether: <input type="text" id="sendValueAmount"></div>
+    <div><button onclick="sendEth()">Send Ether</button></div>
 
   </body>
 </html>
