@@ -14,7 +14,7 @@
 	  var seed = document.getElementById('seed').value
 	  keystore = new ethlightjs.keystore(seed, password)
 	  for (var i=0; i<3; i++) {
-	      var addr = keystore.generateNewAddress(password)
+	      var addr = keystore.generateNewAddress()
 	      var bal = web3.eth.getBalance(addr)
 	      document.getElementById('addr'+i).innerHTML = addr + ' (' + (bal.toNumber() / 1.0e18) + ' ETH)'
 	  }
