@@ -12,15 +12,17 @@
 
       function setApi(){
         var sel = document.getElementById('backend').value
-        if(sel == "blockapps")
+        if(sel == "blockapps") {
            api = new ethlightjs.blockchainapi.blockappsapi("http://stablenet.blockapps.net")
-        if(sel == "web3")
+	}
+        else {
            api = new ethlightjs.blockchainapi.web3api("http://104.236.65.136:8545")
+	}
       }
 
       function checkNonce(){
            var addr = document.getElementById('sendFrom').value
-           var nonce = api.getNonce(addr, function(nonce){
+           var nonce = api.getNonce(addr, function(err, nonce){
                document.getElementById('nonce').value = nonce
         })
       }
@@ -30,22 +32,21 @@
         keystore = new ethlightjs.keystore(seed, password)
 
         var addr0 = keystore.generateNewAddress(password)
-        var bal0 = api.getBalance(addr0, function(bal){
+        var bal0 = api.getBalance(addr0, function(err, bal){
           document.getElementById('addr0').innerHTML = addr0 + ' (' + (bal / 1.0e18) + ' ETH)'
         })
 
         var addr1 = keystore.generateNewAddress(password)
-        var bal1 = api.getBalance(addr1, function(bal){
+        var bal1 = api.getBalance(addr1, function(err, bal){
           document.getElementById('addr1').innerHTML = addr1 + ' (' + (bal / 1.0e18) + ' ETH)'
         })        
         
         var addr2 = keystore.generateNewAddress(password)
-        var bal2 = api.getBalance(addr2, function(bal){
+        var bal2 = api.getBalance(addr2, function(err, bal){
           document.getElementById('addr2').innerHTML = addr2 + ' (' + (bal / 1.0e18) + ' ETH)'
-        }) 
-        addresses = keystore.getAddresses()     
+        })
+        addresses = keystore.getAddresses()
       }
-  
 
       function randomSeed() {
         var randomSeed = ethlightjs.keystore.generateRandomSeed()
@@ -57,10 +58,9 @@
         var toAddr = document.getElementById('sendTo').value
         var valueEth = document.getElementById('sendValueAmount').value
         var value = parseFloat(valueEth)*1.0e18
-        console.log('**' + fromAddr + '**')
         var accNonce = parseInt(document.getElementById('nonce').value)
         txObj = {gasLimit: 30000, nonce: accNonce}
-        helpers.sendValueTx(fromAddr, toAddr, value, txObj, api, keystore, password)
+        helpers.sendValueTx(fromAddr, toAddr, value, txObj, api, keystore, password, function (err, data) {console.log(data)})
       }
 
       function createContract() {
@@ -69,8 +69,9 @@
         var valueEth = document.getElementById('sendValueAmount').value
         var accNonce = parseInt(document.getElementById('nonce').value)
         txObj = {gasLimit: 3000000, gasPrice: 12000000000000, nonce: accNonce}
-        var contractAddr = helpers.sendCreateContractTx(bytecode, fromAddr, txObj, api, keystore, password)
-        document.getElementById('contractAddr').value = contractAddr
+        helpers.sendCreateContractTx(bytecode, fromAddr, txObj, api, keystore, password, function (err, contractAddr) { 
+	    document.getElementById('contractAddr').value = contractAddr 
+	})
       }
 
       function registerKey() {
@@ -80,7 +81,7 @@
         var sendingAddr = document.getElementById('sendFrom').value
         var accNonce = parseInt(document.getElementById('nonce').value)
         txObj = {gasLimit: 3000000, gasPrice: 12000000000000, nonce: accNonce}
-        helpers.sendFunctionTx(abi, contractAddr, 'register', [key], sendingAddr, txObj, api, keystore, password)
+        helpers.sendFunctionTx(abi, contractAddr, 'register', [key], sendingAddr, txObj, api, keystore, password, function (err, data) {console.log(data)})
       }
 
       function setValue() {
@@ -91,11 +92,12 @@
         var sendingAddr = document.getElementById('sendFrom').value
         var accNonce = parseInt(document.getElementById('nonce').value)
         txObj = {gasLimit: 3000000, gasPrice: 12000000000000, nonce: accNonce}
-        helpers.sendFunctionTx(abi, contractAddr, 'setValue', [key, value], sendingAddr, txObj, api, keystore, password)
+        helpers.sendFunctionTx(abi, contractAddr, 'setValue', [key, value], sendingAddr, txObj, api, keystore, password, function (err, data) {console.log(data)})
       }
 
       function getContractData() {
         if(document.getElementById('backend').value == "web3"){
+	    console.log("In web3 getter")
             var abi = JSON.parse(document.getElementById('abi').value)
             var contractAddr = document.getElementById('functionContractAddr').value
             var key = parseInt(document.getElementById('keyToQuery').value)
@@ -106,18 +108,17 @@
             document.getElementById('keyValue').innerHTML = 'Key Value: ' + val
         }
         if(document.getElementById('backend').value == "blockapps"){
+	    console.log("In blockapps getter")
           var contractAddr = document.getElementById('functionContractAddr').value
           api.getStorage(contractAddr, function(val){
             document.getElementById('keyValue').innerHTML = 'Key Value: ' + val
           })
         }
-
       }
-
     </script>
     <h1>LightWallet</h1>
     <h2>Select backend</h2>
-    <div>Backend: <select onchange="setApi()" id="backend" onload="setApi()"><option value="web3">web3</option><option value="blockapps">blockapps.net</option></select></div>
+    <div>Backend: <select onchange="setApi()" id="backend"><option value="notSet">Set Provider</option><option value="web3">web3</option><option value="blockapps">blockapps.net</option></select></div>
     <h2>Seed</h2>
     <div><input type="text" id="seed" value="unhappy nerve cancel reject october fix vital pulse cash behind curious bicycle"></input><button onclick="setSeed()">Set Seed</button><button onclick="randomSeed()">Random Seed</button></div>
     <h2>Addresses</h2>
