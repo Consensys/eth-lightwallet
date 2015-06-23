@@ -9,16 +9,6 @@
       var addresses = undefined
 
       function setSeed() {
-<<<<<<< HEAD
-    var seed = document.getElementById('seed').value
-    keystore = new ethlightjs.keystore(seed, password)
-    for (var i=0; i<3; i++) {
-        var addr = keystore.generateNewAddress(password)
-        var bal = web3api.getBalance(addr)
-        document.getElementById('addr'+i).innerHTML = addr + ' (' + (bal / 1.0e18) + ' ETH)'
-    }
-    addresses = keystore.getAddresses()
-=======
 	  var seed = document.getElementById('seed').value
 	  keystore = new ethlightjs.keystore(seed, password)
 	  for (var i=0; i<3; i++) {
@@ -27,24 +17,23 @@
 	      document.getElementById('addr'+i).innerHTML = addr + ' (' + (bal / 1.0e18) + ' ETH)'
 	  }
 	  addresses = keystore.getAddresses()
->>>>>>> 21f33443b0f31d917a66db2603002d58bfe7d9f0
       }
 
       function randomSeed() {
-    var randomSeed = ethlightjs.keystore.generateRandomSeed()
-    document.getElementById('seed').value = randomSeed
+	  var randomSeed = ethlightjs.keystore.generateRandomSeed()
+	  document.getElementById('seed').value = randomSeed
       }
 
       function sendEth() {
-    var fromAddr = document.getElementById('sendFrom').value
-    var toAddr = document.getElementById('sendTo').value
-    var valueEth = document.getElementById('sendValueAmount').value
-    var value = parseFloat(valueEth)*1.0e18
-    console.log('**' + fromAddr + '**')
-    txObj = {gasLimit: 30000}
-    helpers.sendValueTx (fromAddr, toAddr, value, txObj, web3api, keystore, password)
+	  var fromAddr = document.getElementById('sendFrom').value
+	  var toAddr = document.getElementById('sendTo').value
+	  var valueEth = document.getElementById('sendValueAmount').value
+	  var value = parseFloat(valueEth)*1.0e18
+	  console.log('**' + fromAddr + '**')
+	  txObj = {gasLimit: 30000}
+	  helpers.sendValueTx (fromAddr, toAddr, value, txObj, web3api, keystore, password)
       }
-      
+
     </script>
     <h1>LightWallet</h1>
     <h2>Seed</h2>
