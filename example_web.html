@@ -117,7 +117,13 @@
     </script>
     <h1>LightWallet</h1>
     <h2>Select backend</h2>
-    <div>Backend: <select onchange="setApi()" id="backend" onload="setApi()"><option value="web3">web3</option><option value="blockapps">blockapps.net</option></select></div>
+    <div>Backend: 
+    <select onchange="setApi()" id="backend" onload="setApi()">
+      <option value=undefined>select backend</option>
+      <option value="web3">web3</option>
+      <option value="blockapps">blockapps.net</option>
+    </select>
+    </div>
     <h2>Seed</h2>
     <div><input type="text" id="seed" value="unhappy nerve cancel reject october fix vital pulse cash behind curious bicycle"></input><button onclick="setSeed()">Set Seed</button><button onclick="randomSeed()">Random Seed</button></div>
     <h2>Addresses</h2>
