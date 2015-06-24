@@ -41,7 +41,9 @@
     "rlp": "^1.0.0",
     "web3": "^0.6.0",
     "ethereumjs-tx": "^0.4.0",
-    "ethereumjs-util": "^1.2.0"
+    "ethereumjs-util": "^1.2.0",
+    "bignumber.js": "debris/bignumber.js#master"
+
   },
   "devDependencies": {
     "browserify": "^10.2.4",
