@@ -110,7 +110,7 @@
         if(document.getElementById('backend').value == "blockapps"){
 	    console.log("In blockapps getter")
           var contractAddr = document.getElementById('functionContractAddr').value
-          api.getStorage(contractAddr, function(val){
+          api.getStorage(contractAddr, function(err, val){
             document.getElementById('keyValue').innerHTML = 'Key Value: ' + val
           })
         }
