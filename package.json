@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build-js": "browserify index.js --s ethlightjs | uglifyjs -mc > ethlightjs.min.js",
+    "build-dev": "browserify index.js -o ethlightjs.js --s ethlightjs",
     "test": "./node_modules/.bin/mocha --reporter spec",
     "coverage": "istanbul cover _mocha -- -R spec; open coverage/lcov-report/index.html"
   },
