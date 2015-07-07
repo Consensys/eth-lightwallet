@@ -41,43 +41,45 @@ txOptions = {
 }
 
 // create, sign and inject transaction creating the contract
-var contractAddr = helpers.sendCreateContractTx(code, sendingAddr, txOptions, web3api, keystore, 'mypassword')
-console.log('Contract address: ' + contractAddr)
+helpers.sendCreateContractTx(code, sendingAddr, txOptions, web3api, keystore, 'mypassword', function(err, contractAddr) {
+    console.log('Contract address: ' + contractAddr)
 
-// TX to register the key 123
-txOptions.nonce += 1
-helpers.sendFunctionTx(abi, contractAddr, 'register', [123], sendingAddr, txOptions, web3api, keystore, 'mypassword')
+    // TX to register the key 123
+    txOptions.nonce += 1
+    helpers.sendFunctionTx(abi, contractAddr, 'register', [123], sendingAddr, txOptions, web3api, keystore, 'mypassword')
 
-// TX to set the value corresponding to key 123 to 456
-txOptions.nonce += 1
-helpers.sendFunctionTx(abi, contractAddr, 'setValue', [123, 456], sendingAddr, txOptions, web3api, keystore, 'mypassword')
+    // TX to set the value corresponding to key 123 to 456
+    txOptions.nonce += 1
+    helpers.sendFunctionTx(abi, contractAddr, 'setValue', [123, 456], sendingAddr, txOptions, web3api, keystore, 'mypassword')
 
-// TX to send some value to the newly created contract
-txOptions.nonce += 1
-helpers.sendValueTx(sendingAddr, contractAddr, 1000000000000, txOptions, web3api, keystore, 'mypassword')
+    // TX to send some value to the newly created contract
+    txOptions.nonce += 1
+    helpers.sendValueTx(sendingAddr, contractAddr, 1000000000000, txOptions, web3api, keystore, 'mypassword')
 
-// Check that the owner is sendingAddr
-var blockNumber = web3.eth.blockNumber
-var b = blockNumber
-console.log('Waiting for blocks...')
+    // Check that the owner is sendingAddr
+    var blockNumber = web3.eth.blockNumber
+    var b = blockNumber
+    console.log('Waiting for blocks...')
 
-for (var i=0; i<3; i++) {
-    blockNumber = b
-    while (b == blockNumber) {
-	b = web3.eth.blockNumber
+    for (var i=0; i<3; i++) {
+        blockNumber = b
+        while (b == blockNumber) {
+        b = web3.eth.blockNumber
+        }
+        console.log('New blocks found. Waiting for some more blocks...')
     }
-    console.log('New blocks found. Waiting for some more blocks...')
-}
 
-//var contractAddr = '86e0497e32a8e1d79fe38ab87dc80140df5470d9'
-var myContract = web3.eth.contract(abi).at('0x' + contractAddr)
-var owner = myContract.getOwner(123)
-console.log('Owner: ' + owner)
+    //var contractAddr = '86e0497e32a8e1d79fe38ab87dc80140df5470d9'
+    var myContract = web3.eth.contract(abi).at('0x' + contractAddr)
+    var owner = myContract.getOwner(123)
+    console.log('Owner: ' + owner)
 
-// Check the value of key 123
-var val = myContract.getValue(123)
-console.log('Value: ' + val)
+    // Check the value of key 123
+    var val = myContract.getValue(123)
+    console.log('Value: ' + val)
 
-// Check the balance of the contract
-var bal = web3api.getBalance(contractAddr)
-console.log('Contract balance: ' + bal)
+    // Check the balance of the contract
+    var bal = web3api.getBalance(contractAddr)
+    console.log('Contract balance: ' + bal)
+})
+
