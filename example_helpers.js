@@ -46,15 +46,15 @@ helpers.sendCreateContractTx(code, sendingAddr, txOptions, web3api, keystore, 'm
 
     // TX to register the key 123
     txOptions.nonce += 1
-    helpers.sendFunctionTx(abi, contractAddr, 'register', [123], sendingAddr, txOptions, web3api, keystore, 'mypassword')
+    helpers.sendFunctionTx(abi, contractAddr, 'register', [123], sendingAddr, txOptions, web3api, keystore, 'mypassword', function(){})
 
     // TX to set the value corresponding to key 123 to 456
     txOptions.nonce += 1
-    helpers.sendFunctionTx(abi, contractAddr, 'setValue', [123, 456], sendingAddr, txOptions, web3api, keystore, 'mypassword')
+    helpers.sendFunctionTx(abi, contractAddr, 'setValue', [123, 456], sendingAddr, txOptions, web3api, keystore, 'mypassword', function(){})
 
     // TX to send some value to the newly created contract
     txOptions.nonce += 1
-    helpers.sendValueTx(sendingAddr, contractAddr, 1000000000000, txOptions, web3api, keystore, 'mypassword')
+    helpers.sendValueTx(sendingAddr, contractAddr, 1000000000000, txOptions, web3api, keystore, 'mypassword', function(){})
 
     // Check that the owner is sendingAddr
     var blockNumber = web3.eth.blockNumber
