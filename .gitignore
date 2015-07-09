@@ -1,7 +1,1 @@
-# Dependency Directoryy
-node_modules
-
-npm-debug.log
-.DS_Store
-coverage/
-ethlightjs.min.js
+node_modules/

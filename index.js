@@ -6,4 +6,4 @@ module.exports = {
       web3api: require('./lib/blockchainapi/web3api'),
       blockappsapi: require('./lib/blockchainapi/blockappsapi')
   }
-}
+};

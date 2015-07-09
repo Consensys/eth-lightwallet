@@ -1,0 +1,717 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for ethereum.js/lib/web3/formatters.js</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../../prettify.css">
+    <link rel="stylesheet" href="../../../base.css">
+    <style type='text/css'>
+        div.coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class="header high">
+    <h1>Code coverage report for <span class="entity">ethereum.js/lib/web3/formatters.js</span></h1>
+    <h2>
+        Statements: <span class="metric">94.05% <small>(79 / 84)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">82.05% <small>(32 / 39)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">100% <small>(15 / 15)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">94.05% <small>(79 / 84)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"><a href="../../../index.html">All files</a> &#187; <a href="index.html">ethereum.js/lib/web3/</a> &#187; formatters.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">71</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">53</span>
+<span class="cline-any cline-yes">18</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">35</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">81</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">71</span>
+<span class="cline-any cline-yes">17</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">54</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">26</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">26</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">26</span>
+<span class="cline-any cline-yes">104</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">26</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">11</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">11</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">20</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">9</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">9</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">9</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
+    This file is part of ethereum.js.
+&nbsp;
+    ethereum.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+&nbsp;
+    ethereum.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+&nbsp;
+    You should have received a copy of the GNU Lesser General Public License
+    along with ethereum.js.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+*/
+/** 
+ * @file formatters.js
+ * @author Marek Kotewicz &lt;marek@ethdev.com&gt;
+ * @author Fabian Vogelsteller &lt;fabian@ethdev.com&gt;
+ * @date 2015
+ */
+&nbsp;
+var utils = require('../utils/utils');
+var config = require('../utils/config');
+&nbsp;
+/**
+ * Should the format output to a big number
+ *
+ * @method outputBigNumberFormatter
+ * @param {String|Number|BigNumber}
+ * @returns {BigNumber} object
+ */
+var outputBigNumberFormatter = function (number) {
+    return utils.toBigNumber(number);
+};
+&nbsp;
+var isPredefinedBlockNumber = function (blockNumber) {
+    return blockNumber === 'latest' || blockNumber === 'pending' || blockNumber === 'earliest';
+};
+&nbsp;
+var inputDefaultBlockNumberFormatter = function (blockNumber) {
+    if (blockNumber === undefined) {
+        return config.defaultBlock;
+    }
+    return inputBlockNumberFormatter(blockNumber);
+};
+&nbsp;
+var inputBlockNumberFormatter = function (blockNumber) {
+    if (blockNumber === undefined) {
+        return undefined;
+    } else if (isPredefinedBlockNumber(blockNumber)) {
+        return blockNumber;
+    }
+    return utils.toHex(blockNumber);
+};
+&nbsp;
+/**
+ * Formats the input of a transaction and converts all values to HEX
+ *
+ * @method inputTransactionFormatter
+ * @param {Object} transaction options
+ * @returns object
+*/
+var inputTransactionFormatter = function (options){
+&nbsp;
+    options.from = options.from || config.defaultAccount;
+&nbsp;
+    // make code -&gt; data
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (options.code) {
+<span class="cstat-no" title="statement not covered" >        options.data = options.code;</span>
+<span class="cstat-no" title="statement not covered" >        delete options.code;</span>
+    }
+&nbsp;
+    ['gasPrice', 'gas', 'value', 'nonce'].filter(function (key) {
+        return options[key] !== undefined;
+    }).forEach(function(key){
+        options[key] = utils.fromDecimal(options[key]);
+    });
+&nbsp;
+    return options; 
+};
+&nbsp;
+/**
+ * Formats the output of a transaction to its proper values
+ * 
+ * @method outputTransactionFormatter
+ * @param {Object} transaction
+ * @returns {Object} transaction
+*/
+var outputTransactionFormatter = function (tx){
+    if(tx.blockNumber !== null)
+        tx.blockNumber = utils.toDecimal(tx.blockNumber);
+    if(tx.transactionIndex !== null)
+        tx.transactionIndex = utils.toDecimal(tx.transactionIndex);
+    tx.nonce = utils.toDecimal(tx.nonce);
+    tx.gas = utils.toDecimal(tx.gas);
+    tx.gasPrice = utils.toBigNumber(tx.gasPrice);
+    tx.value = utils.toBigNumber(tx.value);
+    return tx;
+};
+&nbsp;
+/**
+ * Formats the output of a block to its proper values
+ *
+ * @method outputBlockFormatter
+ * @param {Object} block object 
+ * @returns {Object} block object
+*/
+var outputBlockFormatter = function(block) {
+&nbsp;
+    // transform to number
+    block.gasLimit = utils.toDecimal(block.gasLimit);
+    block.gasUsed = utils.toDecimal(block.gasUsed);
+    block.size = utils.toDecimal(block.size);
+    block.timestamp = utils.toDecimal(block.timestamp);
+    if(block.number !== null)
+        block.number = utils.toDecimal(block.number);
+&nbsp;
+    block.difficulty = utils.toBigNumber(block.difficulty);
+    block.totalDifficulty = utils.toBigNumber(block.totalDifficulty);
+&nbsp;
+    if (utils.isArray(block.transactions)) {
+        block.transactions.forEach(function(item){
+            if(!utils.isString(item))
+                return outputTransactionFormatter(item);
+        });
+    }
+&nbsp;
+    return block;
+};
+&nbsp;
+/**
+ * Formats the output of a log
+ * 
+ * @method outputLogFormatter
+ * @param {Object} log object
+ * @returns {Object} log
+*/
+var outputLogFormatter = function(log) {
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (log === null) { // 'pending' &amp;&amp; 'latest' filters are nulls
+<span class="cstat-no" title="statement not covered" >        return null;</span>
+    }
+&nbsp;
+    if(log.blockNumber !== null)
+        log.blockNumber = utils.toDecimal(log.blockNumber);
+    if(log.transactionIndex !== null)
+        log.transactionIndex = utils.toDecimal(log.transactionIndex);
+    if(log.logIndex !== null)
+        log.logIndex = utils.toDecimal(log.logIndex);
+&nbsp;
+    return log;
+};
+&nbsp;
+/**
+ * Formats the input of a whisper post and converts all values to HEX
+ *
+ * @method inputPostFormatter
+ * @param {Object} transaction object
+ * @returns {Object}
+*/
+var inputPostFormatter = function(post) {
+&nbsp;
+    post.payload = utils.toHex(post.payload);
+    post.ttl = utils.fromDecimal(post.ttl);
+    post.workToProve = utils.fromDecimal(post.workToProve);
+    post.priority = utils.fromDecimal(post.priority);
+&nbsp;
+    // fallback
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (!utils.isArray(post.topics)) {
+<span class="cstat-no" title="statement not covered" >        post.topics = post.topics ? [post.topics] : [];</span>
+    }
+&nbsp;
+    // format the following options
+    post.topics = post.topics.map(function(topic){
+        return utils.fromAscii(topic);
+    });
+&nbsp;
+    return post; 
+};
+&nbsp;
+/**
+ * Formats the output of a received post message
+ *
+ * @method outputPostFormatter
+ * @param {Object}
+ * @returns {Object}
+ */
+var outputPostFormatter = function(post){
+&nbsp;
+    post.expiry = utils.toDecimal(post.expiry);
+    post.sent = utils.toDecimal(post.sent);
+    post.ttl = utils.toDecimal(post.ttl);
+    post.workProved = utils.toDecimal(post.workProved);
+    post.payloadRaw = post.payload;
+    post.payload = utils.toAscii(post.payload);
+&nbsp;
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (utils.isJson(post.payload)) {
+        post.payload = JSON.parse(post.payload);
+    }
+&nbsp;
+    // format the following options
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (!post.topics) {
+<span class="cstat-no" title="statement not covered" >        post.topics = [];</span>
+    }
+    post.topics = post.topics.map(function(topic){
+        return utils.toAscii(topic);
+    });
+&nbsp;
+    return post;
+};
+&nbsp;
+module.exports = {
+    inputDefaultBlockNumberFormatter: inputDefaultBlockNumberFormatter,
+    inputBlockNumberFormatter: inputBlockNumberFormatter,
+    inputTransactionFormatter: inputTransactionFormatter,
+    inputPostFormatter: inputPostFormatter,
+    outputBigNumberFormatter: outputBigNumberFormatter,
+    outputTransactionFormatter: outputTransactionFormatter,
+    outputBlockFormatter: outputBlockFormatter,
+    outputLogFormatter: outputLogFormatter,
+    outputPostFormatter: outputPostFormatter
+};
+&nbsp;
+&nbsp;</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Jun 10 2015 12:15:37 GMT+0200 (CEST)</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

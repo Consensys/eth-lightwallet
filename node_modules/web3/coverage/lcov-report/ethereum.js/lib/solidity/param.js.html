@@ -1,0 +1,675 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for ethereum.js/lib/solidity/param.js</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../../prettify.css">
+    <link rel="stylesheet" href="../../../base.css">
+    <style type='text/css'>
+        div.coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class="header high">
+    <h1>Code coverage report for <span class="entity">ethereum.js/lib/solidity/param.js</span></h1>
+    <h2>
+        Statements: <span class="metric">100% <small>(48 / 48)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">88.89% <small>(16 / 18)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">100% <small>(17 / 17)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">100% <small>(48 / 48)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"><a href="../../../index.html">All files</a> &#187; <a href="index.html">ethereum.js/lib/solidity/</a> &#187; param.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">241</span>
+<span class="cline-any cline-yes">241</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">30</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">339</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">147</span>
+<span class="cline-any cline-yes">126</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">118</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">34</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">35</span>
+<span class="cline-any cline-yes">35</span>
+<span class="cline-any cline-yes">53</span>
+<span class="cline-any cline-yes">37</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">35</span>
+<span class="cline-any cline-yes">53</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">53</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">52</span>
+<span class="cline-any cline-yes">52</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
+    This file is part of ethereum.js.
+&nbsp;
+    ethereum.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+&nbsp;
+    ethereum.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+&nbsp;
+    You should have received a copy of the GNU Lesser General Public License
+    along with ethereum.js.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+*/
+/** 
+ * @file param.js
+ * @author Marek Kotewicz &lt;marek@ethdev.com&gt;
+ * @date 2015
+ */
+&nbsp;
+var utils = require('../utils/utils');
+&nbsp;
+/**
+ * SolidityParam object prototype.
+ * Should be used when encoding, decoding solidity bytes
+ */
+var SolidityParam = function (value, offset) {
+    this.value = value || <span class="branch-1 cbranch-no" title="branch not covered" >'';</span>
+    this.offset = offset; // offset in bytes
+};
+&nbsp;
+/**
+ * This method should be used to get length of params's dynamic part
+ * 
+ * @method dynamicPartLength
+ * @returns {Number} length of dynamic part (in bytes)
+ */
+SolidityParam.prototype.dynamicPartLength = function () {
+    return this.dynamicPart().length / 2;
+};
+&nbsp;
+/**
+ * This method should be used to create copy of solidity param with different offset
+ *
+ * @method withOffset
+ * @param {Number} offset length in bytes
+ * @returns {SolidityParam} new solidity param with applied offset
+ */
+SolidityParam.prototype.withOffset = function (offset) {
+    return new SolidityParam(this.value, offset);
+};
+&nbsp;
+/**
+ * This method should be used to combine solidity params together
+ * eg. when appending an array
+ *
+ * @method combine
+ * @param {SolidityParam} param with which we should combine
+ * @param {SolidityParam} result of combination
+ */
+SolidityParam.prototype.combine = function (param) {
+    return new SolidityParam(this.value + param.value); 
+};
+&nbsp;
+/**
+ * This method should be called to check if param has dynamic size.
+ * If it has, it returns true, otherwise false
+ *
+ * @method isDynamic
+ * @returns {Boolean}
+ */
+SolidityParam.prototype.isDynamic = function () {
+    return this.value.length &gt; 64 || this.offset !== undefined;
+};
+&nbsp;
+/**
+ * This method should be called to transform offset to bytes
+ *
+ * @method offsetAsBytes
+ * @returns {String} bytes representation of offset
+ */
+SolidityParam.prototype.offsetAsBytes = function () {
+    return !this.isDynamic() ? <span class="branch-0 cbranch-no" title="branch not covered" >'' </span>: utils.padLeft(utils.toTwosComplement(this.offset).toString(16), 64);
+};
+&nbsp;
+/**
+ * This method should be called to get static part of param
+ *
+ * @method staticPart
+ * @returns {String} offset if it is a dynamic param, otherwise value
+ */
+SolidityParam.prototype.staticPart = function () {
+    if (!this.isDynamic()) {
+        return this.value; 
+    } 
+    return this.offsetAsBytes();
+};
+&nbsp;
+/**
+ * This method should be called to get dynamic part of param
+ *
+ * @method dynamicPart
+ * @returns {String} returns a value if it is a dynamic param, otherwise empty string
+ */
+SolidityParam.prototype.dynamicPart = function () {
+    return this.isDynamic() ? this.value : '';
+};
+&nbsp;
+/**
+ * This method should be called to encode param
+ *
+ * @method encode
+ * @returns {String}
+ */
+SolidityParam.prototype.encode = function () {
+    return this.staticPart() + this.dynamicPart();
+};
+&nbsp;
+/**
+ * This method should be called to encode array of params
+ *
+ * @method encodeList
+ * @param {Array[SolidityParam]} params
+ * @returns {String}
+ */
+SolidityParam.encodeList = function (params) {
+    
+    // updating offsets
+    var totalOffset = params.length * 32;
+    var offsetParams = params.map(function (param) {
+        if (!param.isDynamic()) {
+            return param;
+        }
+        var offset = totalOffset;
+        totalOffset += param.dynamicPartLength();
+        return param.withOffset(offset);
+    });
+&nbsp;
+    // encode everything!
+    return offsetParams.reduce(function (result, param) {
+        return result + param.dynamicPart();
+    }, offsetParams.reduce(function (result, param) {
+        return result + param.staticPart();
+    }, ''));
+};
+&nbsp;
+/**
+ * This method should be used to decode plain (static) solidity param at given index
+ *
+ * @method decodeParam
+ * @param {String} bytes
+ * @param {Number} index
+ * @returns {SolidityParam}
+ */
+SolidityParam.decodeParam = function (bytes, index) {
+    index = index || 0;
+    return new SolidityParam(bytes.substr(index * 64, 64)); 
+};
+&nbsp;
+/**
+ * This method should be called to get offset value from bytes at given index
+ *
+ * @method getOffset
+ * @param {String} bytes
+ * @param {Number} index
+ * @returns {Number} offset as number
+ */
+var getOffset = function (bytes, index) {
+    // we can do this cause offset is rather small
+    return parseInt('0x' + bytes.substr(index * 64, 64));
+};
+&nbsp;
+/**
+ * This method should be called to decode solidity bytes param at given index
+ *
+ * @method decodeBytes
+ * @param {String} bytes
+ * @param {Number} index
+ * @returns {SolidityParam}
+ */
+SolidityParam.decodeBytes = function (bytes, index) {
+    index = index || 0;
+    //TODO add support for strings longer than 32 bytes
+    //var length = parseInt('0x' + bytes.substr(offset * 64, 64));
+&nbsp;
+    var offset = getOffset(bytes, index);
+&nbsp;
+    // 2 * , cause we also parse length
+    return new SolidityParam(bytes.substr(offset * 2, 2 * 64), 0);
+};
+&nbsp;
+/**
+ * This method should be used to decode solidity array at given index
+ *
+ * @method decodeArray
+ * @param {String} bytes
+ * @param {Number} index
+ * @returns {SolidityParam}
+ */
+SolidityParam.decodeArray = function (bytes, index) {
+    index = index || 0;
+    var offset = getOffset(bytes, index);
+    var length = parseInt('0x' + bytes.substr(offset * 2, 64));
+    return new SolidityParam(bytes.substr(offset * 2, (length + 1) * 64), 0);
+};
+&nbsp;
+module.exports = SolidityParam;
+&nbsp;
+&nbsp;</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Jun 10 2015 12:15:37 GMT+0200 (CEST)</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

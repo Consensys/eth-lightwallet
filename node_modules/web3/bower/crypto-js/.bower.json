@@ -1,0 +1,44 @@
+{
+  "name": "crypto-js",
+  "version": "3.1.4",
+  "description": "Modularized port of googlecode project crypto-js.",
+  "homepage": "http://github.com/evanvosberg/crypto-js",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/evanvosberg/crypto-js.git"
+  },
+  "keywords": [
+    "security",
+    "crypto",
+    "Hash",
+    "MD5",
+    "SHA1",
+    "SHA-1",
+    "SHA256",
+    "SHA-256",
+    "RC4",
+    "Rabbit",
+    "AES",
+    "DES",
+    "PBKDF2",
+    "HMAC",
+    "OFB",
+    "CFB",
+    "CTR",
+    "CBC",
+    "Base64"
+  ],
+  "main": "index.js",
+  "dependencies": {},
+  "ignore": [],
+  "_release": "3.1.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "3.1.4",
+    "commit": "9cc7f829741eddabe693a704f10f972fb9c0d5a6"
+  },
+  "_source": "git://github.com/evanvosberg/crypto-js.git",
+  "_target": "~3.1.4",
+  "_originalSource": "crypto-js",
+  "_direct": true
+}

@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for ethereum.js/lib/web3/event.js</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../../prettify.css">
+    <link rel="stylesheet" href="../../../base.css">
+    <style type='text/css'>
+        div.coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class="header high">
+    <h1>Code coverage report for <span class="entity">ethereum.js/lib/web3/event.js</span></h1>
+    <h2>
+        Statements: <span class="metric">100% <small>(71 / 71)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">90.91% <small>(20 / 22)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">100% <small>(18 / 18)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">100% <small>(70 / 70)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"><a href="../../../index.html">All files</a> &#187; <a href="index.html">ethereum.js/lib/web3/</a> &#187; event.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">29</span>
+<span class="cline-any cline-yes">29</span>
+<span class="cline-any cline-yes">29</span>
+<span class="cline-any cline-yes">29</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">34</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">22</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">20</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">17</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-yes">17</span>
+<span class="cline-any cline-yes">17</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
+    This file is part of ethereum.js.
+&nbsp;
+    ethereum.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+&nbsp;
+    ethereum.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+&nbsp;
+    You should have received a copy of the GNU Lesser General Public License
+    along with ethereum.js.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+*/
+/** 
+ * @file event.js
+ * @author Marek Kotewicz &lt;marek@ethdev.com&gt;
+ * @date 2014
+ */
+&nbsp;
+var utils = require('../utils/utils');
+var coder = require('../solidity/coder');
+var web3 = require('../web3');
+var formatters = require('./formatters');
+var sha3 = require('../utils/sha3');
+&nbsp;
+/**
+ * This prototype should be used to create event filters
+ */
+var SolidityEvent = function (json, address) {
+    this._params = json.inputs;
+    this._name = utils.transformToFullName(json);
+    this._address = address;
+    this._anonymous = json.anonymous;
+};
+&nbsp;
+/**
+ * Should be used to get filtered param types
+ *
+ * @method types
+ * @param {Bool} decide if returned typed should be indexed
+ * @return {Array} array of types
+ */
+SolidityEvent.prototype.types = function (indexed) {
+    return this._params.filter(function (i) {
+        return i.indexed === indexed;
+    }).map(function (i) {
+        return i.type;
+    });
+};
+&nbsp;
+/**
+ * Should be used to get event display name
+ *
+ * @method displayName
+ * @return {String} event display name
+ */
+SolidityEvent.prototype.displayName = function () {
+    return utils.extractDisplayName(this._name);
+};
+&nbsp;
+/**
+ * Should be used to get event type name
+ *
+ * @method typeName
+ * @return {String} event type name
+ */
+SolidityEvent.prototype.typeName = function () {
+    return utils.extractTypeName(this._name);
+};
+&nbsp;
+/**
+ * Should be used to get event signature
+ *
+ * @method signature
+ * @return {String} event signature
+ */
+SolidityEvent.prototype.signature = function () {
+    return sha3(this._name);
+};
+&nbsp;
+/**
+ * Should be used to encode indexed params and options to one final object
+ * 
+ * @method encode
+ * @param {Object} indexed
+ * @param {Object} options
+ * @return {Object} everything combined together and encoded
+ */
+SolidityEvent.prototype.encode = function (indexed, options) {
+    indexed = indexed || <span class="branch-1 cbranch-no" title="branch not covered" >{};</span>
+    options = options || {};
+    var result = {};
+&nbsp;
+    ['fromBlock', 'toBlock'].filter(function (f) {
+        return options[f] !== undefined;
+    }).forEach(function (f) {
+        result[f] = formatters.inputBlockNumberFormatter(options[f]);
+    });
+&nbsp;
+    result.topics = [];
+&nbsp;
+    if (!this._anonymous) {
+        result.address = this._address;
+        result.topics.push('0x' + this.signature());
+    }
+&nbsp;
+    var indexedTopics = this._params.filter(function (i) {
+        return i.indexed === true;
+    }).map(function (i) {
+        var value = indexed[i.name];
+        if (value === undefined || value === null) {
+            return null;
+        }
+        
+        if (utils.isArray(value)) {
+            return value.map(function (v) {
+                return '0x' + coder.encodeParam(i.type, v);
+            });
+        }
+        return '0x' + coder.encodeParam(i.type, value);
+    });
+&nbsp;
+    result.topics = result.topics.concat(indexedTopics);
+&nbsp;
+    return result;
+};
+&nbsp;
+/**
+ * Should be used to decode indexed params and options
+ *
+ * @method decode
+ * @param {Object} data
+ * @return {Object} result object with decoded indexed &amp;&amp; not indexed params
+ */
+SolidityEvent.prototype.decode = function (data) {
+ 
+    data.data = data.data || '';
+    data.topics = data.topics || [];
+&nbsp;
+    var argTopics = this._anonymous ? data.topics : data.topics.slice(1);
+    var indexedData = argTopics.map(function (topics) { return topics.slice(2); }).join("");
+    var indexedParams = coder.decodeParams(this.types(true), indexedData); 
+&nbsp;
+    var notIndexedData = data.data.slice(2);
+    var notIndexedParams = coder.decodeParams(this.types(false), notIndexedData);
+    
+    var result = formatters.outputLogFormatter(data);
+    result.event = this.displayName();
+    result.address = data.address;
+&nbsp;
+    result.args = this._params.reduce(function (acc, current) {
+        acc[current.name] = current.indexed ? indexedParams.shift() : notIndexedParams.shift();
+        return acc;
+    }, {});
+&nbsp;
+    delete result.data;
+    delete result.topics;
+&nbsp;
+    return result;
+};
+&nbsp;
+/**
+ * Should be used to create new filter object from event
+ *
+ * @method execute
+ * @param {Object} indexed
+ * @param {Object} options
+ * @return {Object} filter object
+ */
+SolidityEvent.prototype.execute = function (indexed, options) {
+    var o = this.encode(indexed, options);
+    var formatter = this.decode.bind(this);
+    return web3.eth.filter(o, undefined, undefined, formatter);
+};
+&nbsp;
+/**
+ * Should be used to attach event to contract object
+ *
+ * @method attachToContract
+ * @param {Contract}
+ */
+SolidityEvent.prototype.attachToContract = function (contract) {
+    var execute = this.execute.bind(this);
+    var displayName = this.displayName();
+    <span class="missing-if-branch" title="else path not taken" >E</span>if (!contract[displayName]) {
+        contract[displayName] = execute;
+    }
+    contract[displayName][this.typeName()] = this.execute.bind(this, contract);
+};
+&nbsp;
+module.exports = SolidityEvent;
+&nbsp;
+&nbsp;</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Jun 10 2015 12:15:37 GMT+0200 (CEST)</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

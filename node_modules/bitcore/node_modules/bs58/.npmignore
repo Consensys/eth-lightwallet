@@ -1,0 +1,5 @@
+.gitignore
+test/
+.DS_Store
+Makefile
+coverage/
