@@ -25,7 +25,7 @@ describe("Keystore", function() {
     it("returns keystore with an encrypted seed set when give mnemonic and password", function() {
       var ks = new keyStore(fixtures.valid[0].mnSeed, fixtures.valid[0].password)
       expect(ks.encSeed).to.not.equal(undefined);
-      expect(keyStore._decryptString(ks.encSeed, fixtures.valid[0].password)).to.equal(fixtures.valid[0].mnSeed);
+      expect(keyStore._decryptString(ks.encSeed, ks.generateEncKey(fixtures.valid[0].password))).to.equal(fixtures.valid[0].mnSeed);
     });
 
     it("throws error if invalid mnemonic is given", function() {
@@ -187,7 +187,7 @@ describe("Keystore", function() {
 
       expect(ks.addresses).to.include(fixture.address)
 
-      var decFromKS = keyStore._decryptKey(ks.encPrivKeys[fixture.address], fixture.password)
+      var decFromKS = keyStore._decryptKey(ks.encPrivKeys[fixture.address], ks.generateEncKey(fixture.password))
       expect(decFromKS).to.equal(fixture.HDPrivKey)
     });
 
