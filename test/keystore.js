@@ -97,9 +97,7 @@ describe("Keystore", function() {
       var origKS = new keyStore(fixtures.valid[0].mnSeed, fixtures.valid[0].password)
 
       //Add Keys
-      for (i = 0; i < 20; i++) {
-        origKS.generateNewAddress(fixtures.valid[0].password)
-      }
+      origKS.generateNewAddress(fixtures.valid[0].password, 20)
 
       var serKS = origKS.serialize()
       var deserKS = keyStore.deserialize(serKS)
