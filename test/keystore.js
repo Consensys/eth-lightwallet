@@ -156,42 +156,6 @@ describe("Keystore", function() {
       });
   });
     
-
-  describe("_generatePrivKey", function() {
-
-    var ks = new keyStore(fixtures.valid[0].mnSeed, fixtures.valid[0].password)
-
-    // Add children key sets to test this more completely
-    // fixtures.valid.forEach(function (f) {
-    //   it('returns next private key in hd wallet with hdIndex ' + f.HDIndex, function() {
-    //      var pk = ks._generatePrivKey(fixtures.valid[0].password)
-    //      expect(pk).to.equal(fixtures.valid[0].HDPrivKey)
-    //   });
-    // })
-
-    it('returns next private key in hd wallet with hdIndex 0', function() {
-        var pk = ks._generatePrivKey(fixtures.valid[0].password)
-        expect(pk).to.equal(fixtures.valid[0].HDPrivKey)
-
-    });
-
-  });
-
-  describe("_addKeyPair", function() {
-    var fixture = fixtures.valid[0]
-    it('adds both private key and public key pair to keystore obj', function() {
-      var ks = new keyStore(fixture.mnSeed, fixture.password)
-      ks._addKeyPair(fixture.HDPrivKey, fixture.address, fixture.password)
-
-      expect(ks.addresses).to.include(fixture.address)
-
-      var decFromKS = keyStore._decryptKey(ks.encPrivKeys[fixture.address], ks.generateEncKey(fixture.password))
-      expect(decFromKS).to.equal(fixture.HDPrivKey)
-    });
-
-    //loop and add each, at each check if the priv/pub key is in keystore now
-  });
-
   describe("signTx", function() {
 
   });
