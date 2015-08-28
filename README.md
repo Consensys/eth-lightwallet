@@ -1,6 +1,12 @@
-# EthLightJs
+# LightWallet
 
 A minimal ethereum javascript wallet.
+
+## About
+
+LightWallet is a HD wallet that can store your private keys encrypted in the browser to allow you to run Ethereum dapps even if you're not running a local Ethereum node.
+
+LightWallet is primarily intended to be a signing provider for the [Hooked Web3 provider](https://github.com/ConsenSys/hooked-web3 provider) through the `keystore` module. Moreover, the `txutils` functions can be used to construct transactions when offline, for use in e.g. air-gapped coldwallet implementations.
 
 ## Get Started
 
@@ -21,16 +27,40 @@ This will create the file `ethlightjs.min.js` that can be included in an HTML pa
 </html>
 ```
 
+The file `ethlightjs` exposes the global object `ethlightjs` to the browser which has the two main modules `ethlightjs.keystore` and `ethlightjs.txutils`.
+
 To build a node package:
 
 ```
 npm install path/to/LightWallet
 ```
 
-To create a keystore, and sign and send a transaction:
+Sample usage:
 
+```
+// generate a new BIP32 12-word seed
+var secretSeed = ethlightjs.keystore.generateRandomSeed();
 
+// the seed is stored encrypted by a user-defined password
+var password = prompt('Enter password for encryption', 'password');
+var ks = ethlightjs.keystore(secretSeed, password);
 
+// generate five new address/private key pairs
+// the corresponding private keys are also encrypted
+ks.generateNewAddress(password, 5);
+var addr = ks.getAddresses();
+
+// Create a custom passwordProvider to prompt the user to enter their
+// password whenever the hooked web3 provider issues a sendTransaction
+// call.
+ks.passwordProvider = function (callback) {
+  var pw = prompt("Please enter password", "Password");
+  callback(null, pw);
+};
+
+// Now set ks as transaction_signer in the hooked web3 provider
+// and you can start using web3 using the keys/addresses in ks!
+```
 
 ## `keystore` Function definitions
 
@@ -53,9 +83,9 @@ Constructor of the keystore object. The seed `seed` is encrypted with `password`
 
 Generates a string consisting of a random 12-word seed and returns it.
 
-### `keystore.generateNewAddress(password)`
+### `keystore.generateNewAddress(password [, num])`
 
-Generates a new address/private key pair from the seed and stores them in the keystore. The private key is stored encrypted with the users password.
+Generates a new address/private key pair from the seed and stores them in the keystore. The private key is stored encrypted with the users password. If the integer `n` is supplied a batch of `n` address/keypairs is generated.
 
 ### `keystore.deserialize(serialized_keystore)`
 
@@ -148,39 +178,6 @@ Creates a transaction sending value to `txObject.to`.
 #### Output
 
 RLP-encoded hex string defining the transaction.
-
-## `helpers` Function definitions
-
-These are helper functions for packaging up some of the functionality in the `keystore` and `txutils`. They create, sign and send a transaction using `txutils` and `keystore`.
-
-They use an object `blockchainApi` that define the following functions:
-
-* `blockchainApi.getNonce(address)`: Returns the nonce of an address
-* `blockchainApi.getBalance(address)`: Returns the balance of an address
-* `blockchainApi.injectTransaction(rawTx)`: Injects a signed transaction into the network
-
-We include two APIs: `web3api` and `blockappsapi` with predefined functions calling either an ethereum client or the blockapps backend.
-
-### `helpers.sendFunctionTx(abi, contractAddr, functionName, args, fromAddr, txObject, blockchainApi, keystore, password)`
-
-Creates, signs, and sends a transaction calling a function `functionName` conforming to `abi` of a contract at address `contractAddr` with arguments `args`. Returns the hash of the transaction. The `abi` is a JSON object specifying the ABI of the contract.
-
-The object `txObject` contains the following optional arguments:
-
-* `txObject.gasLimit`: Gas limit
-* `txObject.gasPrice`: Gas price
-* `txObject.value`: Value to send in the function call
-* `txObject.nonce`: Nonce of `fromAddress`
-
-If the arguments are not provided default values will be used.
-
-### `helpers.sendCreateContractTx(bytecode, fromAddr, txObject, blockchainApi, keystore, password)`
-
-Signs and sends a transaction creating the contract with compiled code `bytecode`. The object `txObject` contains optional arguments as described in the `helpers.sendFunctionTx()` section. Returns the address of the newly created contract.
-
-### `helpers.sendValueTx(fromAddr, toAddr, value, txObject, blockchainApi, keystore, password)`
-
-Signs and send a transaction sending `value` wei from `fromAddr` to `toAddr`. The object `txObject` contains the optional items in the `helpers.sendFunctionTx()` section, except `txObject.value`.
 
 ## Examples
 

@@ -1,6 +1,7 @@
 var expect = require('chai').expect
 var keyStore = require('../lib/keystore')
 var fixtures = require('./fixtures/keystore')
+var Transaction = require('ethereumjs-tx');
 
 describe("Keystore", function() {
 
@@ -157,7 +158,65 @@ describe("Keystore", function() {
   });
     
   describe("signTx", function() {
+    it('signs a transaction deterministically', function() {
+      var pw = fixtures.valid[0].password
+      var ks = new keyStore(fixtures.valid[0].mnSeed, pw)
+      var addr = ks.generateNewAddress(pw)
+      expect(addr).to.equal(fixtures.valid[0].ethjsTxParams.from)
+      
+      var tx = new Transaction(fixtures.valid[0].ethjsTxParams)
+      var rawTx = tx.serialize().toString('hex')
+      expect(rawTx).to.equal(fixtures.valid[0].rawUnsignedTx)
+      
+      var signedTx = ks.signTx(rawTx, pw, addr);
+      expect(signedTx).to.equal(fixtures.valid[0].rawSignedTx)
+    });
+  });
+
+  describe("hooked web3-provider", function() {
+
+    it('implements hasAddress() correctly', function() {
+      var pw = fixtures.valid[0].password
+      var ks = new keyStore(fixtures.valid[0].mnSeed, pw)
+      ks.generateNewAddress(pw, 5)
+      var addr = ks.getAddresses;
+
+      for (var i=0; i<addr.length; i++) {
+        ks.hasAddress(addr[i], function (err, hasAddr) {
+          expect(hasAddr).to.equal(true)
+        })
+        ks.hasAddress('0x' + addr[i], function (err, hasAddr) {
+          expect(hasAddr).to.equal(true)
+        })
+      }
+
+      ks.hasAddress('abcdef0123456', function (err, hasAddr) {
+        expect(hasAddr).to.equal(false)
+      })
+
+      ks.hasAddress('0xabcdef0123456', function (err, hasAddr) {
+        expect(hasAddr).to.equal(false)
+      })
+    });
+
+    it('implements signTransaction correctly', function() {
+      var pw = fixtures.valid[0].password
+      var ks = new keyStore(fixtures.valid[0].mnSeed, pw)
+      var addr = ks.generateNewAddress(pw)
+
+      // Trivial passwordProvider
+      ks.passwordProvider = function(callback) {callback(null, pw)}
+
+      var txParams = fixtures.valid[0].web3TxParams
+      ks.signTransaction(txParams, function (err, signedTx) {
+        expect(signedTx.slice(2)).to.equal(fixtures.valid[0].rawSignedTx)
+      });
+
+    });
 
   });
+    
+
+
 
 });
