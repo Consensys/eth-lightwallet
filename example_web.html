@@ -1,52 +1,58 @@
 <html>
   <body>
-    <script src="ethlightjs.min.js"></script>
+    <script src="ethlightjs.js"></script>
+    <script type="text/javascript" src="node_modules/hooked-web3-provider/build/hooked-web3-provider.js"></script>
+    <script type="text/javascript" src="node_modules/web3/dist/web3.js"></script>
     <script>
-      var helpers = ethlightjs.helpers
-
-      //var web3 = web3api.getWeb3()
       var password = 'mypassword'
-      var keystore = undefined
       var addresses = undefined
-      var api = undefined
+      console.log(web3.version)
 
-      function setApi(){
-        var sel = document.getElementById('backend').value
-        if(sel == "blockapps") {
-           api = new ethlightjs.blockchainapi.blockappsapi("http://stablenet.blockapps.net")
-	}
-        else {
-           api = new ethlightjs.blockchainapi.web3api("http://104.236.65.136:8545")
-	}
+      function setWeb3Provider(keystore) {
+        var web3Provider = new HookedWeb3Provider({
+          host: "http://104.236.65.136:8545",
+          transaction_signer: keystore
+        });
+        
+        web3.setProvider(web3Provider);
+
       }
 
       function checkNonce(){
            var addr = document.getElementById('sendFrom').value
-           var nonce = api.getNonce(addr, function(err, nonce){
+           var nonce = web3.eth.getTransactionCount(addr, function(err, nonce){
                document.getElementById('nonce').value = nonce
+        })
+      }
+
+      function getBalances() {
+
+        web3.eth.getBalance(addresses[0], function(err, bal){
+          document.getElementById('addr0').innerHTML = addresses[0] + ' (' + (bal / 1.0e18) + ' ETH)'
+        })
+
+        web3.eth.getBalance(addresses[1], function(err, bal){
+          document.getElementById('addr1').innerHTML = addresses[1] + ' (' + (bal / 1.0e18) + ' ETH)'
+        })
+
+        web3.eth.getBalance(addresses[2], function(err, bal){
+          document.getElementById('addr2').innerHTML = addresses[2] + ' (' + (bal / 1.0e18) + ' ETH)'
         })
       }
 
       function setSeed() {
         var seed = document.getElementById('seed').value
-        keystore = new ethlightjs.keystore(seed, password)
+        var keystore = new ethlightjs.keystore(seed, password)
 
-        var addr0 = keystore.generateNewAddress(password)
-        var bal0 = api.getBalance(addr0, function(err, bal){
-          document.getElementById('addr0').innerHTML = addr0 + ' (' + (bal / 1.0e18) + ' ETH)'
-        })
-
-        var addr1 = keystore.generateNewAddress(password)
-        var bal1 = api.getBalance(addr1, function(err, bal){
-          document.getElementById('addr1').innerHTML = addr1 + ' (' + (bal / 1.0e18) + ' ETH)'
-        })        
-        
-        var addr2 = keystore.generateNewAddress(password)
-        var bal2 = api.getBalance(addr2, function(err, bal){
-          document.getElementById('addr2').innerHTML = addr2 + ' (' + (bal / 1.0e18) + ' ETH)'
-        })
+        var numAddr = 3
+        keystore.generateNewAddress(password, numAddr)
         addresses = keystore.getAddresses()
+        keystore.passwordProvider = function (callback) {callback(null, password)}
+        setWeb3Provider(keystore);
+        
+        getBalances();
       }
+
 
       function randomSeed() {
         var randomSeed = ethlightjs.keystore.generateRandomSeed()
@@ -54,23 +60,29 @@
       }
 
       function sendEth() {
-        var fromAddr = document.getElementById('sendFrom').value
-        var toAddr = document.getElementById('sendTo').value
+        var fromAddr = '0x' + document.getElementById('sendFrom').value
+        var toAddr = '0x' + document.getElementById('sendTo').value
         var valueEth = document.getElementById('sendValueAmount').value
         var value = parseFloat(valueEth)*1.0e18
         var accNonce = parseInt(document.getElementById('nonce').value)
-        txObj = {gasLimit: 30000, nonce: accNonce}
-        helpers.sendValueTx(fromAddr, toAddr, value, txObj, api, keystore, password, function (err, data) {console.log(data)})
+        var gasPrice = 10000000000000
+        var gas = 3141592
+        web3.eth.sendTransaction({from: fromAddr, to: toAddr, value: value, gasPrice: gasPrice, gas: gas, nonce: accNonce}, function (err, txhash) {
+          console.log('error: ' + err)
+          console.log('txhash: ' + txhash)
+        })
       }
 
       function createContract() {
-        var fromAddr = document.getElementById('sendFrom').value
-        var bytecode = document.getElementById('bytecode').value
-        var valueEth = document.getElementById('sendValueAmount').value
+        var fromAddr = '0x' + document.getElementById('sendFrom').value
+        var bytecode = '0x' + document.getElementById('bytecode').value
         var accNonce = parseInt(document.getElementById('nonce').value)
-        txObj = {gasLimit: 3000000, gasPrice: 12000000000000, nonce: accNonce}
-        helpers.sendCreateContractTx(bytecode, fromAddr, txObj, api, keystore, password, function (err, contractAddr) { 
-	    document.getElementById('contractAddr').value = contractAddr 
+        web3.eth.sendTransaction({gas: 3141592, gasPrice: 10000000000000, nonce: accNonce, from: fromAddr, data: bytecode}, function (err, txhash) {
+          console.log(txhash)
+          // The web3 version in dist is old! Doesn't have getTransactionReceipt function
+          //web3.eth.getTransactionReceipt(txhash.slice(2), function (err, receipt) {
+	    document.getElementById('contractAddr').value = "Couldn't get value"          
+          })
 	})
       }
 
@@ -122,6 +134,7 @@
     <h2>Seed</h2>
     <div><input type="text" id="seed" value="unhappy nerve cancel reject october fix vital pulse cash behind curious bicycle"></input><button onclick="setSeed()">Set Seed</button><button onclick="randomSeed()">Random Seed</button></div>
     <h2>Addresses</h2>
+    <button onclick="getBalances()">Refresh</button>
     <div id="addr0"></div>
     <div id="addr1"></div>
     <div id="addr2"></div>
