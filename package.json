@@ -48,7 +48,8 @@
     "ethereumjs-tx": "^0.4.0",
     "ethereumjs-util": "^1.2.0",
     "bignumber.js": "debris/bignumber.js#master",
-    "xhr2" : "*"
+    "xhr2" : "*",
+    "hooked-web3-provider" : "^0.0.3"
   },
   "devDependencies": {
     "browserify": "^10.2.4",

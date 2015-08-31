@@ -6,11 +6,13 @@
     <script>
       var password = 'mypassword'
       var addresses = undefined
+      var contract = undefined
       console.log(web3.version)
 
       function setWeb3Provider(keystore) {
         var web3Provider = new HookedWeb3Provider({
           host: "http://104.236.65.136:8545",
+          //host: "http://localhost:8545",
           transaction_signer: keystore
         });
         
@@ -28,15 +30,21 @@
       function getBalances() {
 
         web3.eth.getBalance(addresses[0], function(err, bal){
-          document.getElementById('addr0').innerHTML = addresses[0] + ' (' + (bal / 1.0e18) + ' ETH)'
+          web3.eth.getTransactionCount(addresses[0], function(err, nonce) {
+          document.getElementById('addr0').innerHTML = addresses[0] + ' (Bal: ' + (bal / 1.0e18) + ' ETH, Nonce: ' + nonce + ')'
+          })
         })
 
         web3.eth.getBalance(addresses[1], function(err, bal){
-          document.getElementById('addr1').innerHTML = addresses[1] + ' (' + (bal / 1.0e18) + ' ETH)'
+          web3.eth.getTransactionCount(addresses[1], function(err, nonce) {
+          document.getElementById('addr1').innerHTML = addresses[1] + ' (Bal: ' + (bal / 1.0e18) + ' ETH, Nonce: ' + nonce + ')'
+          })
         })
 
         web3.eth.getBalance(addresses[2], function(err, bal){
-          document.getElementById('addr2').innerHTML = addresses[2] + ' (' + (bal / 1.0e18) + ' ETH)'
+          web3.eth.getTransactionCount(addresses[2], function(err, nonce) {
+          document.getElementById('addr2').innerHTML = addresses[2] + ' (Bal: ' + (bal / 1.0e18) + ' ETH, Nonce: ' + nonce + ')'
+          })
         })
       }
 
@@ -65,8 +73,8 @@
         var valueEth = document.getElementById('sendValueAmount').value
         var value = parseFloat(valueEth)*1.0e18
         var accNonce = parseInt(document.getElementById('nonce').value)
-        var gasPrice = 10000000000000
-        var gas = 3141592
+        var gasPrice = 1000000000000
+        var gas = 50000
         web3.eth.sendTransaction({from: fromAddr, to: toAddr, value: value, gasPrice: gasPrice, gas: gas, nonce: accNonce}, function (err, txhash) {
           console.log('error: ' + err)
           console.log('txhash: ' + txhash)
@@ -77,60 +85,54 @@
         var fromAddr = '0x' + document.getElementById('sendFrom').value
         var bytecode = '0x' + document.getElementById('bytecode').value
         var accNonce = parseInt(document.getElementById('nonce').value)
-        web3.eth.sendTransaction({gas: 3141592, gasPrice: 10000000000000, nonce: accNonce, from: fromAddr, data: bytecode}, function (err, txhash) {
-          console.log(txhash)
-          // The web3 version in dist is old! Doesn't have getTransactionReceipt function
-          //web3.eth.getTransactionReceipt(txhash.slice(2), function (err, receipt) {
-	    document.getElementById('contractAddr').value = "Couldn't get value"          
-          //})
-	})
+        var abi = JSON.parse(document.getElementById('abi').value)
+        var gasPrice = 1000000000000
+        var gas = 300000
+        web3.eth.contract(abi).new({from: fromAddr, data: bytecode, gas: gas, gasPrice: gasPrice}, function (err, c) {
+          if(err) {
+            console.error(err);
+            return;
+            
+            // callback fires twice, we only want the second call when the contract is deployed
+          } else if(c.address){
+            console.log(c)
+            contract = c;
+	    document.getElementById('contractAddr').value = contract.address;
+          }
+        });        
       }
 
       function registerKey() {
-        var abi = JSON.parse(document.getElementById('abi').value)
         var key = parseInt(document.getElementById('keyToRegister').value)
-        var contractAddr = document.getElementById('functionContractAddr').value
-        var sendingAddr = document.getElementById('sendFrom').value
+        var fromAddr = '0x' + document.getElementById('sendFrom').value
         var accNonce = parseInt(document.getElementById('nonce').value)
-        txObj = {gasLimit: 3000000, gasPrice: 12000000000000, nonce: accNonce}
-        helpers.sendFunctionTx(abi, contractAddr, 'register', [key], sendingAddr, txObj, api, keystore, password, function (err, data) {console.log(data)})
+        contract.register(key, {from: fromAddr, gas: 300000, gasPrice: 1000000000000, nonce: accNonce}, function (err, txhash) {
+          console.log(txhash);
+        })
       }
 
       function setValue() {
-        var abi = JSON.parse(document.getElementById('abi').value)
         var key = parseInt(document.getElementById('keyToSet').value)
-        var value = parseInt(document.getElementById('valueToSet').value)
-        var contractAddr = document.getElementById('functionContractAddr').value
-        var sendingAddr = document.getElementById('sendFrom').value
+        var val = parseInt(document.getElementById('valueToSet').value)
+        var fromAddr = '0x' + document.getElementById('sendFrom').value
         var accNonce = parseInt(document.getElementById('nonce').value)
-        txObj = {gasLimit: 3000000, gasPrice: 12000000000000, nonce: accNonce}
-        helpers.sendFunctionTx(abi, contractAddr, 'setValue', [key, value], sendingAddr, txObj, api, keystore, password, function (err, data) {console.log(data)})
+        contract.setValue(key, val, {from: fromAddr, gas: 300000, gasPrice: 1000000000000, nonce: accNonce}, function (err, txhash) {
+          console.log(txhash);
+        })
       }
 
       function getContractData() {
-        if(document.getElementById('backend').value == "web3"){
-	    console.log("In web3 getter")
-            var abi = JSON.parse(document.getElementById('abi').value)
-            var contractAddr = document.getElementById('functionContractAddr').value
-            var key = parseInt(document.getElementById('keyToQuery').value)
-            var myContract = web3.eth.contract(abi).at(contractAddr)
-            var owner = myContract.getOwner(123)
-            var val = myContract.getValue(123)    
+
+        var key = parseInt(document.getElementById('keyToQuery').value)
+        contract.getOwner(key, function (err, owner) {
+          contract.getValue(key, function (err, val) {
             document.getElementById('keyOwner').innerHTML = 'Key Owner: ' + (owner.slice(2))
             document.getElementById('keyValue').innerHTML = 'Key Value: ' + val
-        }
-        if(document.getElementById('backend').value == "blockapps"){
-	    console.log("In blockapps getter")
-          var contractAddr = document.getElementById('functionContractAddr').value
-          api.getStorage(contractAddr, function(err, val){
-            document.getElementById('keyValue').innerHTML = 'Key Value: ' + val
           })
-        }
+        })
       }
     </script>
     <h1>LightWallet</h1>
-    <h2>Select backend</h2>
-    <div>Backend: <select onchange="setApi()" id="backend"><option value="notSet">Set Provider</option><option value="web3">web3</option><option value="blockapps">blockapps.net</option></select></div>
     <h2>Seed</h2>
     <div><input type="text" id="seed" value="unhappy nerve cancel reject october fix vital pulse cash behind curious bicycle"></input><button onclick="setSeed()">Set Seed</button><button onclick="randomSeed()">Random Seed</button></div>
     <h2>Addresses</h2>
@@ -149,11 +151,10 @@
     <div><button onclick="sendEth()">Send Ether</button></div>
     <h2>Create Contract</h2>
     <div>Bytecode: <input id="bytecode" value="6060604052610381806100136000396000f30060606040526000357c0100000000000000000000000000000000000000000000000000000000900480630ff4c9161461006557806329507f731461008c5780637b8d56e3146100a5578063c41a360a146100be578063f207564e146100fb57610063565b005b610076600480359060200150610308565b6040518082815260200191505060405180910390f35b6100a36004803590602001803590602001506101b3565b005b6100bc60048035906020018035906020015061026e565b005b6100cf600480359060200150610336565b604051808273ffffffffffffffffffffffffffffffffffffffff16815260200191505060405180910390f35b61010c60048035906020015061010e565b005b60006000600050600083815260200190815260200160002060005060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1614156101af57336000600050600083815260200190815260200160002060005060000160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908302179055505b5b50565b3373ffffffffffffffffffffffffffffffffffffffff166000600050600084815260200190815260200160002060005060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff16141561026957806000600050600084815260200190815260200160002060005060000160006101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908302179055505b5b5050565b3373ffffffffffffffffffffffffffffffffffffffff166000600050600084815260200190815260200160002060005060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff161415610303578060006000506000848152602001908152602001600020600050600101600050819055505b5b5050565b600060006000506000838152602001908152602001600020600050600101600050549050610331565b919050565b60006000600050600083815260200190815260200160002060005060000160009054906101000a900473ffffffffffffffffffffffffffffffffffffffff16905061037c565b91905056"></input></div>
+    <div>ABI: <input id="abi" value='[{"constant":true,"inputs":[{"name":"key","type":"uint256"}],"name":"getValue","outputs":[{"name":"value","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"key","type":"uint256"},{"name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"type":"function"},{"constant":false,"inputs":[{"name":"key","type":"uint256"},{"name":"newValue","type":"uint256"}],"name":"setValue","outputs":[],"type":"function"},{"constant":true,"inputs":[{"name":"key","type":"uint256"}],"name":"getOwner","outputs":[{"name":"owner","type":"address"}],"type":"function"},{"constant":false,"inputs":[{"name":"key","type":"uint256"}],"name":"register","outputs":[],"type":"function"}]'></input></div>
     <div><button onclick="createContract()">Create contract</button></div>
     <div>Contract address: <input id="contractAddr"></input></div>
     <h2>Execute functions</h2>
-    <div>Contract Address: <input id="functionContractAddr"></input></div>
-    <div>ABI: <input id="abi" value='[{"constant":true,"inputs":[{"name":"key","type":"uint256"}],"name":"getValue","outputs":[{"name":"value","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"key","type":"uint256"},{"name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"type":"function"},{"constant":false,"inputs":[{"name":"key","type":"uint256"},{"name":"newValue","type":"uint256"}],"name":"setValue","outputs":[],"type":"function"},{"constant":true,"inputs":[{"name":"key","type":"uint256"}],"name":"getOwner","outputs":[{"name":"owner","type":"address"}],"type":"function"},{"constant":false,"inputs":[{"name":"key","type":"uint256"}],"name":"register","outputs":[],"type":"function"}]'></input></div>
     <div>Key to Register: <input id="keyToRegister" value="123"></input></div>
     <div><button onclick="registerKey()">Register Key</button></div>
     <div>Set value: Key: <input id="keyToSet" value="123"></input> Value: <input id="valueToSet" value="456"></input></div>
