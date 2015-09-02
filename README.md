@@ -43,7 +43,7 @@ var secretSeed = ethlightjs.keystore.generateRandomSeed();
 
 // the seed is stored encrypted by a user-defined password
 var password = prompt('Enter password for encryption', 'password');
-var ks = ethlightjs.keystore(secretSeed, password);
+var ks = new ethlightjs.keystore(secretSeed, password);
 
 // generate five new address/private key pairs
 // the corresponding private keys are also encrypted
@@ -77,11 +77,14 @@ Constructor of the keystore object. The seed `seed` is encrypted with `password`
 * words: string defining a 12-word seed according to [BIP39][]
 * password: password to encrypt the seed
 
-[BIP39]: https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki
 
 ### `keystore.generateRandomSeed()`
 
 Generates a string consisting of a random 12-word seed and returns it.
+
+### `keystore.isSeedValid(seed)`
+
+Checks if `seed` is a valid 12-word seed according to the [BIP39][] specification.
 
 ### `keystore.generateNewAddress(password [, num])`
 
@@ -196,4 +199,8 @@ npm run test
 npm run coverage
 ```
 
+[BIP39]: https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki
+
 ## License
+
+

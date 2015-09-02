@@ -139,6 +139,17 @@ describe("Keystore", function() {
     });
   });
 
+  describe("isSeedValid", function() {
+    it('checks if seed is valid', function() {
+      var isValid = keyStore.isSeedValid(fixtures.valid[0].mnSeed)
+      expect(isValid).to.equal(true);
+      
+      isValid = keyStore.isSeedValid(fixtures.invalid[0].mnSeed)
+      expect(isValid).to.equal(false);      
+    });
+  });
+
+
   describe("exportPrivateKey", function() {
       it('exports the private key corresponding to an address', function() {
 	  var pw = fixtures.valid[0].password
