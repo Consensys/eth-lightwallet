@@ -78,9 +78,9 @@ Constructor of the keystore object. The seed `seed` is encrypted with `password`
 * password: password to encrypt the seed
 
 
-### `keystore.generateRandomSeed()`
+### `keystore.generateRandomSeed([extraEntropy])`
 
-Generates a string consisting of a random 12-word seed and returns it.
+Generates a string consisting of a random 12-word seed and returns it. If the optional argument string `extraEntropy` is present the random data from the Javascript RNG will be concatenated with `extraEntropy` and then hashed to produce the final seed. The string `extraEntropy` can be something like entropy from mouse movements or keyboard presses, or a string representing dice throws.
 
 ### `keystore.isSeedValid(seed)`
 

@@ -132,14 +132,12 @@ describe("Keystore", function() {
 
   });
 
-  describe("getSeed", function() {
+  describe("Seed functions", function() {
     it('returns the unencrypted seed', function() {
       var ks = new keyStore(fixtures.valid[0].mnSeed, fixtures.valid[0].password)
       expect(ks.getSeed(fixtures.valid[0].password)).to.equal(fixtures.valid[0].mnSeed)
     });
-  });
 
-  describe("isSeedValid", function() {
     it('checks if seed is valid', function() {
       var isValid = keyStore.isSeedValid(fixtures.valid[0].mnSeed)
       expect(isValid).to.equal(true);
@@ -147,7 +145,20 @@ describe("Keystore", function() {
       isValid = keyStore.isSeedValid(fixtures.invalid[0].mnSeed)
       expect(isValid).to.equal(false);      
     });
+
+    it('concatenates and hashes entropy sources', function() {
+
+      var N = fixtures.sha256Test.length;
+      for (var i=0; i<N; i++) {
+        var ent0 = new Buffer(fixtures.sha256Test[i].ent0);
+        var ent1 = new Buffer(fixtures.sha256Test[i].ent1);
+        var outputString = keyStore._concatAndSha256(ent0, ent1).toString('hex');
+        expect(outputString).to.equal(fixtures.sha256Test[i].targetHash);
+      }
+    })
+
   });
+
 
 
   describe("exportPrivateKey", function() {
