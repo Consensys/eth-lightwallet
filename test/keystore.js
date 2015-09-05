@@ -13,7 +13,7 @@ describe("Keystore", function() {
 
       // No values are set
       expect(ks.encSeed).to.equal(undefined)
-      expect(ks.encMasterPriv).to.equal(undefined)
+      expect(ks.encHdRootPriv).to.equal(undefined)
       expect(ks.encPrivKeys).to.deep.equal({})
       expect(ks.addresses).to.deep.equal([])
     });
@@ -60,12 +60,12 @@ describe("Keystore", function() {
   describe("_encryptKey _decryptKey", function() {
 
     fixtures.valid.forEach(function (f) {
-      it('encrypts the key then returns same key decrypted ' + '"' + f.pubKeyHex.substring(0,15) + '..."', function () {
+      it('encrypts the key then returns same key decrypted ' + '"' + f.privKeyHex.substring(0,15) + '..."', function () {
 
-        var encryptedKey = keyStore._encryptKey(f.pubKeyHex, f.password)
+        var encryptedKey = keyStore._encryptKey(f.privKeyHex, f.password)
         var decryptedKey = keyStore._decryptKey(encryptedKey, f.password)
 
-        expect(decryptedKey).to.equal(f.pubKeyHex)
+        expect(decryptedKey).to.equal(f.privKeyHex)
       })
     })
 
@@ -73,8 +73,8 @@ describe("Keystore", function() {
 
   describe("_computeAddressFromPrivKey", function() {
     fixtures.valid.forEach(function (f) {
-      it('generates valid address from private key ' + '"' + f.HDPrivKey.substring(0,15) + '..."', function () {
-        var address = keyStore._computeAddressFromPrivKey(f.HDPrivKey)
+      it('generates valid address from private key ' + '"' + f.privKeyHex.substring(0,15) + '..."', function () {
+        var address = keyStore._computeAddressFromPrivKey(f.privKeyHex)
         expect(address).to.equal(f.address)
       })
     })
@@ -90,7 +90,7 @@ describe("Keystore", function() {
       expect(deserKS.encSeed).to.deep.equal(origKS.encSeed)
       expect(deserKS.hdIndex).to.equal(origKS.hdIndex)
       expect(deserKS.encPrivKeys).to.deep.equal(origKS.encPrivKeys)
-      expect(deserKS.encMasterPriv).to.deep.equal(origKS.encMasterPriv)
+      expect(deserKS.encHdRootPriv).to.deep.equal(origKS.encHdRootPriv)
       expect(deserKS.addresses).to.deep.equal(origKS.addresses)
     });
 
@@ -107,7 +107,7 @@ describe("Keystore", function() {
       expect(deserKS.encSeed).to.deep.equal(origKS.encSeed)
       expect(deserKS.hdIndex).to.equal(origKS.hdIndex)
       expect(deserKS.encPrivKeys).to.deep.equal(origKS.encPrivKeys)
-      expect(deserKS.encMasterPriv).to.deep.equal(origKS.encMasterPriv)
+      expect(deserKS.encHdRootPriv).to.deep.equal(origKS.encHdRootPriv)
       expect(deserKS.addresses).to.deep.equal(origKS.addresses)
 
     });
@@ -115,11 +115,22 @@ describe("Keystore", function() {
 
 
   describe("generateNewAddress", function() {
-    it("returns a new address, next in hd wallet with hdindex 0", function() {
-      var ks = new keyStore(fixtures.valid[0].mnSeed, fixtures.valid[0].password)
-      var newAddress = ks.generateNewAddress(fixtures.valid[0].password)
-      expect(newAddress).to.equal(fixtures.valid[0].address)
-    });
+
+    var N = fixtures.valid.length;
+
+      it("returns a new address, next in hd wallet", function() {
+        this.timeout(10000);
+        for (var i=0; i<N; i++) {
+          var ks = new keyStore(fixtures.valid[i].mnSeed, fixtures.valid[i].password)
+          var numAddresses = fixtures.valid[i].hdIndex+1;
+          ks.generateNewAddress(fixtures.valid[i].password, numAddresses);
+          var addresses = ks.getAddresses();
+          var addr = addresses[addresses.length-1];
+          var priv = ks.exportPrivateKey(addr, fixtures.valid[i].password);
+          expect(addr).to.equal(fixtures.valid[i].address);
+          expect(priv).to.equal(fixtures.valid[i].privKeyHex);
+        }
+      });
   });
 
 
@@ -163,19 +174,19 @@ describe("Keystore", function() {
 
   describe("exportPrivateKey", function() {
       it('exports the private key corresponding to an address', function() {
-	  var pw = fixtures.valid[0].password
-	  var ks = new keyStore(fixtures.valid[0].mnSeed, pw)
-	  var addr0 = ks.generateNewAddress(pw)
-	  var addr1 = ks.generateNewAddress(pw)
+          var pw = fixtures.valid[0].password
+          var ks = new keyStore(fixtures.valid[0].mnSeed, pw)
+          var addr0 = ks.generateNewAddress(pw)
+          var addr1 = ks.generateNewAddress(pw)
 	  
-	  var exportedPriv0 = ks.exportPrivateKey(addr0, pw)
-	  var exportedPriv1 = ks.exportPrivateKey(addr1, pw)
+          var exportedPriv0 = ks.exportPrivateKey(addr0, pw)
+          var exportedPriv1 = ks.exportPrivateKey(addr1, pw)
 
-	  var addrFromExported0 = keyStore._computeAddressFromPrivKey(exportedPriv0)
-	  var addrFromExported1 = keyStore._computeAddressFromPrivKey(exportedPriv1)
+          var addrFromExported0 = keyStore._computeAddressFromPrivKey(exportedPriv0)
+          var addrFromExported1 = keyStore._computeAddressFromPrivKey(exportedPriv1)
 
-	  expect(addrFromExported0).to.equal(addr0)
-	  expect(addrFromExported1).to.equal(addr1)
+          expect(addrFromExported0).to.equal(addr0)
+          expect(addrFromExported1).to.equal(addr1)
       });
   });
     
