@@ -4,8 +4,8 @@
   "description": "A light weight ethereum javascript wallet.",
   "main": "index.js",
   "scripts": {
-    "build-js": "browserify index.js --s ethlightjs | uglifyjs -mc > ethlightjs.min.js",
-    "build-dev": "browserify index.js -o ethlightjs.js --s ethlightjs",
+    "build-js": "browserify index.js --s ethlightjs | uglifyjs -mc > dist/ethlightjs.min.js",
+    "build-dev": "browserify index.js -o dist/ethlightjs.js --s ethlightjs",
     "test": "./node_modules/.bin/mocha --reporter spec",
     "coverage": "istanbul cover _mocha -- -R spec; open coverage/lcov-report/index.html"
   },
