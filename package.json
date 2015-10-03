@@ -1,11 +1,11 @@
 {
-  "name": "ethlightjs",
-  "version": "0.0.4",
-  "description": "A light weight ethereum javascript wallet.",
+  "name": "lightwallet",
+  "version": "0.1.0",
+  "description": "A lightweight ethereum javascript wallet.",
   "main": "index.js",
   "scripts": {
-    "build-js": "browserify index.js --s ethlightjs | uglifyjs -mc > dist/ethlightjs.min.js",
-    "build-dev": "browserify index.js -o dist/ethlightjs.js --s ethlightjs",
+    "build-js": "browserify index.js --s lightwallet | uglifyjs -mc > dist/lightwallet.min.js",
+    "build-dev": "browserify index.js -o dist/lightwallet.js --s lightwallet",
     "test": "./node_modules/.bin/mocha --reporter spec",
     "coverage": "istanbul cover _mocha -- -R spec; open coverage/lcov-report/index.html"
   },
@@ -13,7 +13,8 @@
     "ethereum",
     "blockchain",
     "transactions",
-    "contracts"
+    "contracts",
+    "wallet"
   ],
   "contributors": [
     {
@@ -46,16 +47,14 @@
     "rlp": "^1.0.0",
     "web3": "^0.12.2",
     "ethereumjs-tx": "^0.6.6",
-    "ethereumjs-util": "^1.2.0",
-    "bignumber.js": "debris/bignumber.js#master",
-    "xhr2" : "*",
-    "hooked-web3-provider" : "^0.0.3"
+    "bignumber.js": "debris/bignumber.js#master"
   },
   "devDependencies": {
     "browserify": "^10.2.4",
     "chai": "^3.0.0",
     "istanbul": "^0.3.15",
     "mocha": "^2.2.5",
-    "uglify-js": "^2.4.23"
+    "uglify-js": "^2.4.23",
+    "hooked-web3-provider" : "^0.0.3"
   }
 }

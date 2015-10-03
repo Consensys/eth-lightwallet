@@ -1,8 +1,9 @@
 <html>
   <body>
-    <script src="dist/ethlightjs.min.js"></script>
-    <script type="text/javascript" src="node_modules/hooked-web3-provider/build/hooked-web3-provider.js"></script>
-    <script type="text/javascript" src="node_modules/web3/dist/web3.js"></script>
+    <script src="../dist/lightwallet.min.js"></script>
+    <script type="text/javascript" src="../node_modules/web3/dist/web3.js"></script>
+    <script type="text/javascript" src="../node_modules/hooked-web3-provider/build/hooked-web3-provider.js"></script>
+
     <script>
       var password = 'mypassword'
       var addresses = undefined
@@ -11,20 +12,12 @@
 
       function setWeb3Provider(keystore) {
         var web3Provider = new HookedWeb3Provider({
-          host: "http://104.236.65.136:8545",
-          //host: "http://localhost:8545",
+          host: "http://localhost:8545",
           transaction_signer: keystore
         });
         
         web3.setProvider(web3Provider);
 
-      }
-
-      function checkNonce(){
-           var addr = document.getElementById('sendFrom').value
-           var nonce = web3.eth.getTransactionCount(addr, function(err, nonce){
-               document.getElementById('nonce').value = nonce
-        })
       }
 
       function getBalances() {
@@ -50,7 +43,7 @@
 
       function setSeed() {
         var seed = document.getElementById('seed').value
-        var keystore = new ethlightjs.keystore(seed, password)
+        var keystore = new lightwallet.keystore(seed, password)
 
         var numAddr = 3
         keystore.generateNewAddress(password, numAddr)
@@ -63,7 +56,7 @@
 
 
       function randomSeed() {
-        var randomSeed = ethlightjs.keystore.generateRandomSeed()
+        var randomSeed = lightwallet.keystore.generateRandomSeed()
         document.getElementById('seed').value = randomSeed
       }
 
@@ -72,10 +65,9 @@
         var toAddr = '0x' + document.getElementById('sendTo').value
         var valueEth = document.getElementById('sendValueAmount').value
         var value = parseFloat(valueEth)*1.0e18
-        var accNonce = parseInt(document.getElementById('nonce').value)
         var gasPrice = 1000000000000
         var gas = 50000
-        web3.eth.sendTransaction({from: fromAddr, to: toAddr, value: value, gasPrice: gasPrice, gas: gas, nonce: accNonce}, function (err, txhash) {
+        web3.eth.sendTransaction({from: fromAddr, to: toAddr, value: value, gasPrice: gasPrice, gas: gas}, function (err, txhash) {
           console.log('error: ' + err)
           console.log('txhash: ' + txhash)
         })
@@ -84,7 +76,6 @@
       function createContract() {
         var fromAddr = '0x' + document.getElementById('sendFrom').value
         var bytecode = '0x' + document.getElementById('bytecode').value
-        var accNonce = parseInt(document.getElementById('nonce').value)
         var abi = JSON.parse(document.getElementById('abi').value)
         var gasPrice = 1000000000000
         var gas = 300000
@@ -105,8 +96,7 @@
       function registerKey() {
         var key = parseInt(document.getElementById('keyToRegister').value)
         var fromAddr = '0x' + document.getElementById('sendFrom').value
-        var accNonce = parseInt(document.getElementById('nonce').value)
-        contract.register(key, {from: fromAddr, gas: 300000, gasPrice: 1000000000000, nonce: accNonce}, function (err, txhash) {
+        contract.register(key, {from: fromAddr, gas: 300000, gasPrice: 1000000000000}, function (err, txhash) {
           console.log(txhash);
         })
       }
@@ -115,8 +105,7 @@
         var key = parseInt(document.getElementById('keyToSet').value)
         var val = parseInt(document.getElementById('valueToSet').value)
         var fromAddr = '0x' + document.getElementById('sendFrom').value
-        var accNonce = parseInt(document.getElementById('nonce').value)
-        contract.setValue(key, val, {from: fromAddr, gas: 300000, gasPrice: 1000000000000, nonce: accNonce}, function (err, txhash) {
+        contract.setValue(key, val, {from: fromAddr, gas: 300000, gasPrice: 1000000000000}, function (err, txhash) {
           console.log(txhash);
         })
       }
@@ -143,8 +132,6 @@
     <div id="signedTx"></div>
     <h2>Sender address</h2>
     <div>From: <input type="text" id="sendFrom"></input></div>
-    <div><button onclick="checkNonce()">Check nonce</button></div>
-    <div>Nonce: <input type="number" id="nonce" value=0></div>
     <h2>Transfer ether</h2>
     <div>To: <input type="text" id="sendTo"></input></div>
     <div>Ether: <input type="text" id="sendValueAmount"></div>

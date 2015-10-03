@@ -10,6 +10,11 @@ LightWallet is primarily intended to be a signing provider for the [Hooked Web3 
 
 The default BIP32 HD derivation path is `m/0'/0'/0'/i`.
 
+## Security
+
+Please note that LightWallet has not yet had a security review. Do not rely on it for very large amounts of Ether.
+
+
 ## Get Started
 
 ```
@@ -19,17 +24,17 @@ npm install
 npm run build-js
 ```
 
-This will create the file `ethlightjs.min.js` that can be included in an HTML page:
+This will create the file `lightwallet.min.js` that can be included in an HTML page:
 
 ```
 <html>
   <body>
-    <script src="ethlightjs.min.js"></script>
+    <script src="lightwallet.min.js"></script>
   </body>
 </html>
 ```
 
-The file `ethlightjs` exposes the global object `ethlightjs` to the browser which has the two main modules `ethlightjs.keystore` and `ethlightjs.txutils`.
+The file `lightwallet` exposes the global object `lightwallet` to the browser which has the two main modules `lightwallet.keystore` and `lightwallet.txutils`.
 
 To build a node package:
 
@@ -41,11 +46,11 @@ Sample usage:
 
 ```
 // generate a new BIP32 12-word seed
-var secretSeed = ethlightjs.keystore.generateRandomSeed();
+var secretSeed = lightwallet.keystore.generateRandomSeed();
 
 // the seed is stored encrypted by a user-defined password
 var password = prompt('Enter password for encryption', 'password');
-var ks = new ethlightjs.keystore(secretSeed, password);
+var ks = new lightwallet.keystore(secretSeed, password);
 
 // generate five new address/private key pairs
 // the corresponding private keys are also encrypted
@@ -90,7 +95,7 @@ Checks if `seed` is a valid 12-word seed according to the [BIP39][] specificatio
 
 ### `keystore.generateNewAddress(password [, num])`
 
-Generates a new address/private key pair from the seed and stores them in the keystore. The private key is stored encrypted with the users password. If the integer `n` is supplied a batch of `n` address/keypairs is generated.
+Generates a new address/private key pair from the seed and stores them in the keystore. The private key is stored encrypted with the users password. If the integer `num` is supplied a batch of `num` address/key pairs is generated.
 
 ### `keystore.deserialize(serialized_keystore)`
 
@@ -127,6 +132,8 @@ Signs a transaction with the private key corresponding to `signingAddress`
 Hex-string corresponding to the RLP-encoded raw transaction.
 
 ## `txutils` Function definitions
+
+These are the interface functions for the `txutils` module. These functions will create RLP encoded raw unsigned transactions which can be signed using the `keystore.signTx()` command.
 
 ### `txutils.createContractTx(fromAddress, txObject)`
 
@@ -188,9 +195,7 @@ RLP-encoded hex string defining the transaction.
 
 See the file `example_usage.js` for usage of `keystore` and `txutils`.
 
-See the file `example_helpers.js` for using the `helpers` functions.
-
-See the file `example_web.html` for an example of how to use the LightWallet functionality in the browser.
+See the file `example_web.html` for an example of how to use the LightWallet keystore together with the Hooked Web3 Provider.
 
 ## Tests
 
