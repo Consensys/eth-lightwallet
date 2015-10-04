@@ -50,10 +50,12 @@
         addresses = keystore.getAddresses()
         keystore.passwordProvider = function (callback) {callback(null, password)}
         setWeb3Provider(keystore);
+
+        var serialized = keystore.serialize();
+        console.log(serialized);
         
         getBalances();
       }
-
 
       function randomSeed() {
         var randomSeed = lightwallet.keystore.generateRandomSeed()

@@ -176,17 +176,17 @@ describe("Keystore", function() {
       it('exports the private key corresponding to an address', function() {
           var pw = fixtures.valid[0].password
           var ks = new keyStore(fixtures.valid[0].mnSeed, pw)
-          var addr0 = ks.generateNewAddress(pw)
-          var addr1 = ks.generateNewAddress(pw)
+          ks.generateNewAddress(pw, 2)
+          var addr = ks.getAddresses();
 	  
-          var exportedPriv0 = ks.exportPrivateKey(addr0, pw)
-          var exportedPriv1 = ks.exportPrivateKey(addr1, pw)
+          var exportedPriv0 = ks.exportPrivateKey(addr[0], pw)
+          var exportedPriv1 = ks.exportPrivateKey(addr[1], pw)
 
           var addrFromExported0 = keyStore._computeAddressFromPrivKey(exportedPriv0)
           var addrFromExported1 = keyStore._computeAddressFromPrivKey(exportedPriv1)
 
-          expect(addrFromExported0).to.equal(addr0)
-          expect(addrFromExported1).to.equal(addr1)
+          expect(addrFromExported0).to.equal(addr[0])
+          expect(addrFromExported1).to.equal(addr[1])
       });
   });
     
@@ -194,7 +194,8 @@ describe("Keystore", function() {
     it('signs a transaction deterministically', function() {
       var pw = fixtures.valid[0].password
       var ks = new keyStore(fixtures.valid[0].mnSeed, pw)
-      var addr = ks.generateNewAddress(pw)
+      ks.generateNewAddress(pw)
+      var addr = ks.getAddresses()[0]
       expect(addr).to.equal(fixtures.valid[0].ethjsTxParams.from)
       
       var tx = new Transaction(fixtures.valid[0].ethjsTxParams)
@@ -235,7 +236,8 @@ describe("Keystore", function() {
     it('implements signTransaction correctly', function() {
       var pw = fixtures.valid[0].password
       var ks = new keyStore(fixtures.valid[0].mnSeed, pw)
-      var addr = ks.generateNewAddress(pw)
+      ks.generateNewAddress(pw)
+      var addr = ks.getAddresses()[0]
 
       // Trivial passwordProvider
       ks.passwordProvider = function(callback) {callback(null, pw)}

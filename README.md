@@ -6,25 +6,22 @@ A minimal ethereum javascript wallet.
 
 LightWallet is a HD wallet that can store your private keys encrypted in the browser to allow you to run Ethereum dapps even if you're not running a local Ethereum node. It uses [BIP32][] and [BIP39][] to generate an HD tree of addresses from a randomly generated 12-word seed.
 
-LightWallet is primarily intended to be a signing provider for the [Hooked Web3 provider](https://github.com/ConsenSys/hooked-web3 provider) through the `keystore` module. Moreover, the `txutils` functions can be used to construct transactions when offline, for use in e.g. air-gapped coldwallet implementations.
+LightWallet is primarily intended to be a signing provider for the [Hooked Web3 provider](https://github.com/ConsenSys/hooked-web3-provider) through the `keystore` module. This allows you to have full control over your private keys while sitll connecting to a remote node to relay signed transactions. Moreover, the `txutils` functions can be used to construct transactions when offline, for use in e.g. air-gapped coldwallet implementations.
 
 The default BIP32 HD derivation path is `m/0'/0'/0'/i`.
 
 ## Security
 
-Please note that LightWallet has not yet had a security review. Do not rely on it for very large amounts of Ether.
+Please note that LightWallet has not been through a comprehensive security review at this point. It is still experimental software, intended for small amounts of Ether to be used for interacting with smart contracts on the Ethereum blockchain. Do not rely on it to store larger amounts of Ether yet.
 
 
 ## Get Started
 
 ```
-git clone https://github.com/ConsenSys/LightWallet.git
-cd LightWallet
-npm install
-npm run build-js
+npm install eth-lightwallet
 ```
 
-This will create the file `lightwallet.min.js` that can be included in an HTML page:
+The `eth-lightwallet` package contains `dist/lightwallet.min.js` that can be included in an HTML page:
 
 ```
 <html>
@@ -34,15 +31,9 @@ This will create the file `lightwallet.min.js` that can be included in an HTML p
 </html>
 ```
 
-The file `lightwallet` exposes the global object `lightwallet` to the browser which has the two main modules `lightwallet.keystore` and `lightwallet.txutils`.
+The file `lightwallet.min.js` exposes the global object `lightwallet` to the browser which has the two main modules `lightwallet.keystore` and `lightwallet.txutils`.
 
-To build a node package:
-
-```
-npm install path/to/LightWallet
-```
-
-Sample usage:
+Sample usage with hooked web3 provider:
 
 ```
 // generate a new BIP32 12-word seed
@@ -193,9 +184,9 @@ RLP-encoded hex string defining the transaction.
 
 ## Examples
 
-See the file `example_usage.js` for usage of `keystore` and `txutils`.
+See the file `example_usage.js` for usage of `keystore` and `txutils` in node.
 
-See the file `example_web.html` for an example of how to use the LightWallet keystore together with the Hooked Web3 Provider.
+See the file `example_web.html` for an example of how to use the LightWallet keystore together with the Hooked Web3 Provider in the browser.
 
 ## Tests
 
@@ -211,4 +202,4 @@ npm run coverage
 
 ## License
 
-
+MIT License.
