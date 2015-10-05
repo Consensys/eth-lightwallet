@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "description": "A lightweight ethereum javascript wallet.",
   "main": "index.js",
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/ConsenSys/eth-lightwallet.git"
+  },
   "scripts": {
     "build-js": "browserify index.js --s lightwallet | uglifyjs -mc > dist/lightwallet.min.js",
     "build-dev": "browserify index.js -o dist/lightwallet.js --s lightwallet",
@@ -38,14 +42,14 @@
       "email": "kevin.jiao@berkeley.edu"
     }
   ],
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
-    "bitcore": "^0.12.8",
-    "bitcore-mnemonic": "^0.11.0",
+    "bitcore": "^0.13.3",
+    "bitcore-mnemonic": "^0.13.2",
     "crypto-js": "^3.1.5",
     "elliptic": "^3.1.0",
     "rlp": "^1.0.0",
-    "web3": "^0.12.2",
+    "web3": "^0.13.0",
     "ethereumjs-tx": "^0.6.6",
     "bignumber.js": "debris/bignumber.js#master"
   },
