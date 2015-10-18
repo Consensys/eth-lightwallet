@@ -44,8 +44,6 @@
 
         async.map(addresses, web3.eth.getBalance, function(err, balances) {
           async.map(addresses, web3.eth.getTransactionCount, function(err, nonces) {
-            console.log(balances)
-            console.log()
             document.getElementById('addr').innerHTML = ''
             for (var i=0; i<addresses.length; ++i) {
               document.getElementById('addr').innerHTML += '<div>' + addresses[i] + ' (Bal: ' + (balances[i] / 1.0e18) + ' ETH, Nonce: ' + nonces[i] + ')' + '</div>'
@@ -65,9 +63,6 @@
         
         newAddresses(password);
         setWeb3Provider(global_keystore);
-
-        var serialized = global_keystore.serialize();
-        console.log(serialized);
         
         getBalances();
       }
@@ -118,6 +113,7 @@
     <h2>Show Addresses</h2>
     <div>Show <input type="text" id="numAddr" size="5" value="3"></input> more address(es) <button onclick="newAddresses('')">Show</button></div>
     <div id="addr"></div>
+    <div><button onClick='getBalances()'>Refresh</button></div>
     <h2>Send Ether</h2>
     <div>From: <select id="sendFrom"></select></div>
     <div>To: <input type="text" id="sendTo"></input></div>
