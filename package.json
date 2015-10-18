@@ -54,6 +54,7 @@
     "bignumber.js": "debris/bignumber.js#master"
   },
   "devDependencies": {
+    "async": "^1.4.2",
     "browserify": "^10.2.4",
     "chai": "^3.0.0",
     "istanbul": "^0.3.15",
