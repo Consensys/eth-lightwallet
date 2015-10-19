@@ -30,8 +30,10 @@
         var addresses = global_keystore.getAddresses();
 
         document.getElementById('sendFrom').innerHTML = ''
+        document.getElementById('functionCaller').innerHTML = ''
         for (var i=0; i<addresses.length; ++i) {
           document.getElementById('sendFrom').innerHTML += '<option value="' + addresses[i] + '">' + addresses[i] + '</option>'
+          document.getElementById('functionCaller').innerHTML += '<option value="' + addresses[i] + '">' + addresses[i] + '</option>'
         }
 
         getBalances();
@@ -104,6 +106,26 @@
         })
       }
 
+      function functionCall() {
+        var fromAddr = document.getElementById('functionCaller').value
+        var contractAddr = document.getElementById('contractAddr').value
+        var abi = JSON.parse(document.getElementById('contractAbi').value)
+        var contract = web3.eth.contract(abi).at(contractAddr)
+        var functionName = document.getElementById('functionName').value
+        var args = JSON.parse('[' + document.getElementById('functionArgs').value + ']')
+        var valueEth = document.getElementById('sendValueAmount').value
+        var value = parseFloat(valueEth)*1.0e18
+        var gasPrice = 50000000000
+        var gas = 3141592
+        args.push({from: fromAddr, value: value, gasPrice: gasPrice, gas: gas})
+        var callback = function(err, txhash) {
+          console.log('error: ' + err)
+          console.log('txhash: ' + txhash)
+        }
+        args.push(callback)
+        contract[functionName].apply(this, args)
+      }
+
     </script>
     <h1>LightWallet</h1>
     <h2>New Wallet</h2>
@@ -116,10 +138,19 @@
     <div><button onClick='getBalances()'>Refresh</button></div>
     <h2>Send Ether</h2>
     <div>From: <select id="sendFrom"></select></div>
-    <div>To: <input type="text" id="sendTo"></input></div>
+    <div>To: <input type="text" size="40" id="sendTo"></input></div>
     <div>Ether: <input type="text" id="sendValueAmount"></div>
     <div><button onclick="sendEth()">Send Ether</button></div>
     <h2>Show Seed</h2>
     <button onclick="showSeed()">Show Seed</button>
+    <h2>Function Call</h2>
+    <div>Caller: <select id="functionCaller"></select></div>
+    <div>Contract Address: <input type="text" size="40" id="contractAddr"></input></div>
+    <div>Contract ABI: <input type="text" size="40" id="contractAbi"></input></div>
+    <div>Function Name: <input type="text" size="20" id="functionName"></input></div>
+    <div>Function Arguments: <input type="text" size="40" id="functionArgs"></input></div>
+    <div>Value (Ether): <input type="text" id="sendValueAmount"></div>
+    <div><button onclick="functionCall()">Call Function</button></div>
+
   </body>
 </html>
