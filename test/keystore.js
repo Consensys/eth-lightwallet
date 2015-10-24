@@ -196,7 +196,7 @@ describe("Keystore", function() {
       var ks = new keyStore(fixtures.valid[0].mnSeed, pw)
       ks.generateNewAddress(pw)
       var addr = ks.getAddresses()[0]
-      expect(addr).to.equal(fixtures.valid[0].ethjsTxParams.from)
+      expect('0x' + addr).to.equal(fixtures.valid[0].ethjsTxParams.from)
       
       var tx = new Transaction(fixtures.valid[0].ethjsTxParams)
       var rawTx = tx.serialize().toString('hex')
