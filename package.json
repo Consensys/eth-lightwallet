@@ -48,7 +48,7 @@
     "crypto-js": "^3.1.5",
     "elliptic": "^3.1.0",
     "rlp": "^2.0.0",
-    "web3": "^0.13.0",
+    "web3": "^0.14.0",
     "ethereumjs-tx": "^0.6.9",
     "bignumber.js": "debris/bignumber.js#master"
   },
@@ -59,6 +59,6 @@
     "istanbul": "^0.3.15",
     "mocha": "^2.2.5",
     "uglify-js": "^2.4.23",
-    "hooked-web3-provider" : "^0.0.3"
+    "hooked-web3-provider" : "christianlundkvist/hooked-web3-provider#updates_web3_14"
   }
 }

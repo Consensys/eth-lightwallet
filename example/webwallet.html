@@ -6,15 +6,16 @@
     <script type="text/javascript" src="../node_modules/async/lib/async.js"></script>
 
     <script>
-      
+
+      var web3 = new Web3();
       var global_keystore;
 
       function setWeb3Provider(keystore) {
         var web3Provider = new HookedWeb3Provider({
-          host: "http://localhost:8545",
+          host: "http://104.236.65.136:8545",
           transaction_signer: keystore
         });
-        
+
         web3.setProvider(web3Provider);
       }
 
