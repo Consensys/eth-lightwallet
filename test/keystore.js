@@ -9,18 +9,18 @@ describe("Keystore", function() {
 
     it("returns empty keystore when no args are passed", function() {
       var ks = new keyStore()
-      expect(ks.getAddresses()).to.equal(ks.addresses);
+      expect(ks.getAddresses()).to.equal(ks.ksData[ks.defaultHdRootString].addresses);
 
       // No values are set
       expect(ks.encSeed).to.equal(undefined)
-      expect(ks.encHdRootPriv).to.equal(undefined)
-      expect(ks.encPrivKeys).to.deep.equal({})
-      expect(ks.addresses).to.deep.equal([])
+      expect(ks.ksData[ks.defaultHdRootString].encHdRootPrivkey).to.equal(undefined)
+      expect(ks.ksData[ks.defaultHdRootString].encPrivKeys).to.deep.equal({})
+      expect(ks.ksData[ks.defaultHdRootString].addresses).to.deep.equal([])
     });
 
     it("sets the hd index to 0", function() {
       var ks = new keyStore(fixtures.valid[0].mnSeed, fixtures.valid[0].password)
-      expect(ks.hdIndex).to.equal(0)
+      expect(ks.ksData[ks.defaultHdRootString].hdIndex).to.equal(0)
     })
 
     it("returns keystore with an encrypted seed set when give mnemonic and password", function() {
@@ -88,10 +88,7 @@ describe("Keystore", function() {
 
       // Retains all attributes properly
       expect(deserKS.encSeed).to.deep.equal(origKS.encSeed)
-      expect(deserKS.hdIndex).to.equal(origKS.hdIndex)
-      expect(deserKS.encPrivKeys).to.deep.equal(origKS.encPrivKeys)
-      expect(deserKS.encHdRootPriv).to.deep.equal(origKS.encHdRootPriv)
-      expect(deserKS.addresses).to.deep.equal(origKS.addresses)
+      expect(deserKS.ksData).to.deep.equal(origKS.ksData)
     });
 
     it("serializes non-empty keystore and returns same non-empty keystore when deserialized ", function() {
@@ -105,11 +102,10 @@ describe("Keystore", function() {
 
       // Retains all attributes properly
       expect(deserKS.encSeed).to.deep.equal(origKS.encSeed)
-      expect(deserKS.hdIndex).to.equal(origKS.hdIndex)
-      expect(deserKS.encPrivKeys).to.deep.equal(origKS.encPrivKeys)
-      expect(deserKS.encHdRootPriv).to.deep.equal(origKS.encHdRootPriv)
-      expect(deserKS.addresses).to.deep.equal(origKS.addresses)
-
+      expect(deserKS.salt.words).to.deep.equal(origKS.salt.words)
+      expect(deserKS.salt.sigBytes).to.deep.equal(origKS.salt.sigBytes)
+      expect(deserKS.keyHash).to.deep.equal(origKS.keyHash)
+      expect(deserKS.ksData).to.deep.equal(origKS.ksData)
     });
   });
 
@@ -138,7 +134,7 @@ describe("Keystore", function() {
 
     it("returns the object's address attribute", function() {
       var ks = new keyStore(fixtures.valid[0].mnSeed, fixtures.valid[0].password)
-      expect(ks.getAddresses()).to.equal(ks.addresses);
+      expect(ks.getAddresses()).to.equal(ks.ksData[ks.defaultHdRootString].addresses);
     });
 
   });
@@ -213,7 +209,7 @@ describe("Keystore", function() {
       var pw = fixtures.valid[0].password
       var ks = new keyStore(fixtures.valid[0].mnSeed, pw)
       ks.generateNewAddress(pw, 5)
-      var addr = ks.getAddresses;
+      var addr = ks.getAddresses();
 
       for (var i=0; i<addr.length; i++) {
         ks.hasAddress(addr[i], function (err, hasAddr) {
