@@ -9,18 +9,18 @@ describe("Keystore", function() {
 
     it("returns empty keystore when no args are passed", function() {
       var ks = new keyStore()
-      expect(ks.getAddresses()).to.equal(ks.ksData[ks.defaultHdRootString].addresses);
+      expect(ks.getAddresses()).to.equal(ks.ksData[ks.defaultHdPathString].addresses);
 
       // No values are set
       expect(ks.encSeed).to.equal(undefined)
-      expect(ks.ksData[ks.defaultHdRootString].encHdRootPrivkey).to.equal(undefined)
-      expect(ks.ksData[ks.defaultHdRootString].encPrivKeys).to.deep.equal({})
-      expect(ks.ksData[ks.defaultHdRootString].addresses).to.deep.equal([])
+      expect(ks.ksData[ks.defaultHdPathString].encHdRootPrivkey).to.equal(undefined)
+      expect(ks.ksData[ks.defaultHdPathString].encPrivKeys).to.deep.equal({})
+      expect(ks.ksData[ks.defaultHdPathString].addresses).to.deep.equal([])
     });
 
     it("sets the hd index to 0", function() {
       var ks = new keyStore(fixtures.valid[0].mnSeed, fixtures.valid[0].password)
-      expect(ks.ksData[ks.defaultHdRootString].hdIndex).to.equal(0)
+      expect(ks.ksData[ks.defaultHdPathString].hdIndex).to.equal(0)
     })
 
     it("returns keystore with an encrypted seed set when give mnemonic and password", function() {
@@ -134,7 +134,7 @@ describe("Keystore", function() {
 
     it("returns the object's address attribute", function() {
       var ks = new keyStore(fixtures.valid[0].mnSeed, fixtures.valid[0].password)
-      expect(ks.getAddresses()).to.equal(ks.ksData[ks.defaultHdRootString].addresses);
+      expect(ks.getAddresses()).to.equal(ks.ksData[ks.defaultHdPathString].addresses);
     });
 
   });
