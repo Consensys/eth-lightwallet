@@ -50,7 +50,8 @@
     "rlp": "^2.0.0",
     "web3": "^0.14.0",
     "ethereumjs-tx": "^0.6.9",
-    "bignumber.js": "debris/bignumber.js#master"
+    "bignumber.js": "debris/bignumber.js#master",
+    "tweetnacl" : "0.13.2"
   },
   "devDependencies": {
     "async": "^1.4.2",

@@ -247,7 +247,53 @@ describe("Keystore", function() {
 
   });
     
+  describe('multiple HD paths', function () {
+    it('creates new HD paths', function() {
+      var pw = fixtures.valid[0].password;
+      var ks = new keyStore(fixtures.valid[0].mnSeed, pw);
+      var hdPath = "m/0'/0'/1'";
+      ks.addHdDerivationPath(hdPath, pw, {curve: 'secp256k1', purpose: 'sign'});
+      ks.generateNewAddress(pw, 5, hdPath);
+      var addresses = ks.getAddresses(hdPath);
+      expect(addresses).to.deep.equal(fixtures.valid[0][hdPath].addresses);
+      hdPath = "m/0'/0'/5'";
+      ks.addHdDerivationPath(hdPath, pw, {curve: 'secp256k1', purpose: 'sign'});
+      ks.generateNewAddress(pw, 7, hdPath);
+      addresses = ks.getAddresses(hdPath);
+      expect(addresses).to.deep.equal(fixtures.valid[0][hdPath].addresses);
+    });
 
+    it('creates HD paths with encryption keys', function () {
+      var pw = fixtures.valid[0].password;
+      var ks = new keyStore(fixtures.valid[0].mnSeed, pw);
+      var hdPath = "m/0'/0'/2'";
+      ks.addHdDerivationPath(hdPath, pw, {curve: 'curve25519', purpose: 'encrypt'});
+      expect(function () {ks.generateNewAddress(pw, 5, hdPath);}).to.throw(Error);
+      ks.generateNewEncryptionKeys(pw, 6, hdPath);
+      var pubKeys = ks.getPubKeys(hdPath);
+      expect(pubKeys).to.deep.equal(fixtures.valid[0][hdPath].pubKeys)
+    }); 
+
+  });
+
+  describe('Encryption', function() {
+
+    it('encrypts and decrypts a string', function () {
+      var pw = fixtures.valid[0].password;
+      var ks = new keyStore(fixtures.valid[0].mnSeed, pw);
+      var hdPath = "m/0'/0'/2'";
+      ks.addHdDerivationPath(hdPath, pw, {curve: 'curve25519', purpose: 'encrypt'});
+      ks.generateNewEncryptionKeys(pw, 2, hdPath);
+      var pubKeys = ks.getPubKeys(hdPath);
+      var msg = "Hello World!";
+      var encrypted = ks.encryptString(msg, pubKeys[0], pubKeys[1], pw, hdPath);
+      var cleartext = ks.decryptString(encrypted, pubKeys[1], pubKeys[0], pw, hdPath);
+      expect(cleartext).to.equal(msg);
+    });
+  
+    
+
+  });
 
 
 });
