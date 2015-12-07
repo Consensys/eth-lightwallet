@@ -1,6 +1,12 @@
 var expect = require('chai').expect
 var keyStore = require('../lib/keystore')
 var fixtures = require('./fixtures/keystore')
+
+// Test with 100 private keys
+var addrprivkeyvector = require('./fixtures/addrprivkey100.json')
+// Test with 10000 private keys - takes about 40 seconds to run
+// var addrprivkeyvector = require('./fixtures/addrprivkey10000.json')
+
 var Transaction = require('ethereumjs-tx');
 
 describe("Keystore", function() {
@@ -78,6 +84,14 @@ describe("Keystore", function() {
         expect(address).to.equal(f.address)
       })
     })
+
+    addrprivkeyvector.forEach(function (f) {
+      it('generates valid address from private key ' + '"' + f.key.substring(0,15) + '..."', function () {
+        var address = keyStore._computeAddressFromPrivKey(f.key)
+        expect(address).to.equal(f.addr)
+      })
+    })
+
   });
 
   describe("serialize deserialize", function() {
