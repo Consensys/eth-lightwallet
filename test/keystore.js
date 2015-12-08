@@ -294,8 +294,20 @@ describe("Keystore", function() {
       expect(function () {ks.generateNewAddress(pw, 5, hdPath);}).to.throw(Error);
       ks.generateNewEncryptionKeys(pw, 6, hdPath);
       var pubKeys = ks.getPubKeys(hdPath);
-      expect(pubKeys).to.deep.equal(fixtures.valid[0][hdPath].pubKeys)
+      expect(pubKeys).to.deep.equal(fixtures.valid[0][hdPath].pubKeys);
     }); 
+
+    it('sets the default HD path', function () {
+      var pw = fixtures.valid[0].password;
+      var ks = new keyStore(fixtures.valid[0].mnSeed, pw);
+      var hdPath = "m/0'/0'/1'";
+      ks.addHdDerivationPath(hdPath, pw, {curve: 'secp256k1', purpose: 'sign'});
+      ks.generateNewAddress(pw, 5, hdPath);
+      var addresses0 = ks.getAddresses(hdPath);
+      ks.setDefaultHdDerivationPath(hdPath);
+      var addresses1 = ks.getAddresses();
+      expect(addresses0).to.deep.equal(addresses1);
+    })
 
   });
 
