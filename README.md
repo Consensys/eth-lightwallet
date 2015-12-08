@@ -84,9 +84,20 @@ Generates a string consisting of a random 12-word seed and returns it. If the op
 
 Checks if `seed` is a valid 12-word seed according to the [BIP39][] specification.
 
-### `keystore.generateNewAddress(password [, num])`
+### `keystore.addHdDerivationPath(hdPathString, password, info)`
 
-Generates a new address/private key pair from the seed and stores them in the keystore. The private key is stored encrypted with the users password. If the integer `num` is supplied a batch of `num` address/key pairs is generated.
+Adds the HD derivation path `hdPathString` to the keystore. The `info` structure denotes the curve and purpose for the keys in that path. Supported structures are
+
+* `{curve: 'secp256k1', purpose: 'sign'}`
+* `{curve: 'curve25519', purpose: 'asymEncrypt'}`
+
+### `keystore.setDefaultHdDerivationPath(hdPathString)`
+
+Set the default HD Derivation path. This path will be used if the `hdPathString` is omitted from other functions. This is also the path that's used if the keystore is used with the Hooked Web3 Provider.
+
+### `keystore.generateNewAddress(password [, num, hdPathString])`
+
+Generates a new address/private key pair from the seed and stores them in the keystore. The private key is stored encrypted with the users password. If the integer `num` is supplied a batch of `num` address/key pairs is generated. If `hdPathString` is supplied the new key pairs are generated at that HD Path, otherwise they are generated at `defaultHdPathString`.
 
 ### `keystore.deserialize(serialized_keystore)`
 
@@ -95,6 +106,10 @@ Takes a serialized keystore string `serialized_keystore` and returns a new keyst
 ### `keystore.serialize()`
 
 Serializes the current keystore object into a JSON-encoded string and returns that string.
+
+### `keystore.upgradeOldSerialized(oldKeyStore, password)`
+
+Takes a serialized keystore in an old format and returns a serialized keystore in the latest format.
 
 ### `keystore.getAddresses()`
 
@@ -110,7 +125,7 @@ Given the password, decrypts and returns the private key corresponding to `addre
 
 ### `keystore.signTx(rawTx, password, signingAddress)`
 
-Signs a transaction with the private key corresponding to `signingAddress`
+Signs a transaction with the private key corresponding to `signingAddress`.
 
 #### Inputs
 
@@ -121,6 +136,45 @@ Signs a transaction with the private key corresponding to `signingAddress`
 #### Return value
 
 Hex-string corresponding to the RLP-encoded raw transaction.
+
+### `keystore.generateNewEncryptionKeys(password [, num, hdPathString])`
+
+Generate `num` new encryption keys at the path `hdPathString`. Only
+defined when the purpose of the HD path is `asymEncrypt`.
+
+### `keystore.getPubKeys([hdPathString])`
+
+Return the pubkeys at `hdPathString`, or at the default HD path. Only
+defined when the purpose of the HD path is `asymEncrypt`.
+
+### `keystore.multiEncryptString(msg, myPubKey, theirPubKeyArray, password [, hdPathString])`
+
+Encrypts the string `msg` with a randomly generated symmetric key, then encrypts that symmetric key assymetrically to each of the pubkeys in `theirPubKeyArray`. The encrypted message can then be read only by sender and the holders of the private keys corresponding to the public keys in `theirPubKeyArray`. The returned object has the following form, where nonces and ciphertexts are encoded in base64:
+
+```
+{ version: 1,
+  asymAlg: 'curve25519-xsalsa20-poly1305',
+  symAlg: 'xsalsa20-poly1305',
+  symNonce: 'SLmxcH3/CPMCCJ7orkI7iSjetRlMmzQH',
+  symEncMessage: 'iN4+/b5InlsVo5Bc7GTmaBh8SgWV8OBMHKHMVf7aq5O9eqwnIzVXeX4yzUWbw2w=',
+  encryptedSymKey: 
+   [ { nonce: 'qcNCtKqiooYLlRuIrNlNVtF8zftoT5Cb',
+       ciphertext: 'L8c12EJsFYM1K7udgHDRrdHhQ7ng+VMkzOdVFTjWu0jmUzpehFeqyoEyg8cROBmm' },
+     { nonce: 'puD2x3wmQKu3OIyxgJq2kG2Hz01+dxXs',
+       ciphertext: 'gLYtYpJbeFKXL/WAK0hyyGEelaL5Ddq9BU3249+hdZZ7xgTAZVL8tw+fIVcvpgaZ' },
+     { nonce: '1g8VbftPnjc+1NG3zCGwZS8KO73yjucu',
+       ciphertext: 'pftERJOPDV2dfP+C2vOwPWT43Q89V74Nfu1arNQeTMphSHqVuUXItbyCMizISTxG' },
+     { nonce: 'KAH+cCxbFGSDjHDOBzDhMboQdFWepvBw',
+       ciphertext: 'XWmmBmxLEyLTUmUBiWy2wDqedubsa0KTcufhKM7YfJn/eHWhDDptMxYDvaKisFmn' } ] }
+```
+
+Note that no padding is applied to `msg`, so it's possible to deduce the length of the string `msg` from the ciphertext. If you don't want this information to be known, please apply padding to `msg` before calling this function.
+
+### `keystore.multiDecryptString(encMsg, theirPubKey, myPubKey, password [, hdPathString])`
+
+Decrypt a message `encMsg` created with the function
+`multiEncryptString()`. If successful, returns the original message
+string. If not successful, returns `false`.
 
 ## `txutils` Function definitions
 
