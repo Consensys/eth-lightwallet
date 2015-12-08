@@ -261,6 +261,15 @@ describe("Keystore", function() {
 
   });
     
+  describe('upgrade old serialized keystore', function () {
+    it('upgrades an old keystore', function () {
+      var oldKS = require('./fixtures/lightwallet.json')
+      var newKS = keyStore.deserialize(keyStore.upgradeOldSerialized(oldKS, 'test'))
+      var addresses = newKS.getAddresses();
+      expect(addresses).to.deep.equal(oldKS.addresses);
+    })
+  })
+
   describe('multiple HD paths', function () {
     it('creates new HD paths', function() {
       var pw = fixtures.valid[0].password;
@@ -281,7 +290,7 @@ describe("Keystore", function() {
       var pw = fixtures.valid[0].password;
       var ks = new keyStore(fixtures.valid[0].mnSeed, pw);
       var hdPath = "m/0'/0'/2'";
-      ks.addHdDerivationPath(hdPath, pw, {curve: 'curve25519', purpose: 'encrypt'});
+      ks.addHdDerivationPath(hdPath, pw, {curve: 'curve25519', purpose: 'asymEncrypt'});
       expect(function () {ks.generateNewAddress(pw, 5, hdPath);}).to.throw(Error);
       ks.generateNewEncryptionKeys(pw, 6, hdPath);
       var pubKeys = ks.getPubKeys(hdPath);
@@ -290,24 +299,51 @@ describe("Keystore", function() {
 
   });
 
-  describe('Encryption', function() {
+  describe('Asymmetric Encryption', function() {
 
     it('encrypts and decrypts a string', function () {
       var pw = fixtures.valid[0].password;
       var ks = new keyStore(fixtures.valid[0].mnSeed, pw);
       var hdPath = "m/0'/0'/2'";
-      ks.addHdDerivationPath(hdPath, pw, {curve: 'curve25519', purpose: 'encrypt'});
+      ks.addHdDerivationPath(hdPath, pw, {curve: 'curve25519', purpose: 'asymEncrypt'});
       ks.generateNewEncryptionKeys(pw, 2, hdPath);
       var pubKeys = ks.getPubKeys(hdPath);
       var msg = "Hello World!";
-      var encrypted = ks.encryptString(msg, pubKeys[0], pubKeys[1], pw, hdPath);
-      var cleartext = ks.decryptString(encrypted, pubKeys[1], pubKeys[0], pw, hdPath);
+      var encrypted = ks.asymEncryptString(msg, pubKeys[0], pubKeys[1], pw, hdPath);
+      var cleartext = ks.asymDecryptString(encrypted, pubKeys[1], pubKeys[0], pw, hdPath);
       expect(cleartext).to.equal(msg);
-    });
-  
-    
+    });    
 
   });
+
+  describe('Multi-recipient Encryption', function() {
+
+    this.timeout(10000);
+
+    it('encrypts and decrypts a string to multiple parties', function () {
+      var pw = fixtures.valid[0].password;
+      var ks = new keyStore(fixtures.valid[0].mnSeed, pw);
+      var hdPath = "m/0'/0'/2'";
+      ks.addHdDerivationPath(hdPath, pw, {curve: 'curve25519', purpose: 'asymEncrypt'});
+      ks.generateNewEncryptionKeys(pw, 6, hdPath);
+      var pubKeys = ks.getPubKeys(hdPath);
+      var msg = "Hello World to multiple people!";
+      var encrypted = ks.multiEncryptString(msg, pubKeys[0], pubKeys.slice(0,4), pw, hdPath);
+      var cleartext = ks.multiDecryptString(encrypted, pubKeys[0], pubKeys[0], pw, hdPath);
+      expect(cleartext).to.equal(msg);
+      cleartext = ks.multiDecryptString(encrypted, pubKeys[0], pubKeys[1], pw, hdPath);
+      expect(cleartext).to.equal(msg);
+      cleartext = ks.multiDecryptString(encrypted, pubKeys[0], pubKeys[2], pw, hdPath);
+      expect(cleartext).to.equal(msg);
+      cleartext = ks.multiDecryptString(encrypted, pubKeys[0], pubKeys[3], pw, hdPath);
+      expect(cleartext).to.equal(msg);
+      cleartext = ks.multiDecryptString(encrypted, pubKeys[0], pubKeys[4], pw, hdPath);
+      expect(cleartext).to.equal(false);
+      
+    });
+
+  });
+
 
 
 });
