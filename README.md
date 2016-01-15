@@ -23,7 +23,7 @@ npm install eth-lightwallet
 
 The `eth-lightwallet` package contains `dist/lightwallet.min.js` that can be included in an HTML page:
 
-```
+```html
 <html>
   <body>
     <script src="lightwallet.min.js"></script>
@@ -35,7 +35,7 @@ The file `lightwallet.min.js` exposes the global object `lightwallet` to the bro
 
 Sample usage with hooked web3 provider:
 
-```
+```js
 // generate a new BIP32 12-word seed
 var secretSeed = lightwallet.keystore.generateRandomSeed();
 
@@ -151,7 +151,7 @@ defined when the purpose of the HD path is `asymEncrypt`.
 
 Encrypts the string `msg` with a randomly generated symmetric key, then encrypts that symmetric key assymetrically to each of the pubkeys in `theirPubKeyArray`. The encrypted message can then be read only by sender and the holders of the private keys corresponding to the public keys in `theirPubKeyArray`. The returned object has the following form, where nonces and ciphertexts are encoded in base64:
 
-```
+```js
 { version: 1,
   asymAlg: 'curve25519-xsalsa20-poly1305',
   symAlg: 'xsalsa20-poly1305',
