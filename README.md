@@ -41,11 +41,13 @@ var secretSeed = lightwallet.keystore.generateRandomSeed();
 
 // the seed is stored encrypted by a user-defined password
 var password = prompt('Enter password for encryption', 'password');
-var ks = new lightwallet.keystore(secretSeed, password);
+lightwallet.keystore.deriveKeyFromPassword(password, function (err, pwDerivedKey) {
+
+var ks = new lightwallet.keystore(secretSeed, pwDerivedKey);
 
 // generate five new address/private key pairs
 // the corresponding private keys are also encrypted
-ks.generateNewAddress(password, 5);
+ks.generateNewAddress(pwDerivedKey, 5);
 var addr = ks.getAddresses();
 
 // Create a custom passwordProvider to prompt the user to enter their
@@ -58,6 +60,7 @@ ks.passwordProvider = function (callback) {
 
 // Now set ks as transaction_signer in the hooked web3 provider
 // and you can start using web3 using the keys/addresses in ks!
+});
 ```
 
 ## `keystore` Function definitions
@@ -66,14 +69,18 @@ These are the interface functions for the keystore object. The keystore object h
 
 Note: Addresses and RLP encoded data are in the form of hex-strings. Hex-strings do not start with `0x`.
 
-### `keystore(seed, password)`
+### `keystore.deriveKeyFromPassword(password, callback)`
 
-Constructor of the keystore object. The seed `seed` is encrypted with `password` and stored encrypted in the keystore.
+Inputs the users password and generates a symmetric key of type `Uint8Array` that is used to encrypt/decrypt the keystore.
+
+### `keystore(seed, pwDerivedKey)`
+
+Constructor of the keystore object. The seed `seed` is encrypted with `pwDerivedKey` and stored encrypted in the keystore.
 
 #### Inputs
 
 * words: string defining a 12-word seed according to [BIP39][]
-* password: password to encrypt the seed
+* pwDerivedKey: symmetric key to encrypt the seed (Uint8Array)
 
 
 ### `keystore.generateRandomSeed([extraEntropy])`
@@ -84,7 +91,7 @@ Generates a string consisting of a random 12-word seed and returns it. If the op
 
 Checks if `seed` is a valid 12-word seed according to the [BIP39][] specification.
 
-### `keystore.addHdDerivationPath(hdPathString, password, info)`
+### `keystore.addHdDerivationPath(hdPathString, pwDerivedKey, info)`
 
 Adds the HD derivation path `hdPathString` to the keystore. The `info` structure denotes the curve and purpose for the keys in that path. Supported structures are
 
@@ -95,9 +102,9 @@ Adds the HD derivation path `hdPathString` to the keystore. The `info` structure
 
 Set the default HD Derivation path. This path will be used if the `hdPathString` is omitted from other functions. This is also the path that's used if the keystore is used with the Hooked Web3 Provider.
 
-### `keystore.generateNewAddress(password [, num, hdPathString])`
+### `keystore.generateNewAddress(pwDerivedKey [, num, hdPathString])`
 
-Generates a new address/private key pair from the seed and stores them in the keystore. The private key is stored encrypted with the users password. If the integer `num` is supplied a batch of `num` address/key pairs is generated. If `hdPathString` is supplied the new key pairs are generated at that HD Path, otherwise they are generated at `defaultHdPathString`.
+Generates a new address/private key pair from the seed and stores them in the keystore. The private key is stored encrypted with the users password derived key. If the integer `num` is supplied a batch of `num` address/key pairs is generated. If `hdPathString` is supplied the new key pairs are generated at that HD Path, otherwise they are generated at `defaultHdPathString`.
 
 ### `keystore.deserialize(serialized_keystore)`
 
@@ -107,7 +114,7 @@ Takes a serialized keystore string `serialized_keystore` and returns a new keyst
 
 Serializes the current keystore object into a JSON-encoded string and returns that string.
 
-### `keystore.upgradeOldSerialized(oldKeyStore, password)`
+### `keystore.upgradeOldSerialized(oldKeyStore, pwDerivedKey)`
 
 Takes a serialized keystore in an old format and returns a serialized keystore in the latest format.
 
@@ -115,29 +122,29 @@ Takes a serialized keystore in an old format and returns a serialized keystore i
 
 Returns a list of hex-string addresses currently stored in the keystore.
 
-### `keystore.getSeed(password)`
+### `keystore.getSeed(pwDerivedKey)`
 
-Given the password, decrypts and returns the users 12-word seed.
+Given the pwDerivedKey, decrypts and returns the users 12-word seed.
 
-### `keystore.exportPrivateKey(address, password)`
+### `keystore.exportPrivateKey(address, pwDerivedKey)`
 
-Given the password, decrypts and returns the private key corresponding to `address`. This should be done sparingly as the recommended practice is for the `keystore` to sign transactions using `keystore.signTx`, so there is normally no need to export private keys.
+Given the derived key, decrypts and returns the private key corresponding to `address`. This should be done sparingly as the recommended practice is for the `keystore` to sign transactions using `keystore.signTx`, so there is normally no need to export private keys.
 
-### `keystore.signTx(rawTx, password, signingAddress)`
+### `keystore.signTx(rawTx, pwDerivedKey, signingAddress)`
 
 Signs a transaction with the private key corresponding to `signingAddress`.
 
 #### Inputs
 
 * `rawTx`: Hex-string defining an RLP-encoded raw transaction.
-* `password`: the users password (string)
+* `pwDerivedKey`: the users password derived key (Uint8Array)
 * `fromAddress`: hex-string defining the address to send the transaction from.
 
 #### Return value
 
 Hex-string corresponding to the RLP-encoded raw transaction.
 
-### `keystore.generateNewEncryptionKeys(password [, num, hdPathString])`
+### `keystore.generateNewEncryptionKeys(pwDerivedKey [, num, hdPathString])`
 
 Generate `num` new encryption keys at the path `hdPathString`. Only
 defined when the purpose of the HD path is `asymEncrypt`.
@@ -147,7 +154,7 @@ defined when the purpose of the HD path is `asymEncrypt`.
 Return the pubkeys at `hdPathString`, or at the default HD path. Only
 defined when the purpose of the HD path is `asymEncrypt`.
 
-### `keystore.multiEncryptString(msg, myPubKey, theirPubKeyArray, password [, hdPathString])`
+### `keystore.multiEncryptString(msg, myPubKey, theirPubKeyArray, pwDerivedKey [, hdPathString])`
 
 Encrypts the string `msg` with a randomly generated symmetric key, then encrypts that symmetric key assymetrically to each of the pubkeys in `theirPubKeyArray`. The encrypted message can then be read only by sender and the holders of the private keys corresponding to the public keys in `theirPubKeyArray`. The returned object has the following form, where nonces and ciphertexts are encoded in base64:
 
@@ -170,7 +177,7 @@ Encrypts the string `msg` with a randomly generated symmetric key, then encrypts
 
 Note that no padding is applied to `msg`, so it's possible to deduce the length of the string `msg` from the ciphertext. If you don't want this information to be known, please apply padding to `msg` before calling this function.
 
-### `keystore.multiDecryptString(encMsg, theirPubKey, myPubKey, password [, hdPathString])`
+### `keystore.multiDecryptString(encMsg, theirPubKey, myPubKey, pwDerivedKey [, hdPathString])`
 
 Decrypt a message `encMsg` created with the function
 `multiEncryptString()`. If successful, returns the original message
