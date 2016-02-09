@@ -1,6 +1,8 @@
 var expect = require('chai').expect
 var keyStore = require('../lib/keystore')
 var fixtures = require('./fixtures/keystore')
+var Web3 = require('web3');
+var web3 = new Web3()
 
 // Test with 100 private keys
 var addrprivkeyvector = require('./fixtures/addrprivkey100.json')
@@ -200,12 +202,21 @@ describe("Keystore", function() {
       });
   });
     
-  describe("signTx", function() {
-    it('signs a transaction deterministically', function() {
-      var pw = fixtures.valid[0].password
-      var ks = new keyStore(fixtures.valid[0].mnSeed, pw)
+  describe("signing", function() {
+    var pw, ks, addr, signature, message;
+    before(function() {
+      message = fixtures.valid[0].message;
+      pw = fixtures.valid[0].password
+      ks = new keyStore(fixtures.valid[0].mnSeed, pw)
       ks.generateNewAddress(pw)
-      var addr = ks.getAddresses()[0]
+      addr = ks.getAddresses()[0]
+    });
+
+    it('recovers address from eth_sign signature', function() {
+      expect(ks.recoverAddress(web3.sha3(message), fixtures.valid[0].eth_signedMessage)).to.equal(fixtures.valid[0].address);
+    });
+
+    it('signs a transaction deterministically', function() {
       expect('0x' + addr).to.equal(fixtures.valid[0].ethjsTxParams.from)
       
       var tx = new Transaction(fixtures.valid[0].ethjsTxParams)
@@ -214,6 +225,16 @@ describe("Keystore", function() {
       
       var signedTx = ks.signTx(rawTx, pw, addr);
       expect(signedTx).to.equal(fixtures.valid[0].rawSignedTx)
+    });
+
+    it('sign a message deterministically', function() {
+      signature = ks.sign(web3.sha3(message), pw, addr)
+      expect(signature).to.equal(fixtures.valid[0].signedMessage);
+    });
+
+    it('recovers address from deterministic signature', function() {
+      var address = ks.recoverAddress(web3.sha3(message), signature);
+      expect(address).to.equal(addr);
     });
   });
 
