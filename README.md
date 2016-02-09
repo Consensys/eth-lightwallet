@@ -137,6 +137,34 @@ Signs a transaction with the private key corresponding to `signingAddress`.
 
 Hex-string corresponding to the RLP-encoded raw transaction.
 
+### `keystore.sign(hash, password [, signingAddress, hdPathString])`
+
+Signs a hash with `signingAddress` using `password` to decrypt its private key
+
+#### Inputs
+
+* `hash`: hexidecimal string, before signing the hash will be right justified and left padded to 32 bytes.
+* `password`: password for decrypting the `signingAddress` private key
+* `signingAddress`: address for which the private key will sign the message. Defaults to first generated addrss
+* `hdPathString`: the hd path for looking up addresses. Defaults to `"m/0'/0'/0'"`
+
+#### Return value
+
+65 byte hexidecimal string: `signature.r` (32 bytes) + `signature.s` (32 bytes) + `signature.recoverParam` (1 byte)
+
+
+### `keystore.recoverAddress(hash, signature)`
+
+Recover the signing ether address from a signature and message.
+
+#### Inputs
+* `hash`: the hexidecimal string that was signed. Will be right justified and left-padded to 32 bytes before recovering public key.
+* `signature`: 65 byte hexidecimal string of the format `signature.r` + `signature.s` + `signature.recoveryParam`
+
+#### Return value
+
+Ether address as a hexidecimal string
+
 ### `keystore.generateNewEncryptionKeys(password [, num, hdPathString])`
 
 Generate `num` new encryption keys at the path `hdPathString`. Only
