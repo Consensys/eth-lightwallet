@@ -5,6 +5,37 @@ var encryption = require('../lib/encryption')
 var fixtures = require('./fixtures/keystore')
 
 describe("Encryption", function () {
+
+  // Can't directly test the encrypt/decrypt functions
+  // since salt and iv is used.
+  describe("_encryptString _decryptString", function() {
+
+    fixtures.valid.forEach(function (f) {
+      it('encrypts the seed then returns same seed decrypted ' + '"' + f.mnSeed.substring(0,25) + '..."', function (done) {
+
+        var encryptedString = encryption._encryptString(f.mnSeed, Uint8Array.from(f.pwDerivedKey))
+        var decryptedString = encryption._decryptString(encryptedString, Uint8Array.from(f.pwDerivedKey))
+
+        expect(decryptedString).to.equal(f.mnSeed)
+        done();
+      })
+    })
+  });
+
+  describe("_encryptKey _decryptKey", function() {
+
+    fixtures.valid.forEach(function (f) {
+      it('encrypts the key then returns same key decrypted ' + '"' + f.privKeyHex.substring(0,15) + '..."', function (done) {
+
+        var encryptedKey = encryption._encryptKey(f.privKeyHex, Uint8Array.from(f.pwDerivedKey))
+        var decryptedKey = encryption._decryptKey(encryptedKey, Uint8Array.from(f.pwDerivedKey))
+
+        expect(decryptedKey).to.equal(f.privKeyHex)
+        done();
+      })
+    })
+  });
+
   describe('Asymmetric Encryption', function() {
 
     it('encrypts and decrypts a string', function (done) {

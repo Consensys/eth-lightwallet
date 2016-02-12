@@ -1,6 +1,7 @@
 var expect = require('chai').expect
 var keyStore = require('../lib/keystore')
 var upgrade = require('../lib/upgrade')
+var encryption = require('../lib/encryption')
 var fixtures = require('./fixtures/keystore')
 
 // Test with 100 private keys
@@ -35,7 +36,7 @@ describe("Keystore", function() {
     it("returns keystore with an encrypted seed set when give mnemonic and pwDerivedKey", function(done) {
       var ks = new keyStore(fixtures.valid[0].mnSeed, Uint8Array.from(fixtures.valid[0].pwDerivedKey))
       expect(ks.encSeed).to.not.equal(undefined);
-      var decryptedPaddedSeed = keyStore._decryptString(ks.encSeed, Uint8Array.from(fixtures.valid[0].pwDerivedKey));
+      var decryptedPaddedSeed = encryption._decryptString(ks.encSeed, Uint8Array.from(fixtures.valid[0].pwDerivedKey));
       // Check padding
       expect(decryptedPaddedSeed.length).to.equal(120);
       expect(decryptedPaddedSeed.trim()).to.equal(fixtures.valid[0].mnSeed);
@@ -54,36 +55,6 @@ describe("Keystore", function() {
       // add
       done();
     });
-  });
-
-  // Can't directly test the encrypt/decrypt functions
-  // since salt and iv is used.
-  describe("_encryptString _decryptString", function() {
-
-    fixtures.valid.forEach(function (f) {
-      it('encrypts the seed then returns same seed decrypted ' + '"' + f.mnSeed.substring(0,25) + '..."', function (done) {
-
-        var encryptedString = keyStore._encryptString(f.mnSeed, Uint8Array.from(f.pwDerivedKey))
-        var decryptedString = keyStore._decryptString(encryptedString, Uint8Array.from(f.pwDerivedKey))
-
-        expect(decryptedString).to.equal(f.mnSeed)
-        done();
-      })
-    })
-  });
-
-  describe("_encryptKey _decryptKey", function() {
-
-    fixtures.valid.forEach(function (f) {
-      it('encrypts the key then returns same key decrypted ' + '"' + f.privKeyHex.substring(0,15) + '..."', function (done) {
-
-        var encryptedKey = keyStore._encryptKey(f.privKeyHex, Uint8Array.from(f.pwDerivedKey))
-        var decryptedKey = keyStore._decryptKey(encryptedKey, Uint8Array.from(f.pwDerivedKey))
-
-        expect(decryptedKey).to.equal(f.privKeyHex)
-        done();
-      })
-    })
   });
 
   describe("_computeAddressFromPrivKey", function() {
@@ -162,7 +133,7 @@ describe("Keystore", function() {
     it("returns the object's address attribute", function(done) {
       var ks = new keyStore(fixtures.valid[0].mnSeed, Uint8Array.from(fixtures.valid[0].pwDerivedKey))
       expect(ks.getAddresses()).to.equal(ks.ksData[ks.defaultHdPathString].addresses);
-    done();      
+    done();
     });
 
   });
@@ -177,7 +148,7 @@ describe("Keystore", function() {
     it('checks if seed is valid', function(done) {
       var isValid = keyStore.isSeedValid(fixtures.valid[0].mnSeed)
       expect(isValid).to.equal(true);
-      
+
       isValid = keyStore.isSeedValid(fixtures.invalid[0].mnSeed)
       expect(isValid).to.equal(false);
       done();
@@ -205,7 +176,7 @@ describe("Keystore", function() {
           var ks = new keyStore(fixtures.valid[0].mnSeed, pw)
           ks.generateNewAddress(pw, 2)
           var addr = ks.getAddresses();
-	  
+
           var exportedPriv0 = ks.exportPrivateKey(addr[0], pw)
           var exportedPriv1 = ks.exportPrivateKey(addr[1], pw)
 
@@ -216,24 +187,6 @@ describe("Keystore", function() {
           expect(addrFromExported1).to.equal(addr[1])
         done();
       });
-  });
-    
-  describe("signTx", function() {
-    it('signs a transaction deterministically', function(done) {
-      var pw = Uint8Array.from(fixtures.valid[0].pwDerivedKey)
-      var ks = new keyStore(fixtures.valid[0].mnSeed, pw)
-      ks.generateNewAddress(pw)
-      var addr = ks.getAddresses()[0]
-      expect('0x' + addr).to.equal(fixtures.valid[0].ethjsTxParams.from)
-      
-      var tx = new Transaction(fixtures.valid[0].ethjsTxParams)
-      var rawTx = tx.serialize().toString('hex')
-      expect(rawTx).to.equal(fixtures.valid[0].rawUnsignedTx)
-      
-      var signedTx = ks.signTx(rawTx, pw, addr);
-      expect(signedTx).to.equal(fixtures.valid[0].rawSignedTx)
-      done();
-    });
   });
 
   describe("hooked web3-provider", function() {
@@ -281,7 +234,7 @@ describe("Keystore", function() {
     });
 
   });
-    
+
   describe('upgrade old serialized keystore', function () {
     it('upgrades an old keystore', function (done) {
       this.timeout(10000);
@@ -323,7 +276,7 @@ describe("Keystore", function() {
       var pubKeys = ks.getPubKeys(hdPath);
       expect(pubKeys).to.deep.equal(fixtures.valid[0][hdPath].pubKeys);
       done();
-    }); 
+    });
 
     it('sets the default HD path', function (done) {
       var pw = Uint8Array.from(fixtures.valid[0].pwDerivedKey);
@@ -339,53 +292,5 @@ describe("Keystore", function() {
     })
 
   });
-
-  describe('Asymmetric Encryption', function() {
-
-    it('encrypts and decrypts a string', function (done) {
-      var pw = Uint8Array.from(fixtures.valid[0].pwDerivedKey);
-      var ks = new keyStore(fixtures.valid[0].mnSeed, pw);
-      var hdPath = "m/0'/0'/2'";
-      ks.addHdDerivationPath(hdPath, pw, {curve: 'curve25519', purpose: 'asymEncrypt'});
-      ks.generateNewEncryptionKeys(pw, 2, hdPath);
-      var pubKeys = ks.getPubKeys(hdPath);
-      var msg = "Hello World!";
-      var encrypted = ks.asymEncryptString(msg, pubKeys[0], pubKeys[1], pw, hdPath);
-      var cleartext = ks.asymDecryptString(encrypted, pubKeys[1], pubKeys[0], pw, hdPath);
-      expect(cleartext).to.equal(msg);
-      done();
-    });    
-
-  });
-
-  describe('Multi-recipient Encryption', function() {
-
-    this.timeout(10000);
-
-    it('encrypts and decrypts a string to multiple parties', function (done) {
-      var pw = Uint8Array.from(fixtures.valid[0].pwDerivedKey);
-      var ks = new keyStore(fixtures.valid[0].mnSeed, pw);
-      var hdPath = "m/0'/0'/2'";
-      ks.addHdDerivationPath(hdPath, pw, {curve: 'curve25519', purpose: 'asymEncrypt'});
-      ks.generateNewEncryptionKeys(pw, 6, hdPath);
-      var pubKeys = ks.getPubKeys(hdPath);
-      var msg = "Hello World to multiple people!";
-      var encrypted = ks.multiEncryptString(msg, pubKeys[0], pubKeys.slice(0,4), pw, hdPath);
-      var cleartext = ks.multiDecryptString(encrypted, pubKeys[0], pubKeys[0], pw, hdPath);
-      expect(cleartext).to.equal(msg);
-      cleartext = ks.multiDecryptString(encrypted, pubKeys[0], pubKeys[1], pw, hdPath);
-      expect(cleartext).to.equal(msg);
-      cleartext = ks.multiDecryptString(encrypted, pubKeys[0], pubKeys[2], pw, hdPath);
-      expect(cleartext).to.equal(msg);
-      cleartext = ks.multiDecryptString(encrypted, pubKeys[0], pubKeys[3], pw, hdPath);
-      expect(cleartext).to.equal(msg);
-      cleartext = ks.multiDecryptString(encrypted, pubKeys[0], pubKeys[4], pw, hdPath);
-      expect(cleartext).to.equal(false);
-      done();
-    });
-
-  });
-
-
 
 });
