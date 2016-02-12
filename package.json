@@ -1,6 +1,6 @@
 {
   "name": "eth-lightwallet",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "A lightweight ethereum javascript wallet.",
   "main": "index.js",
   "repository": {
@@ -40,6 +40,10 @@
     {
       "name": "Kevin Jiao",
       "email": "kevin.jiao@berkeley.edu"
+    },
+    {
+      "name": "Marian Oancea",
+      "email": "marian.oancea@gmail.com"
     }
   ],
   "license": "MIT",
