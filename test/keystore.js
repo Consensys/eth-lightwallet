@@ -1,7 +1,6 @@
 var expect = require('chai').expect
 var keyStore = require('../lib/keystore')
 var upgrade = require('../lib/upgrade')
-var encryption = require('../lib/encryption')
 var fixtures = require('./fixtures/keystore')
 
 // Test with 100 private keys
@@ -36,7 +35,7 @@ describe("Keystore", function() {
     it("returns keystore with an encrypted seed set when give mnemonic and pwDerivedKey", function(done) {
       var ks = new keyStore(fixtures.valid[0].mnSeed, Uint8Array.from(fixtures.valid[0].pwDerivedKey))
       expect(ks.encSeed).to.not.equal(undefined);
-      var decryptedPaddedSeed = encryption._decryptString(ks.encSeed, Uint8Array.from(fixtures.valid[0].pwDerivedKey));
+      var decryptedPaddedSeed = keyStore._decryptString(ks.encSeed, Uint8Array.from(fixtures.valid[0].pwDerivedKey));
       // Check padding
       expect(decryptedPaddedSeed.length).to.equal(120);
       expect(decryptedPaddedSeed.trim()).to.equal(fixtures.valid[0].mnSeed);
@@ -55,6 +54,36 @@ describe("Keystore", function() {
       // add
       done();
     });
+  });
+
+  // Can't directly test the encrypt/decrypt functions
+  // since salt and iv is used.
+  describe("_encryptString _decryptString", function() {
+
+    fixtures.valid.forEach(function (f) {
+      it('encrypts the seed then returns same seed decrypted ' + '"' + f.mnSeed.substring(0,25) + '..."', function (done) {
+
+        var encryptedString = keyStore._encryptString(f.mnSeed, Uint8Array.from(f.pwDerivedKey))
+        var decryptedString = keyStore._decryptString(encryptedString, Uint8Array.from(f.pwDerivedKey))
+
+        expect(decryptedString).to.equal(f.mnSeed)
+        done();
+      })
+    })
+  });
+
+  describe("_encryptKey _decryptKey", function() {
+
+    fixtures.valid.forEach(function (f) {
+      it('encrypts the key then returns same key decrypted ' + '"' + f.privKeyHex.substring(0,15) + '..."', function (done) {
+
+        var encryptedKey = keyStore._encryptKey(f.privKeyHex, Uint8Array.from(f.pwDerivedKey))
+        var decryptedKey = keyStore._decryptKey(encryptedKey, Uint8Array.from(f.pwDerivedKey))
+
+        expect(decryptedKey).to.equal(f.privKeyHex)
+        done();
+      })
+    })
   });
 
   describe("_computeAddressFromPrivKey", function() {

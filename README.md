@@ -156,7 +156,7 @@ defined when the purpose of the HD path is `asymEncrypt`.
 
 ## `encryption` Function definitions
 
-### `encryption.multiEncryptString(msg, myPubKey, theirPubKeyArray, pwDerivedKey [, hdPathString])`
+### `encryption.multiEncryptString(keystore, msg, myPubKey, theirPubKeyArray, pwDerivedKey [, hdPathString])`
 
 Encrypts the string `msg` with a randomly generated symmetric key, then encrypts that symmetric key assymetrically to each of the pubkeys in `theirPubKeyArray`. The encrypted message can then be read only by sender and the holders of the private keys corresponding to the public keys in `theirPubKeyArray`. The returned object has the following form, where nonces and ciphertexts are encoded in base64:
 
@@ -179,7 +179,7 @@ Encrypts the string `msg` with a randomly generated symmetric key, then encrypts
 
 Note that no padding is applied to `msg`, so it's possible to deduce the length of the string `msg` from the ciphertext. If you don't want this information to be known, please apply padding to `msg` before calling this function.
 
-### `encryption.multiDecryptString(encMsg, theirPubKey, myPubKey, pwDerivedKey [, hdPathString])`
+### `encryption.multiDecryptString(keystore, encMsg, theirPubKey, myPubKey, pwDerivedKey [, hdPathString])`
 
 Decrypt a message `encMsg` created with the function
 `multiEncryptString()`. If successful, returns the original message
