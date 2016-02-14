@@ -2,6 +2,7 @@ var expect = require('chai').expect
 var keyStore = require('../lib/keystore')
 var upgrade = require('../lib/upgrade')
 var fixtures = require('./fixtures/keystore')
+var Promise = require('bluebird')
 
 // Test with 100 private keys
 var addrprivkeyvector = require('./fixtures/addrprivkey100.json')
@@ -85,6 +86,22 @@ describe("Keystore", function() {
       })
     })
   });
+
+  describe("deriveKeyFromPassword", function () {
+    it("derives a key correctly from the password", function(done) {
+      var derKeyProm = Promise.promisify(keyStore.deriveKeyFromPassword);
+      var promArray = [];
+      fixtures.valid.forEach(function (f) {
+        promArray.push(derKeyProm(f.password));
+      })
+      Promise.all(promArray).then(function(derived) {
+        for(var i=0; i<derived.length; i++) {
+          expect(derived[i]).to.deep.equal(Uint8Array.from(fixtures.valid[i].pwDerivedKey))
+        }
+        done();
+      })
+    })
+  })
 
   describe("_computeAddressFromPrivKey", function() {
     fixtures.valid.forEach(function (f) {
