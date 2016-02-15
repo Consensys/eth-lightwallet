@@ -82,6 +82,9 @@ Constructor of the keystore object. The seed `seed` is encrypted with `pwDerived
 * words: string defining a 12-word seed according to [BIP39][]
 * pwDerivedKey: symmetric key to encrypt the seed (Uint8Array)
 
+### `keystore.isDerivedKeyCorrect(pwDerivedKey)`
+
+Returns `true` if the derived key can decrypt the seed, and returns `false` otherwise.
 
 ### `keystore.generateRandomSeed([extraEntropy])`
 
@@ -128,9 +131,11 @@ Given the pwDerivedKey, decrypts and returns the users 12-word seed.
 
 ### `keystore.exportPrivateKey(address, pwDerivedKey)`
 
-Given the derived key, decrypts and returns the private key corresponding to `address`. This should be done sparingly as the recommended practice is for the `keystore` to sign transactions using `keystore.signTx`, so there is normally no need to export private keys.
+Given the derived key, decrypts and returns the private key corresponding to `address`. This should be done sparingly as the recommended practice is for the `keystore` to sign transactions using `signing.signTx`, so there is normally no need to export private keys.
 
-### `keystore.signTx(rawTx, pwDerivedKey, signingAddress)`
+## `signing` Function definitions
+
+### `signing.signTx(rawTx, pwDerivedKey, signingAddress)`
 
 Signs a transaction with the private key corresponding to `signingAddress`.
 
@@ -156,7 +161,9 @@ defined when the purpose of the HD path is `asymEncrypt`.
 
 ## `encryption` Function definitions
 
-### `encryption.multiEncryptString(keystore, msg, myPubKey, theirPubKeyArray, pwDerivedKey [, hdPathString])`
+### `encryption.multiEncryptString(keystore, pwDerivedKey, msg, myPubKey, theirPubKeyArray [, hdPathString])`
+
+**NOTE:** The format of encrypted messages has not been finalized and may change at any time, so only use this for ephemeral messages that do not need to be stored encrypted for a long time.
 
 Encrypts the string `msg` with a randomly generated symmetric key, then encrypts that symmetric key assymetrically to each of the pubkeys in `theirPubKeyArray`. The encrypted message can then be read only by sender and the holders of the private keys corresponding to the public keys in `theirPubKeyArray`. The returned object has the following form, where nonces and ciphertexts are encoded in base64:
 
@@ -179,7 +186,7 @@ Encrypts the string `msg` with a randomly generated symmetric key, then encrypts
 
 Note that no padding is applied to `msg`, so it's possible to deduce the length of the string `msg` from the ciphertext. If you don't want this information to be known, please apply padding to `msg` before calling this function.
 
-### `encryption.multiDecryptString(keystore, encMsg, theirPubKey, myPubKey, pwDerivedKey [, hdPathString])`
+### `encryption.multiDecryptString(keystore, pwDerivedKey, encMsg, theirPubKey, myPubKey [, hdPathString])`
 
 Decrypt a message `encMsg` created with the function
 `multiEncryptString()`. If successful, returns the original message

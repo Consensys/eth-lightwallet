@@ -70,7 +70,7 @@ describe("Keystore", function() {
         expect(decryptedString).to.equal(f.mnSeed)
         done();
       })
-    })
+    })    
   });
 
   describe("_encryptKey _decryptKey", function() {
@@ -101,6 +101,18 @@ describe("Keystore", function() {
         done();
       })
     })
+
+    it('Checks if a derived key is correct or not', function (done) {
+      var derKey = Uint8Array.from(fixtures.valid[0].pwDerivedKey)
+      var derKey1 = Uint8Array.from(fixtures.valid[1].pwDerivedKey)
+      var ks = new keyStore(fixtures.valid[0].mnSeed, derKey);
+      var isDerKeyCorrect = ks.isDerivedKeyCorrect(derKey);
+      expect(isDerKeyCorrect).to.equal(true);
+      var isDerKey1Correct = ks.isDerivedKeyCorrect(derKey1);     
+      expect(isDerKey1Correct).to.equal(false);
+      done();
+    })
+
   })
 
   describe("_computeAddressFromPrivKey", function() {
@@ -144,9 +156,6 @@ describe("Keystore", function() {
 
       // Retains all attributes properly
       expect(deserKS.encSeed).to.deep.equal(origKS.encSeed)
-      expect(deserKS.salt.words).to.deep.equal(origKS.salt.words)
-      expect(deserKS.salt.sigBytes).to.deep.equal(origKS.salt.sigBytes)
-      expect(deserKS.keyHash).to.deep.equal(origKS.keyHash)
       expect(deserKS.ksData).to.deep.equal(origKS.ksData)
       done();
     });

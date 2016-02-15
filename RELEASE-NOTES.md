@@ -1,5 +1,13 @@
 # Release Notes #
 
+## Version 2.2.0 - 2016-02-14 ##
+
+* Change order of parameters in `encryption` module.
+
+* Add function `keystore.isDerivedKeyCorrect()`.
+
+* Removed redundant data members `keyHash, salt` of the keystore. 
+
 ## Version 2.1.0 - 2016-02-14 ##
 
 * Refactoring by [cubedro](https://github.com/cubedro) - move functions out to separate modules (signing, encryption) in order to make the core keystore object less cluttered.
