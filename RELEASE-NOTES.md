@@ -1,5 +1,9 @@
 # Release Notes #
 
+## Version 2.1.0 - 2016-02-14 ##
+
+* Refactoring by [cubedro](https://github.com/cubedro) - move functions out to separate modules (signing, encryption) in order to make the core keystore object less cluttered.
+
 ## Version 2.0.0 - 2016-02-09 ##
 
 * Big refactoring of password handling. Key derivation is now moved out into an asyncronous function allowing for more secure password-based key derivation or user-supplied keys. A helper function is provided with Scrypt key derivation.

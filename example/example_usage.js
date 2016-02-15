@@ -4,7 +4,7 @@
 
 var lightwallet = require('../index.js')
 var txutils = lightwallet.txutils
-var sigining = lightwallet.signing
+var signing = lightwallet.signing
 var encryption = lightwallet.encryption
 
 var source = '\ncontract NameCoin {\n\n    struct Item {\n\taddress owner;\n\tuint value;\n    }\n\n    mapping (uint => Item) registry;\n\n    function register(uint key) {\n\tif (registry[key].owner == 0) {\n\t    registry[key].owner = msg.sender;\n\t}\n    }\n\n    function transferOwnership(uint key, address newOwner) {\n\tif (registry[key].owner == msg.sender) {\n\t    registry[key].owner = newOwner;\n\t}\n    }\n\n    function setValue(uint key, uint newValue) {\n\tif (registry[key].owner == msg.sender) {\n\t    registry[key].value = newValue;\n\t}\n    }\n\n    function getValue(uint key) constant returns (uint value) {\n\treturn registry[key].value;\n    }\n\n    function getOwner(uint key) constant returns (address owner) {\n\treturn registry[key].owner;\n    }\n}\n'
@@ -19,8 +19,10 @@ var code = '6060604052610381806100136000396000f30060606040526000357c010000000000
 var seed = 'unhappy nerve cancel reject october fix vital pulse cash behind curious bicycle'
 var nonce = 2
 
-var keystore = new lightwallet.keystore(seed, 'mypassword')
-keystore.generateNewAddress('mypassword')
+lightwallet.keystore.deriveKeyFromPassword('mypassword', function(err, pwDerivedKey) {
+
+var keystore = new lightwallet.keystore(seed, pwDerivedKey)
+keystore.generateNewAddress(pwDerivedKey)
 
 var sendingAddr = keystore.getAddresses()[0]
 
@@ -36,7 +38,7 @@ txOptions = {
 
 // sendingAddr is needed to compute the contract address
 var contractData = txutils.createContractTx(sendingAddr, txOptions)
-var signedTx = signing.signTx(keystore, contractData.tx, 'mypassword', sendingAddr)
+var signedTx = signing.signTx(keystore, pwDerivedKey, contractData.tx, sendingAddr)
 
 console.log('Signed Contract creation TX: ' + signedTx)
 console.log('')
@@ -47,7 +49,7 @@ console.log('')
 txOptions.to = contractData.addr
 txOptions.nonce += 1
 var registerTx = txutils.functionTx(abi, 'register', [123], txOptions)
-var signedRegisterTx = siging.signTx(keystore registerTx, 'mypassword', sendingAddr)
+var signedRegisterTx = signing.signTx(keystore, pwDerivedKey, registerTx, sendingAddr)
 
 // inject signedRegisterTx into the network...
 console.log('Signed register key TX: ' + signedRegisterTx)
@@ -56,7 +58,7 @@ console.log('')
 // TX to set the value corresponding to key 123 to 456
 txOptions.nonce += 1
 var setValueTx = txutils.functionTx(abi, 'setValue', [123, 456], txOptions)
-var signedSetValueTx = signing.signTx(keystore, setValueTx, 'mypassword', sendingAddr)
+var signedSetValueTx = signing.signTx(keystore, pwDerivedKey, setValueTx, sendingAddr)
 
 // inject signedSetValueTx into the network...
 console.log('Signed setValueTx: ' + signedSetValueTx)
@@ -69,6 +71,8 @@ txOptions.data = undefined
 txOptions.to = 'eba8cdda5058cd20acbe5d1af35a71cfc442450e'
 var valueTx = txutils.valueTx(txOptions)
 
-var signedValueTx = signing.signTx(keystore, valueTx, 'mypassword', sendingAddr)
+var signedValueTx = signing.signTx(keystore, pwDerivedKey, valueTx, sendingAddr)
 console.log('Signed value TX: ' + signedValueTx)
 console.log('')
+
+})

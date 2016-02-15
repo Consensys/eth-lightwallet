@@ -26,7 +26,10 @@
         }
 
         var numAddr = parseInt(document.getElementById('numAddr').value)
-        global_keystore.generateNewAddress(password, numAddr);
+
+        lightwallet.keystore.deriveKeyFromPassword(password, function(err, pwDerivedKey) {
+
+        global_keystore.generateNewAddress(pwDerivedKey, numAddr);
 
         var addresses = global_keystore.getAddresses();
 
@@ -38,6 +41,7 @@
         }
 
         getBalances();
+      })
       }
 
       function getBalances() {
@@ -58,9 +62,12 @@
 
       function setSeed() {
         var password = prompt('Enter Password to encrypt your seed', 'Password');
+                                              
+        lightwallet.keystore.deriveKeyFromPassword(password, function(err, pwDerivedKey) {
+
         global_keystore = new lightwallet.keystore(
           document.getElementById('seed').value, 
-          password);
+          pwDerivedKey);
 
         document.getElementById('seed').value = ''
         
@@ -68,6 +75,7 @@
         setWeb3Provider(global_keystore);
         
         getBalances();
+        })
       }
 
       function newWallet() {
@@ -79,19 +87,26 @@
           '". Please write it down on paper or in a password manager, you will need it to access your wallet. Do not let anyone see this seed or they can take your Ether. ' +
           'Please enter a password to encrypt your seed while in the browser.'
         var password = prompt(infoString, 'Password');
+
+        lightwallet.keystore.deriveKeyFromPassword(password, function(err, pwDerivedKey) {
+
         global_keystore = new lightwallet.keystore(
           randomSeed,
-          password);
+          pwDerivedKey);
                 
         newAddresses(password);
         setWeb3Provider(global_keystore);
         getBalances();
+        })
       }
 
       function showSeed() {
         var password = prompt('Enter password to show your seed. Do not let anyone else see your seed.', 'Password');
-        var seed = global_keystore.getSeed(password);
+
+        lightwallet.keystore.deriveKeyFromPassword(password, function(err, pwDerivedKey) {
+        var seed = global_keystore.getSeed(pwDerivedKey);
         alert('Your seed is: "' + seed + '". Please write it down.')
+        })
       }
 
       function sendEth() {
