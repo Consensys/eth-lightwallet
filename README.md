@@ -117,10 +117,6 @@ Takes a serialized keystore string `serialized_keystore` and returns a new keyst
 
 Serializes the current keystore object into a JSON-encoded string and returns that string.
 
-### `keystore.upgradeOldSerialized(oldKeyStore, pwDerivedKey)`
-
-Takes a serialized keystore in an old format and returns a serialized keystore in the latest format.
-
 ### `keystore.getAddresses()`
 
 Returns a list of hex-string addresses currently stored in the keystore.
@@ -132,6 +128,12 @@ Given the pwDerivedKey, decrypts and returns the users 12-word seed.
 ### `keystore.exportPrivateKey(address, pwDerivedKey)`
 
 Given the derived key, decrypts and returns the private key corresponding to `address`. This should be done sparingly as the recommended practice is for the `keystore` to sign transactions using `signing.signTx`, so there is normally no need to export private keys.
+
+## `upgrade` Function definitions
+
+### `keystore.upgradeOldSerialized(oldSerialized, password, callback)`
+
+Takes a serialized keystore in an old format and a password. The callback takes the upgraded serialized keystore as its second argument.
 
 ## `signing` Function definitions
 

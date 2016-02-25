@@ -1,6 +1,6 @@
 {
   "name": "eth-lightwallet",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "A lightweight ethereum javascript wallet.",
   "main": "index.js",
   "repository": {
@@ -48,12 +48,12 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "bignumber.js": "debris/bignumber.js#master",
-    "bitcore-lib": "^0.13.7",
+    "bignumber.js": "debris/bignumber.js#94d7146671b9719e00a09c29b01a691bc85048c2",
+    "bitcore-lib": "^0.13.13",
     "bitcore-mnemonic": "^1.0.1",
     "crypto-js": "^3.1.5",
     "elliptic": "^3.1.0",
-    "ethereumjs-tx": "^0.6.9",
+    "ethereumjs-tx": "^1.0.0",
     "ethereumjs-util": "^4.0.0",
     "rlp": "^2.0.0",
     "scrypt-async": "^1.2.0",

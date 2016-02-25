@@ -1,5 +1,17 @@
 # Release Notes #
 
+## Version 2.2.1 - 2016-02-25 ##
+
+* Handle bug from bitcore where leading zeros are stripped. We do this by padding the private key to 32 bytes in the `keystore._generatePrivKeys()` function.
+
+* Remove unsupported `string.repeat()` function. H/T [chrisforrester](https://github.com/chrisforrester).
+
+* Change `Uint8Array.from()` to `new Uint8Array` in key derivation. H/T [chrisforrester](https://github.com/chrisforrester).
+
+* Update `ethereumjs-tx` library dependency.
+
+* Hardened dependency on `bignumber.js` to specific commit.
+
 ## Version 2.2.0 - 2016-02-14 ##
 
 * Change order of parameters in `encryption` module.

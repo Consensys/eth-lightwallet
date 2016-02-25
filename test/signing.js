@@ -4,6 +4,7 @@ var upgrade = require('../lib/upgrade')
 var signing = require('../lib/signing')
 var fixtures = require('./fixtures/keystore')
 var Transaction = require('ethereumjs-tx')
+var nacl = require('tweetnacl')
 
 describe("Signing", function () {
   describe("signTx", function() {
@@ -23,5 +24,35 @@ describe("Signing", function () {
 
       done();
     });
+
+    it('Correctly handles a 31 byte key from bitcore', function(done) {
+      var secretSeed = "erupt consider beyond twist bike enroll you salute weasel emerge divert hundred";
+      var pwDerivedKey = nacl.randomBytes(32);
+
+      var keystore = new keyStore(secretSeed, pwDerivedKey);
+      var hdPath = "m/44'/60'/0'"; //as defined in SLIP44
+
+      keystore.addHdDerivationPath(hdPath, pwDerivedKey, {curve: 'secp256k1', purpose: 'sign'});
+      keystore.generateNewAddress(pwDerivedKey, 1, hdPath); //Generate a new address
+
+      var address = keystore.getAddresses(hdPath)[0];
+      keystore.setDefaultHdDerivationPath(hdPath);
+
+      var hexSeedETH = keystore.exportPrivateKey(address, pwDerivedKey);
+      var addr0 = keyStore._computeAddressFromPrivKey(hexSeedETH);
+      expect(address).to.equal(addr0);
+
+      var tx = new Transaction({from: '0x' + address,
+                                to: '0x' + address,
+                                value: 100000000})
+      var rawTx = tx.serialize().toString('hex');
+
+      var signedTx = signing.signTx(keystore, pwDerivedKey, rawTx, address, hdPath)
+      var expectedTx = 'f861808080945e2abe3de708923e8425348005ee7fdd77e203cb8405f5e100801ca00a9a2486f65cab6c7819c82ee741f72d1acaab005642eef32f303696909fa64ea04e5d5e0e8d5f38704ac04faa1f91a9ee15a3ffcf158de342324d242b6acba819';
+
+      expect(signedTx).to.equal(expectedTx);
+      done();
+    });
+
   });
 });
