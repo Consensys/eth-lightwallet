@@ -1,5 +1,9 @@
 # Release Notes #
 
+## Version 2.2.2 - 2016-02-26 ##
+
+* Update distributable.
+
 ## Version 2.2.1 - 2016-02-25 ##
 
 * Handle bug from bitcore where leading zeros are stripped. We do this by padding the private key to 32 bytes in the `keystore._generatePrivKeys()` function.
