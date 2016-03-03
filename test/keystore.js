@@ -141,7 +141,9 @@ describe("Keystore", function() {
 
       // Retains all attributes properly
       expect(deserKS.encSeed).to.deep.equal(origKS.encSeed)
+      expect(deserKS.encHdRootPriv).to.deep.equal(origKS.encHdRootPriv)
       expect(deserKS.ksData).to.deep.equal(origKS.ksData)
+      expect(deserKS.version).to.equal(origKS.version)
       done();
     });
 

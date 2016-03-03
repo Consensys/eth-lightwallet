@@ -1,5 +1,10 @@
 # Release Notes #
 
+## Version 2.2.3 - 2016-03-03 ##
+
+* Fixed bug in serialization
+* Add non-minified distributable
+
 ## Version 2.2.2 - 2016-02-26 ##
 
 * Update distributable.
