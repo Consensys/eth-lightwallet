@@ -455,28 +455,32 @@ KeyStore._concatAndSha256 = function(entropyBuf0, entropyBuf1) {
 // (like dice) it can give some protection from a bad RNG.
 // If extraEntropy is not set, the random number generator
 // is used directly.
+//
+// An optional buffer randomBytes can be set as the second 
+// parameter if you prefer using an external random number
+// generator.
 
 KeyStore.generateRandomSeed = function(extraEntropy, randomBytes) {
 
   var seed = '';
-  if (randombytes && randombytes.length != 32) {
-     throw new Error('generateRandomSeed: Supplied Random Bytes is not correct size (32 bytes)')
+  if (randomBytes && randomBytes.length < 32) {
+      throw new Error('generateRandomSeed: Supplied Random Bytes is not correct size (minimum 32 bytes)')
   }
 
   if (extraEntropy === undefined) {
-    seed = new Mnemonic(Mnemonic.Words.ENGLISH);
-  }
-  else if (typeof extraEntropy === 'string') {
+    if (randomBytes == undefined) {
+      return new Mnemonic(Mnemonic.Words.ENGLISH).toString();
+    }
+    return new Mnemonic(randomBytes, Mnemonic.Words.ENGLISH).toString();
+  } else if (typeof extraEntropy === 'string') {
     var entBuf = new Buffer(extraEntropy);
     var randBuf = randomBytes || Random.getRandomBuffer(256 / 8);
     var hashedEnt = this._concatAndSha256(randBuf, entBuf).slice(0, 128 / 8);
-    seed = new Mnemonic(hashedEnt, Mnemonic.Words.ENGLISH);
+    return new Mnemonic(hashedEnt, Mnemonic.Words.ENGLISH).toString();
   }
   else {
     throw new Error('generateRandomSeed: extraEntropy is set but not a string.')
   }
-
-  return seed.toString();
 };
 
 KeyStore.isSeedValid = function(seed) {
