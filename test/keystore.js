@@ -63,6 +63,8 @@ describe("Keystore", function() {
   describe("generateRandomSeed", function() {
     it("generates a new new seed everytime", function(done) {
       var seed = keyStore.generateRandomSeed();
+      expect(keyStore.isSeedValid(seed)).to.equal(true);
+      expect(seed.split(" ").length).to.equal(12);
       expect(seed).to.not.equal(keyStore.generateRandomSeed());
       done();
     });
@@ -71,27 +73,44 @@ describe("Keystore", function() {
       // Can't really test that entropy creates a better key, but we can test it doesn't break
       var entropy = 'bad-entropy';
       var seed = keyStore.generateRandomSeed(entropy);
+      expect(keyStore.isSeedValid(seed)).to.equal(true);
+      expect(seed.split(" ").length).to.equal(12);
       expect(seed).to.not.equal(keyStore.generateRandomSeed(entropy));
       done();
     });
 
     it("respects a passed in externally generated random number", function(done) {
-      var randBuf = Random.getRandomBuffer(256 / 8);
+      var randBuf = Random.getRandomBuffer(16);
       var seed = keyStore.generateRandomSeed(undefined, randBuf);
+      expect(keyStore.isSeedValid(seed)).to.equal(true);
+      expect(seed.split(" ").length).to.equal(12);
       expect(seed).to.equal(keyStore.generateRandomSeed(undefined, randBuf));
       done();
     });
 
+    it("throws an exception if randombuffer is too small", function(done) {
+      var randBuf = Random.getRandomBuffer(15);
+      expect(function(){
+        keyStore.generateRandomSeed(undefined, randBuf);
+      }).to.throw(Error)
+      done();
+    });
+
+
     it("respects entropy and generates a new new seed with differing entropies", function(done) {
-      var randBuf = Random.getRandomBuffer(256 / 8);
+      var randBuf = Random.getRandomBuffer(16);
       var seed = keyStore.generateRandomSeed('bad-entropy',randBuf);
+      expect(keyStore.isSeedValid(seed)).to.equal(true);
+      expect(seed.split(" ").length).to.equal(12);
       expect(seed).to.not.equal(keyStore.generateRandomSeed('worse-entropy',randBuf));
       done();
     });
 
     it("generates the same seed with same entropy and random number", function(done) {
-      var randBuf = Random.getRandomBuffer(256 / 8);
+      var randBuf = Random.getRandomBuffer(16);
       var seed = keyStore.generateRandomSeed('bad-entropy',randBuf);
+      expect(keyStore.isSeedValid(seed)).to.equal(true);
+      expect(seed.split(" ").length).to.equal(12);
       expect(seed).to.equal(keyStore.generateRandomSeed('bad-entropy',randBuf));
       done();
     });
