@@ -426,4 +426,52 @@ describe("Keystore", function() {
 
   });
 
+  describe("Signer Interface", function () {
+    var pw = Uint8Array.from(fixtures.valid[0].pwDerivedKey);
+    var ks = new keyStore(fixtures.valid[0].mnSeed, pw);
+    ks.generateNewAddress(pw, 1);
+    ks.passwordProvider = function(callback) {callback(null, fixtures.valid[0].password)}
+    var address = fixtures.valid[0].address;
+    var signer = ks.signer();
+
+
+    describe("hasAddress", function() {
+      it("returns true for it's address", function(done) {
+        signer.hasAddress(address,function(e, result) {
+          expect(e).to.equal(null);
+          expect(result).to.equal(true);
+          done();
+        })
+      })
+
+      it("returns false for any other address", function(done) {
+        signer.hasAddress("0xdaeee689e6fb3e0971ecffba4082a24cfb23ed48",function(e, result) {
+          expect(result).to.equal(false);
+          done();
+        })
+      })
+    })
+
+    describe("getAddresses", function() {
+      it("returns its address", function(done) {
+        signer.getAddresses(function(e, addresses) {
+          expect(e).to.equal(null);
+          expect(addresses.length).to.equal(1);
+          expect(addresses[0]).to.equal(address);
+          done();
+        })
+      })
+    })
+
+    describe("signRawTx", function() {
+      it("signs transaction", function(done) {
+        signer.signRawTx(fixtures.valid[0].rawUnsignedTx,
+          function(e, signedRawTx) {
+            expect(e).to.equal(null);
+            expect(signedRawTx).to.equal("0x"+fixtures.valid[0].rawSignedTx);
+            done();
+        });
+      })
+    })
+  });
 });
