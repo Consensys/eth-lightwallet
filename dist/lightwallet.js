@@ -71534,7 +71534,7 @@ module.exports = {
 };
 
 
-},{"../utils/config":433,"../utils/utils":434,"./param":427,"bignumber.js":435}],426:[function(require,module,exports){
+},{"../utils/config":433,"../utils/utils":435,"./param":427,"bignumber.js":436}],426:[function(require,module,exports){
 var f = require('./formatters');
 var SolidityType = require('./type');
 
@@ -71726,7 +71726,7 @@ SolidityParam.encodeList = function (params) {
 module.exports = SolidityParam;
 
 
-},{"../utils/utils":434}],428:[function(require,module,exports){
+},{"../utils/utils":435}],428:[function(require,module,exports){
 var f = require('./formatters');
 var SolidityType = require('./type');
 
@@ -72195,7 +72195,47 @@ module.exports = {
 };
 
 
-},{"bignumber.js":435}],434:[function(require,module,exports){
+},{"bignumber.js":436}],434:[function(require,module,exports){
+/*
+    This file is part of web3.js.
+
+    web3.js is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    web3.js is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
+*/
+/** 
+ * @file sha3.js
+ * @author Marek Kotewicz <marek@ethdev.com>
+ * @date 2015
+ */
+
+var CryptoJS = require('crypto-js');
+var sha3 = require('crypto-js/sha3');
+
+module.exports = function (value, options) {
+    if (options && options.encoding === 'hex') {
+        if (value.length > 2 && value.substr(0, 2) === '0x') {
+            value = value.substr(2);
+        }
+        value = CryptoJS.enc.Hex.parse(value);
+    }
+
+    return sha3(value, {
+        outputLength: 256
+    }).toString();
+};
+
+
+},{"crypto-js":330,"crypto-js/sha3":351}],435:[function(require,module,exports){
 /*
     This file is part of web3.js.
 
@@ -72233,17 +72273,22 @@ module.exports = {
 
 
 var BigNumber = require('bignumber.js');
+var sha3 = require('./sha3.js');
 var utf8 = require('utf8');
 
 var unitMap = {
+    'noether':      '0',    
     'wei':          '1',
     'kwei':         '1000',
-    'ada':          '1000',
+    'Kwei':         '1000',
+    'babbage':      '1000',
     'femtoether':   '1000',
     'mwei':         '1000000',
-    'babbage':      '1000000',
+    'Mwei':         '1000000',
+    'lovelace':     '1000000',
     'picoether':    '1000000',
     'gwei':         '1000000000',
+    'Gwei':         '1000000000',
     'shannon':      '1000000000',
     'nanoether':    '1000000000',
     'nano':         '1000000000',
@@ -72256,7 +72301,6 @@ var unitMap = {
     'ether':        '1000000000000000000',
     'kether':       '1000000000000000000000',
     'grand':        '1000000000000000000000',
-    'einstein':     '1000000000000000000000',
     'mether':       '1000000000000000000000000',
     'gether':       '1000000000000000000000000000',
     'tether':       '1000000000000000000000000000000'
@@ -72491,13 +72535,13 @@ var getValueOfUnit = function (unit) {
  *
  * Possible units are:
  *   SI Short   SI Full        Effigy       Other
- * - kwei       femtoether     ada
- * - mwei       picoether      babbage
+ * - kwei       femtoether     babbage
+ * - mwei       picoether      lovelace
  * - gwei       nanoether      shannon      nano
  * - --         microether     szabo        micro
  * - --         milliether     finney       milli
  * - ether      --             --
- * - kether                    einstein     grand
+ * - kether                    --           grand
  * - mether
  * - gether
  * - tether
@@ -72518,13 +72562,14 @@ var fromWei = function(number, unit) {
  *
  * Possible units are:
  *   SI Short   SI Full        Effigy       Other
- * - kwei       femtoether     ada
- * - mwei       picoether      babbage
+ * - kwei       femtoether     babbage
+ * - mwei       picoether      lovelace
  * - gwei       nanoether      shannon      nano
+ * - --         microether     szabo        micro
  * - --         microether     szabo        micro
  * - --         milliether     finney       milli
  * - ether      --             --
- * - kether                    einstein     grand
+ * - kether                    --           grand
  * - mether
  * - gether
  * - tether
@@ -72594,7 +72639,66 @@ var isStrictAddress = function (address) {
  * @return {Boolean}
 */
 var isAddress = function (address) {
-    return /^(0x)?[0-9a-f]{40}$/i.test(address);
+    if (!/^(0x)?[0-9a-f]{40}$/i.test(address)) {
+        // check if it has the basic requirements of an address
+        return false;
+    } else if (/^(0x)?[0-9a-f]{40}$/.test(address) || /^(0x)?[0-9A-F]{40}$/.test(address)) {
+        // If it's all small caps or all all caps, return true
+        return true;
+    } else {
+        // Otherwise check each case
+        return isChecksumAddress(address);
+    }
+};
+
+
+
+/**
+ * Checks if the given string is a checksummed address
+ *
+ * @method isChecksumAddress
+ * @param {String} address the given HEX adress
+ * @return {Boolean}
+*/
+var isChecksumAddress = function (address) {    
+    // Check each case
+    address = address.replace('0x','');
+    var addressHash = sha3(address.toLowerCase());
+
+    for (var i = 0; i < 40; i++ ) { 
+        // the nth letter should be uppercase if the nth digit of casemap is 1
+        if ((parseInt(addressHash[i], 16) > 7 && address[i].toUpperCase() !== address[i]) || (parseInt(addressHash[i], 16) <= 7 && address[i].toLowerCase() !== address[i])) {
+            return false;
+        }
+    }
+    return true;    
+};
+
+
+
+/**
+ * Makes a checksum address
+ *
+ * @method toChecksumAddress
+ * @param {String} address the given HEX adress
+ * @return {String}
+*/
+var toChecksumAddress = function (address) { 
+    if (typeof address === 'undefined') return '';
+
+    address = address.toLowerCase().replace('0x','');
+    var addressHash = sha3(address);
+    var checksumAddress = '0x';
+
+    for (var i = 0; i < address.length; i++ ) { 
+        // If ith character is 9 to f then make it uppercase 
+        if (parseInt(addressHash[i], 16) > 7) {
+          checksumAddress += address[i].toUpperCase();
+        } else {
+            checksumAddress += address[i];
+        }
+    }
+    return checksumAddress;
 };
 
 /**
@@ -72720,6 +72824,8 @@ module.exports = {
     isBigNumber: isBigNumber,
     isStrictAddress: isStrictAddress,
     isAddress: isAddress,
+    isChecksumAddress: isChecksumAddress,
+    toChecksumAddress: toChecksumAddress,
     isFunction: isFunction,
     isString: isString,
     isObject: isObject,
@@ -72728,7 +72834,7 @@ module.exports = {
     isJson: isJson
 };
 
-},{"bignumber.js":435,"utf8":436}],435:[function(require,module,exports){
+},{"./sha3.js":434,"bignumber.js":436,"utf8":437}],436:[function(require,module,exports){
 /*! bignumber.js v2.0.7 https://github.com/MikeMcl/bignumber.js/LICENCE */
 
 ;(function (global) {
@@ -75413,7 +75519,7 @@ module.exports = {
     }
 })(this);
 
-},{"crypto":103}],436:[function(require,module,exports){
+},{"crypto":103}],437:[function(require,module,exports){
 (function (global){
 /*! https://mths.be/utf8js v2.0.0 by @mathias */
 ;(function(root) {

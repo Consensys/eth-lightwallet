@@ -2,6 +2,10 @@
 
 ## Version 2.2.4 - 2016-03-16 ##
 
+* Fixed a bug where there uglify would cause an infinite loop in the elliptic library. Thanks to [pelle](https://github.com/pelle) for the fix.
+
+## Version 2.2.4 - 2016-03-16 ##
+
 * Update dependencies
 
 ## Version 2.2.3 - 2016-03-03 ##
