@@ -9,6 +9,7 @@ describe("Random", function () {
         expect(val.length).to.equal(8);
         Random.randomBytes(8, function(e, val2) {
           expect(val2).to.not.equal(val);
+          expect(val.length).to.equal(8);
           done();
         })
       })
