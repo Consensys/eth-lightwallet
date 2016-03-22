@@ -1,23 +1,11 @@
 var expect = require('chai').expect
-var Random = require('../lib/random');
+var KeyPair = require('../lib/generators/key_pair');
 var SimpleSigner = require('../lib/simple_signer');
 var keypair = require('./fixtures/keypair')
 var Transaction = require('ethereumjs-tx');
 var util = require("ethereumjs-util");
 
 describe("SimpleSigner", function () {
-  describe(".generateKeypair", function () {
-    it("generates valid keypair", function(done) {
-      Random.randomBytes = Random.naclRandom;
-      SimpleSigner.generateKeypair(function(e,keypair) {
-        expect(keypair.privateKey).to.not.equal(null);
-        expect(util.secp256k1.privateKeyVerify(new Buffer(util.stripHexPrefix(keypair.privateKey), 'hex')));
-        expect(keypair.publicKey).to.not.equal(null);
-        expect(keypair.address).to.not.equal(null);
-        done();
-      });
-    })
-  });
   var signer = new SimpleSigner(keypair);
 
   describe("hasAddress", function() {

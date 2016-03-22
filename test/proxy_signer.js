@@ -1,5 +1,4 @@
 var expect = require('chai').expect
-var Random = require('../lib/random');
 var SimpleSigner = require('../lib/simple_signer');
 var ProxySigner = require('../lib/proxy_signer');
 var keypair = require('./fixtures/keypair')

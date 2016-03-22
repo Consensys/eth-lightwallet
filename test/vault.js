@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var Random = require('../lib/random');
+var Random = require('../lib/generators/random');
 var Vault = require('../lib/vault');
 
 describe("Vault", function (){
