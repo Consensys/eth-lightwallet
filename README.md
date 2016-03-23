@@ -137,15 +137,17 @@ Takes a serialized keystore in an old format and a password. The callback takes 
 
 ## `signing` Function definitions
 
-### `signing.signTx(rawTx, pwDerivedKey, signingAddress)`
+### `signing.signTx(keystore, pwDerivedKey, rawTx, signingAddress, hdPathString)`
 
 Signs a transaction with the private key corresponding to `signingAddress`.
 
 #### Inputs
 
-* `rawTx`: Hex-string defining an RLP-encoded raw transaction.
+* `keystore`: An instance of the keystore with which to sign the TX with.
 * `pwDerivedKey`: the users password derived key (Uint8Array)
+* `rawTx`: Hex-string defining an RLP-encoded raw transaction.
 * `fromAddress`: hex-string defining the address to send the transaction from.
+* `hdPathString`: (Optional) A path at which to create the encryption keys. 
 
 #### Return value
 
