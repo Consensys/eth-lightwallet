@@ -25,13 +25,10 @@ describe("Signer", function () {
       })
     })
 
-    describe("getAddresses", function() {
+    describe("getAddress", function() {
       it("returns its address", function(done) {
-        signer.getAddresses(function(e, addresses) {
-          expect(addresses.length).to.equal(1);
-          expect(addresses[0]).to.equal(keypair.address);
-          done();
-        })
+        expect(signer.getAddress()).to.equal(keypair.address);
+        done();
       })
     })
 

@@ -8,29 +8,10 @@ var util = require("ethereumjs-util");
 describe("SimpleSigner", function () {
   var signer = new SimpleSigner(keypair);
 
-  describe("hasAddress", function() {
-    it("returns true for it's address", function(done) {
-      signer.hasAddress(keypair.address,function(e, result) {
-        expect(result).to.equal(true);
-        done();
-      })
-    })
-
-    it("returns false for any other address", function(done) {
-      signer.hasAddress("0xdaeee689e6fb3e0971ecffba4082a24cfb23ed48",function(e, result) {
-        expect(result).to.equal(false);
-        done();
-      })
-    })
-  })
-
-  describe("getAddresses", function() {
+  describe("getAddress", function() {
     it("returns its address", function(done) {
-      signer.getAddresses(function(e, addresses) {
-        expect(addresses.length).to.equal(1);
-        expect(addresses[0]).to.equal(keypair.address);
-        done();
-      })
+      expect(signer.getAddress()).to.equal(keypair.address);
+      done();
     })
   })
 

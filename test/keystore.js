@@ -454,12 +454,8 @@ describe("Keystore", function() {
 
     describe("getAddresses", function() {
       it("returns its address", function(done) {
-        signer.getAddresses(function(e, addresses) {
-          expect(e).to.equal(null);
-          expect(addresses.length).to.equal(1);
-          expect(addresses[0]).to.equal(address);
-          done();
-        })
+        expect(signer.getAddress()).to.equal(address);
+        done();
       })
     })
 

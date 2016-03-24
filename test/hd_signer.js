@@ -11,29 +11,10 @@ describe("HDSigner", function () {
   var signer = new HDSigner(hdPrivateKey);
   var address = "0x6f875f2ab111891b1702ec95366064f6c229e382";
 
-  describe("hasAddress", function() {
-    it("returns true for it's address", function(done) {
-      signer.hasAddress(address, function(e, result) {
-        expect(result).to.equal(true);
-        done();
-      })
-    })
-
-    it("returns false for any other address", function(done) {
-      signer.hasAddress("0xdaeee689e6fb3e0971ecffba4082a24cfb23ed48",function(e, result) {
-        expect(result).to.equal(false);
-        done();
-      })
-    })
-  })
-
-  describe("getAddresses", function() {
+  describe("getAddress", function() {
     it("returns its address", function(done) {
-      signer.getAddresses(function(e, addresses) {
-        expect(addresses.length).to.equal(1);
-        expect(addresses[0]).to.equal(address);
-        done();
-      })
+      expect(signer.getAddress()).to.equal(address);
+      done();
     })
   })
 
@@ -53,29 +34,10 @@ describe("HDSigner", function () {
     var signer = new HDSigner(hdPrivateKey, "m/0/0/0/1");
     var address = "0xb89ca0a03c21e9a931f82643df3ee4469a0c896a";
 
-    describe("hasAddress", function() {
-      it("returns true for it's address", function(done) {
-        signer.hasAddress(address, function(e, result) {
-          expect(result).to.equal(true);
-          done();
-        })
-      })
-
-      it("returns false for any other address", function(done) {
-        signer.hasAddress("0xdaeee689e6fb3e0971ecffba4082a24cfb23ed48",function(e, result) {
-          expect(result).to.equal(false);
-          done();
-        })
-      })
-    })
-
-    describe("getAddresses", function() {
+    describe("getAddress", function() {
       it("returns its address", function(done) {
-        signer.getAddresses(function(e, addresses) {
-          expect(addresses.length).to.equal(1);
-          expect(addresses[0]).to.equal(address);
-          done();
-        })
+        expect(signer.getAddress()).to.equal(address);
+        done();
       })
     })
 
@@ -96,29 +58,10 @@ describe("HDSigner", function () {
     var signer = HDSigner.bip44(hdPrivateKey, 1);
     var address = "0x653f4156b7e1979af34c0cb1d746a42ed4dc4319";
 
-    describe("hasAddress", function() {
-      it("returns true for it's address", function(done) {
-        signer.hasAddress(address, function(e, result) {
-          expect(result).to.equal(true);
-          done();
-        })
-      })
-
-      it("returns false for any other address", function(done) {
-        signer.hasAddress("0xdaeee689e6fb3e0971ecffba4082a24cfb23ed48",function(e, result) {
-          expect(result).to.equal(false);
-          done();
-        })
-      })
-    })
-
-    describe("getAddresses", function() {
+    describe("getAddress", function() {
       it("returns its address", function(done) {
-        signer.getAddresses(function(e, addresses) {
-          expect(addresses.length).to.equal(1);
-          expect(addresses[0]).to.equal(address);
-          done();
-        })
+        expect(signer.getAddress()).to.equal(address);
+        done();
       })
     })
 
