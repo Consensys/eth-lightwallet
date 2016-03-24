@@ -1,5 +1,5 @@
 var expect = require('chai').expect;
-var Random = require('../lib/generators/random');
+var Random = require('../../lib/generators/random');
 
 describe("Random", function () {
   describe("randomBytes", function() {

@@ -1,6 +1,7 @@
 var expect = require('chai').expect;
-var Random = require('../lib/generators/random');
-var KeyPair = require('../lib/generators/key_pair');
+var Random = require('../../lib/generators/random');
+var KeyPair = require('../../lib/generators/key_pair');
+var util = require("ethereumjs-util");
 
 describe("KeyPair", function() {
   describe(".generate", function () {
