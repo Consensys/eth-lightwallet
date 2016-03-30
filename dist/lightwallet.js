@@ -36,7 +36,7 @@ function nacl_decodeHex(msgHex) {
   return nacl.util.decodeBase64(msgBase64);
 }
 
-function _asymEncryptRaw (keystore, pwDerivedKey, msgUint8Array, myPubKey, theirPubKey, hdPathString) {
+function _asymEncryptRaw(keystore, pwDerivedKey, msgUint8Array, myPubKey, theirPubKey, hdPathString) {
 
   if (hdPathString === undefined) {
     hdPathString = keystore.defaultHdPathString;
@@ -65,7 +65,7 @@ function _asymEncryptRaw (keystore, pwDerivedKey, msgUint8Array, myPubKey, their
   return output;
 }
 
-function _asymDecryptRaw (keystore, pwDerivedKey, encMsg, theirPubKey, myPubKey, hdPathString) {
+function _asymDecryptRaw(keystore, pwDerivedKey, encMsg, theirPubKey, myPubKey, hdPathString) {
 
   if (hdPathString === undefined) {
     hdPathString = keystore.defaultHdPathString;
@@ -91,7 +91,7 @@ function _asymDecryptRaw (keystore, pwDerivedKey, encMsg, theirPubKey, myPubKey,
 
 }
 
-var asymEncryptString = function (keystore, pwDerivedKey, msg, myPubKey, theirPubKey, hdPathString) {
+function asymEncryptString(keystore, pwDerivedKey, msg, myPubKey, theirPubKey, hdPathString) {
 
   var messageUInt8Array = nacl.util.decodeUTF8(msg);
 
@@ -99,7 +99,7 @@ var asymEncryptString = function (keystore, pwDerivedKey, msg, myPubKey, theirPu
 
 }
 
-var asymDecryptString = function (keystore, pwDerivedKey, encMsg, theirPubKey, myPubKey, hdPathString) {
+function asymDecryptString(keystore, pwDerivedKey, encMsg, theirPubKey, myPubKey, hdPathString) {
 
   var cleartext = _asymDecryptRaw(keystore, pwDerivedKey, encMsg, theirPubKey, myPubKey, hdPathString);
 
@@ -112,7 +112,7 @@ var asymDecryptString = function (keystore, pwDerivedKey, encMsg, theirPubKey, m
 
 }
 
-var multiEncryptString = function (keystore, pwDerivedKey, msg, myPubKey, theirPubKeyArray, hdPathString) {
+function multiEncryptString(keystore, pwDerivedKey, msg, myPubKey, theirPubKeyArray, hdPathString) {
 
   var messageUInt8Array = nacl.util.decodeUTF8(msg);
   var symEncryptionKey = nacl.randomBytes(nacl.secretbox.keyLength);
@@ -145,7 +145,7 @@ var multiEncryptString = function (keystore, pwDerivedKey, msg, myPubKey, theirP
   return output;
 }
 
-var multiDecryptString = function (keystore, pwDerivedKey, encMsg, theirPubKey, myPubKey, hdPathString) {
+function multiDecryptString(keystore, pwDerivedKey, encMsg, theirPubKey, myPubKey, hdPathString) {
 
   var symKey = false;
   for (var i=0; i < encMsg.encryptedSymKey.length; i++) {
@@ -975,7 +975,7 @@ module.exports = Signer;
 var Transaction = _dereq_("ethereumjs-tx")
 var util = _dereq_("ethereumjs-util")
 
-signTx = function (keystore, pwDerivedKey, rawTx, signingAddress, hdPathString) {
+function signTx(keystore, pwDerivedKey, rawTx, signingAddress, hdPathString) {
 
   if (hdPathString === undefined) {
     hdPathString = keystore.defaultHdPathString;
@@ -1076,7 +1076,7 @@ var coder = _dereq_('web3/lib/solidity/coder');
 var rlp = _dereq_('rlp');
 var CryptoJS = _dereq_('crypto-js');
 
-function add0x (input) {
+function add0x(input) {
   if (typeof(input) !== 'string') {
     return input;
   }
@@ -1088,7 +1088,7 @@ function add0x (input) {
   }
 }
 
-function _encodeFunctionTxData (functionName, types, args) {
+function _encodeFunctionTxData(functionName, types, args) {
 
   var fullName = functionName + '(' + types.join() + ')';
   var signature = CryptoJS.SHA3(fullName, { outputLength: 256 }).toString(CryptoJS.enc.Hex).slice(0, 8);
@@ -1097,7 +1097,7 @@ function _encodeFunctionTxData (functionName, types, args) {
   return dataHex;
 }
 
-function _getTypesFromAbi (abi, functionName) {
+function _getTypesFromAbi(abi, functionName) {
 
   function matchesFunctionName(json) {
     return (json.name === functionName && json.type === 'function');
@@ -1112,7 +1112,7 @@ function _getTypesFromAbi (abi, functionName) {
   return (funcJson.inputs).map(getTypes);
 }
 
-function functionTx (abi, functionName, args, txObject) {
+function functionTx(abi, functionName, args, txObject) {
   // txObject contains gasPrice, gasLimit, nonce, to, value
 
   var types = _getTypesFromAbi(abi, functionName);
@@ -1194,12 +1194,12 @@ var Mnemonic = _dereq_('bitcore-mnemonic');
 var nacl = _dereq_('tweetnacl');
 var scrypt = _dereq_('scrypt-async');
 
-var legacyDecryptString = function (encryptedStr, password) {
+function legacyDecryptString(encryptedStr, password) {
   var decryptedStr = CryptoJS.AES.decrypt(encryptedStr.encStr, password, {'iv': encryptedStr.iv, 'salt': encryptedStr.salt });
   return decryptedStr.toString(CryptoJS.enc.Latin1);
 };
 
-var legacyGenerateEncKey = function(password, salt, keyHash) {
+function legacyGenerateEncKey(password, salt, keyHash) {
   var encKey = CryptoJS.PBKDF2(password, salt, { keySize: 512 / 32, iterations: 150 }).toString();
   var hash = CryptoJS.SHA3(encKey).toString();
   if (keyHash !== hash){
@@ -1208,7 +1208,7 @@ var legacyGenerateEncKey = function(password, salt, keyHash) {
   return encKey;
 };
 
-var upgradeOldSerialized = function (oldSerialized, password, callback) {
+function upgradeOldSerialized(oldSerialized, password, callback) {
 
   // Upgrades old serialized version of the keystore
   // to the latest version
