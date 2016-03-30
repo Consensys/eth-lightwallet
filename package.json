@@ -8,7 +8,7 @@
     "url": "https://github.com/ConsenSys/eth-lightwallet.git"
   },
   "scripts": {
-    "build-js": "browserify index.js --s lightwallet | derequire | uglifyjs -cm > dist/lightwallet.min.js",
+    "build-js": "browserify index.js --s lightwallet | derequire | uglifyjs -c > dist/lightwallet.min.js",
     "build-dev": "browserify index.js --s lightwallet | derequire > dist/lightwallet.js",
     "test": "./node_modules/.bin/mocha --reporter spec --recursive",
     "autotest": "./node_modules/.bin/supervisor -q -n exit -x ./node_modules/.bin/mocha -- --reporter spec --recursive",
