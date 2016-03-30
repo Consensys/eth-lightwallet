@@ -8,8 +8,8 @@
     "url": "https://github.com/ConsenSys/eth-lightwallet.git"
   },
   "scripts": {
-    "build-js": "browserify index.js --s lightwallet | uglifyjs -c > dist/lightwallet.min.js",
-    "build-dev": "browserify index.js -o dist/lightwallet.js --s lightwallet",
+    "build-js": "browserify index.js --s lightwallet | derequire | uglifyjs -cm > dist/lightwallet.min.js",
+    "build-dev": "browserify index.js --s lightwallet | derequire > dist/lightwallet.js",
     "test": "./node_modules/.bin/mocha --reporter spec --recursive",
     "autotest": "./node_modules/.bin/supervisor -q -n exit -x ./node_modules/.bin/mocha -- --reporter spec --recursive",
     "coverage": "istanbul cover _mocha -- -R spec; open coverage/lcov-report/index.html"
@@ -68,13 +68,14 @@
   },
   "devDependencies": {
     "async": "^1.4.2",
-    "bluebird" : "^3.3.1",
-    "browserify": "^10.2.4",
+    "bluebird": "^3.3.1",
+    "browserify": "^10.2.6",
     "chai": "^3.0.0",
+    "derequire": "^2.0.3",
+    "hooked-web3-provider": "christianlundkvist/hooked-web3-provider#updates_web3_14",
     "istanbul": "^0.3.15",
     "mocha": "^2.2.5",
-    "uglify-js": "^2.4.23",
     "supervisor": "~0.9.1",
-    "hooked-web3-provider": "christianlundkvist/hooked-web3-provider#updates_web3_14"
+    "uglify-js": "^2.4.23"
   }
 }
