@@ -1,6 +1,10 @@
 # Release Notes #
 
-## Version 2.2.4 - 2016-03-16 ##
+## Version 2.3.0 - 2016-03-31 ##
+
+* Add functions `signMsg` and `recoverAddress` for signing messages and recovering the signing address. Thanks to [ckeenan](https://github.com/ckeenan) and [Georgi87](https://github.com/Georgi87).
+
+## Version 2.2.5 - 2016-03-16 ##
 
 * Fixed a bug where there uglify would cause an infinite loop in the elliptic library. Thanks to [pelle](https://github.com/pelle) for the fix.
 

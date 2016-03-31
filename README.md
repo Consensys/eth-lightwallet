@@ -73,7 +73,7 @@ Note: Addresses and RLP encoded data are in the form of hex-strings. Hex-strings
 
 Inputs the users password and generates a symmetric key of type `Uint8Array` that is used to encrypt/decrypt the keystore.
 
-### `keystore(seed, pwDerivedKey)`
+### `keystore(seed, pwDerivedKey [,hdPathString])`
 
 Constructor of the keystore object. The seed `seed` is encrypted with `pwDerivedKey` and stored encrypted in the keystore.
 
@@ -135,6 +135,17 @@ Given the derived key, decrypts and returns the private key corresponding to `ad
 
 Takes a serialized keystore in an old format and a password. The callback takes the upgraded serialized keystore as its second argument.
 
+
+### `keystore.generateNewEncryptionKeys(pwDerivedKey [, num, hdPathString])`
+
+Generate `num` new encryption keys at the path `hdPathString`. Only
+defined when the purpose of the HD path is `asymEncrypt`.
+
+### `keystore.getPubKeys([hdPathString])`
+
+Return the pubkeys at `hdPathString`, or at the default HD path. Only
+defined when the purpose of the HD path is `asymEncrypt`.
+
 ## `signing` Function definitions
 
 ### `signing.signTx(keystore, pwDerivedKey, rawTx, signingAddress, hdPathString)`
@@ -146,22 +157,33 @@ Signs a transaction with the private key corresponding to `signingAddress`.
 * `keystore`: An instance of the keystore with which to sign the TX with.
 * `pwDerivedKey`: the users password derived key (Uint8Array)
 * `rawTx`: Hex-string defining an RLP-encoded raw transaction.
-* `fromAddress`: hex-string defining the address to send the transaction from.
+* `signingAddress`: hex-string defining the address to send the transaction from.
 * `hdPathString`: (Optional) A path at which to create the encryption keys. 
 
 #### Return value
 
 Hex-string corresponding to the RLP-encoded raw transaction.
 
-### `keystore.generateNewEncryptionKeys(pwDerivedKey [, num, hdPathString])`
+### `signing.signMsg(keystore, pwDerivedKey, rawMsg, signingAddress, hdPathString)`
 
-Generate `num` new encryption keys at the path `hdPathString`. Only
-defined when the purpose of the HD path is `asymEncrypt`.
+Signs a message with the private key corresponding to `signingAddress`.
 
-### `keystore.getPubKeys([hdPathString])`
+#### Inputs
 
-Return the pubkeys at `hdPathString`, or at the default HD path. Only
-defined when the purpose of the HD path is `asymEncrypt`.
+* `keystore`: An instance of the keystore with which to sign the TX with.
+* `pwDerivedKey`: the users password derived key (Uint8Array)
+* `rawMsg`: Message to be signed
+* `signingAddress`: hex-string defining the address corresponding to the signing private key.
+* `hdPathString`: (Optional) A path at which to create the encryption keys. 
+
+#### Return value
+
+Hex-string corresponding to the RLP-encoded raw transaction.
+
+### `recoverAddress(rawMsg, v, r, s)`
+
+Recovers the signing address from the message `rawMsg` and the signature `v, r, s`.
+
 
 ## `encryption` Function definitions
 
