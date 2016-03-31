@@ -68,9 +68,14 @@ describe("Signing", function () {
 
       var signedMsg = signing.signMsg(ks, pw, msg, addr)
 
-      var recoveredMsg = signing.recoverMsg(msg, signedMsg.v, signedMsg.r, signedMsg.s)
+      var recoveredAddress = signing.recoverAddress(msg, signedMsg.v, signedMsg.r, signedMsg.s)
 
-      expect(addr).to.equal(recoveredMsg.toString('hex'))
+      expect(addr).to.equal(recoveredAddress.toString('hex'))
+
+      var concatSig = signing.concatSig(signedMsg.v, signedMsg.r, signedMsg.s)
+      var expectedConcatSig = '0x7b518ee144b8facf3f21b1f97a6d1f8aea448934d89cf5570e92bcca4d375ab6080f17400eafad3c5808e064ee56cd45321382040fb299fa028ea3cddf3488151c'
+
+      expect(concatSig).to.equal(expectedConcatSig);
 
       done();
     });
