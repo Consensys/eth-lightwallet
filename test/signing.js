@@ -14,11 +14,11 @@ describe("Signing", function () {
       ks.generateNewAddress(pw)
       var addr = ks.getAddresses()[0]
       expect('0x' + addr).to.equal(fixtures.valid[0].ethjsTxParams.from)
-      
+
       var tx = new Transaction(fixtures.valid[0].ethjsTxParams)
       var rawTx = tx.serialize().toString('hex')
       expect(rawTx).to.equal(fixtures.valid[0].rawUnsignedTx)
-      
+
       var signedTx0 = signing.signTx(ks, pw, rawTx, addr);
       expect(signedTx0).to.equal(fixtures.valid[0].rawSignedTx)
 
@@ -51,6 +51,27 @@ describe("Signing", function () {
       var expectedTx = 'f861808080945e2abe3de708923e8425348005ee7fdd77e203cb8405f5e100801ca00a9a2486f65cab6c7819c82ee741f72d1acaab005642eef32f303696909fa64ea04e5d5e0e8d5f38704ac04faa1f91a9ee15a3ffcf158de342324d242b6acba819';
 
       expect(signedTx).to.equal(expectedTx);
+      done();
+    });
+
+  });
+
+  describe("signMsg", function() {
+    it('signs a message deterministically', function(done) {
+      var pw = Uint8Array.from(fixtures.valid[0].pwDerivedKey)
+      var ks = new keyStore(fixtures.valid[0].mnSeed, pw)
+      ks.generateNewAddress(pw)
+      var addr = ks.getAddresses()[0]
+      expect('0x' + addr).to.equal(fixtures.valid[0].ethjsTxParams.from)
+
+      var msg = "this is a message"
+
+      var signedMsg = signing.signMsg(ks, pw, msg, addr)
+
+      var recoveredMsg = signing.recoverMsg(msg, signedMsg.v, signedMsg.r, signedMsg.s)
+
+      expect(addr).to.equal(recoveredMsg.toString('hex'))
+
       done();
     });
 
