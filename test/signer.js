@@ -32,17 +32,27 @@ describe("Signer", function () {
       })
     })
 
-  describe("signTransaction", function() {
-    it("signs transaction", function(done) {
-      var txParams = {"from" : keypair.address,
-                        "to" : "0x9e2068cce22de4e1e80f15cb71ef435a20a3b37c",
-                        "nonce" : "0x00",
-                        "value" : "0xde0b6b3a7640000",
-                        "gas" : "0x2fefd8",
-                        "gasPrice" : "0xba43b7400",
-                       "data" : "0xabcdef01234567890"};
+    describe("getAccounts", function() {
+      it("returns its accounts", function(done) {
+        signer.getAccounts(function (e,accounts) {
+          expect(accounts.length).to.equal(1);
+          expect(accounts[0]).to.equal(keypair.address);
+          done();
+        })
+      })
+    })
 
-      signer.signTransaction(txParams, function(e, signedRawTx) {
+    describe("signTransaction", function() {
+      it("signs transaction", function(done) {
+        var txParams = {"from" : keypair.address,
+                          "to" : "0x9e2068cce22de4e1e80f15cb71ef435a20a3b37c",
+                          "nonce" : "0x00",
+                          "value" : "0xde0b6b3a7640000",
+                          "gas" : "0x2fefd8",
+                          "gasPrice" : "0xba43b7400",
+                         "data" : "0xabcdef01234567890"};
+
+        signer.signTransaction(txParams, function(e, signedRawTx) {
           expect(signedRawTx).to.equal("0xf87680850ba43b7400832fefd8949e2068cce22de4e1e80f15cb71ef435a20a3b37c880de0b6b3a7640000890abcdef012345678901ca0809e3b5ef25f4a3b039139e2fb70f70b636eba89c77a3b01e0c71c1a36d84126a038524dfcd3e412cb6bc37f4594bbad104b6764bb14c64e42c699730106d1885a");
           var tx = new Transaction(signedRawTx);
           expect(tx.getSenderPublicKey().toString('hex')).to.equal(util.stripHexPrefix(keypair.publicKey));

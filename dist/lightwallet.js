@@ -931,8 +931,7 @@ var Transaction = _dereq_('ethereumjs-tx');
 var util = _dereq_("ethereumjs-util");
 // Implementation should support 3 functions:
 //
-// - hasAddress(address,callback) // calls callback(null,true) if it can sign for address
-// - getAddresses(callback) // calls callback(null, [address1, address2, ...]) with addresses it can sign for
+// - getAddress() // returns it's address
 // - signRawTx(rawTx, callback) // sings rawTx and calls callback with the raw signed tx
 
 var Signer = function(implementation) {
@@ -943,8 +942,13 @@ Signer.prototype.hasAddress = function(address,callback) {
   callback(null, this.getAddress() === address);
 };
 
-Signer.prototype.getAddress = function(callback) {
+Signer.prototype.getAddress = function() {
   return this.implementation.getAddress();
+}
+
+Signer.prototype.getAccounts = function(callback) {
+  var address = this.getAddress();
+  callback(null, address ? [address] : []);
 }
 
 Signer.prototype.signTransaction = function (txParams, callback) {
