@@ -280,7 +280,11 @@ var HDPublicKey = bitcore.HDPublicKey;
 
 var HDSigner = function(hdprivatekey, path) {
   this.hdprivatekey = hdprivatekey;
-  this.path = path || "m/0'/0'/0'";
+  if (path == null || Number.isInteger(path)) {
+    this.path = bip44path(path || 0);
+  } else {
+    this.path = path;
+  }
   var key = this.hdprivatekey.derive(this.path);
   this.signer = new SimpleSigner(KeyPair.fromPrivateKey(key.privateKey.toBuffer()))
 }
@@ -296,12 +300,6 @@ HDSigner.prototype.signRawTx = function(rawTx, callback) {
 function bip44path(index) {
   return ["m","44'", "60'", "0'","0", index].join("/");
 }
-
-HDSigner.bip44 = function(hdprivatekey, index) {
-  index = index || 0;
-  return new HDSigner(hdprivatekey, bip44path(index));
-}
-
 module.exports = HDSigner;
 },{"./generators/key_pair":3,"./simple_signer":11,"bitcore-lib":33,"ethereumjs-tx":262,"ethereumjs-util":263}],7:[function(_dereq_,module,exports){
 (function (Buffer){
