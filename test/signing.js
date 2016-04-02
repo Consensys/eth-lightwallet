@@ -9,8 +9,10 @@ var nacl = require('tweetnacl')
 describe("Signing", function () {
   describe("signTx", function() {
     it('signs a transaction deterministically', function(done) {
+      var hdPath = "m/0'/0'/0'";
       var pw = Uint8Array.from(fixtures.valid[0].pwDerivedKey)
-      var ks = new keyStore(fixtures.valid[0].mnSeed, pw)
+      var ks = new keyStore(fixtures.valid[0].mnSeed, pw, hdPath)
+      ks.setDefaultHdDerivationPath(hdPath);
       ks.generateNewAddress(pw)
       var addr = ks.getAddresses()[0]
       expect('0x' + addr).to.equal(fixtures.valid[0].ethjsTxParams.from)
@@ -58,8 +60,10 @@ describe("Signing", function () {
 
   describe("signMsg", function() {
     it('signs a message deterministically', function(done) {
+      var hdPath = "m/0'/0'/0'";
       var pw = Uint8Array.from(fixtures.valid[0].pwDerivedKey)
-      var ks = new keyStore(fixtures.valid[0].mnSeed, pw)
+      var ks = new keyStore(fixtures.valid[0].mnSeed, pw, hdPath)
+      ks.setDefaultHdDerivationPath(hdPath)
       ks.generateNewAddress(pw)
       var addr = ks.getAddresses()[0]
       expect('0x' + addr).to.equal(fixtures.valid[0].ethjsTxParams.from)
