@@ -8,7 +8,9 @@ LightWallet is a HD wallet that can store your private keys encrypted in the bro
 
 LightWallet is primarily intended to be a signing provider for the [Hooked Web3 provider](https://github.com/ConsenSys/hooked-web3-provider) through the `keystore` module. This allows you to have full control over your private keys while still connecting to a remote node to relay signed transactions. Moreover, the `txutils` functions can be used to construct transactions when offline, for use in e.g. air-gapped coldwallet implementations.
 
-The default BIP32 HD derivation path is `m/0'/0'/0'/i`.
+
+As of version 3.0.0, the keystore default BIP32 HD derivation path is `m/44'/60'/0'/0/n`.
+Previous releases defaults to `m/0'/0'/0'`.
 
 ## Security
 
@@ -79,8 +81,9 @@ Constructor of the keystore object. The seed `seed` is encrypted with `pwDerived
 
 #### Inputs
 
-* words: string defining a 12-word seed according to [BIP39][]
+* seed: string defining a 12-word seed according to [BIP39][]
 * pwDerivedKey: symmetric key to encrypt the seed (Uint8Array)
+* hdPathString (optional): The HD derivation path as described in [BIP44]. Defaults to `m/44'/60'/0'/0/n` since 3.0.0.
 
 ### `keystore.isDerivedKeyCorrect(pwDerivedKey)`
 
@@ -295,6 +298,7 @@ npm run coverage
 
 [BIP39]: https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki
 [BIP32]: https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki
+[BIP44]: https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki
 
 ## License
 

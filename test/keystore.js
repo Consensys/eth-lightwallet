@@ -168,18 +168,31 @@ describe("Keystore", function() {
 
     var N = fixtures.valid.length;
 
-      it("returns a new address, next in hd wallet", function(done) {
+      it("returns a new address with path m/0'/0'/0', next in hd wallet", function(done) {
         this.timeout(10000);
+	var hdPath = "m/0'/0'/0'";
         for (var i=0; i<N; i++) {
-          var ks = new keyStore(fixtures.valid[i].mnSeed, Uint8Array.from(fixtures.valid[i].pwDerivedKey))
+          var ks = new keyStore(fixtures.valid[i].mnSeed, Uint8Array.from(fixtures.valid[i].pwDerivedKey), hdPath)
           var numAddresses = fixtures.valid[i].hdIndex+1;
-          ks.generateNewAddress(Uint8Array.from(fixtures.valid[i].pwDerivedKey), numAddresses);
-          var addresses = ks.getAddresses();
+          ks.generateNewAddress(Uint8Array.from(fixtures.valid[i].pwDerivedKey), numAddresses, hdPath);
+          var addresses = ks.getAddresses(hdPath);
           var addr = addresses[addresses.length-1];
-          var priv = ks.exportPrivateKey(addr, Uint8Array.from(fixtures.valid[i].pwDerivedKey));
+          var priv = ks.exportPrivateKey(addr, Uint8Array.from(fixtures.valid[i].pwDerivedKey), hdPath);
           expect(addr).to.equal(fixtures.valid[i].address);
           expect(priv).to.equal(fixtures.valid[i].privKeyHex);
         }
+        done();
+      });
+
+      it("returns a new address with the new default path m/44/66/0'/0", function(done) {
+        this.timeout(10000);
+        var ks = new keyStore(fixtures.valid[0].mnSeed, Uint8Array.from(fixtures.valid[0].pwDerivedKey))
+        var numAddresses = fixtures.valid[0]["m/44/66/0'/0"].addresses.length;
+        ks.generateNewAddress(Uint8Array.from(fixtures.valid[0].pwDerivedKey), numAddresses);
+        var addresses = ks.getAddresses();
+	for (var i=0; i<numAddresses; i++) {
+          expect(fixtures.valid[0]["m/44/66/0'/0"].addresses[i]).to.equal(addresses[i]);
+	}
         done();
       });
   });
@@ -274,19 +287,21 @@ describe("Keystore", function() {
     });
 
     it('implements signTransaction correctly', function(done) {
+      var hdPath = "m/0'/0'/0'";
       var pw = Uint8Array.from(fixtures.valid[0].pwDerivedKey)
-      var ks = new keyStore(fixtures.valid[0].mnSeed, pw)
-      ks.generateNewAddress(pw)
-      var addr = ks.getAddresses()[0]
+      var ks = new keyStore(fixtures.valid[0].mnSeed, pw, hdPath)
+      ks.generateNewAddress(pw, 1, hdPath)
+      var addr = ks.getAddresses(hdPath)[0]
 
       // Trivial passwordProvider
       ks.passwordProvider = function(callback) {callback(null, fixtures.valid[0].password)}
 
       var txParams = fixtures.valid[0].web3TxParams
+      //Observe hdPath being passed as third argument to signTransaction
       ks.signTransaction(txParams, function (err, signedTx) {
-        expect(signedTx.slice(2)).to.equal(fixtures.valid[0].rawSignedTx)
+          expect(signedTx.slice(2)).to.equal(fixtures.valid[0].rawSignedTx)
         done();
-      });
+      }, hdPath);
 
     });
 
