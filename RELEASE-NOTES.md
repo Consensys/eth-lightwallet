@@ -1,5 +1,9 @@
 # Release Notes #
 
+## Version 2.3.1 - 2016-04-06 ##
+
+* Add missing built files. Thanks to [area](https://github.com/area).
+
 ## Version 2.3.0 - 2016-03-31 ##
 
 * Add functions `signMsg` and `recoverAddress` for signing messages and recovering the signing address. Thanks to [ckeenan](https://github.com/ckeenan) and [Georgi87](https://github.com/Georgi87).
