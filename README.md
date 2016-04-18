@@ -81,6 +81,7 @@ Constructor of the keystore object. The seed `seed` is encrypted with `pwDerived
 
 * words: string defining a 12-word seed according to [BIP39][]
 * pwDerivedKey: symmetric key to encrypt the seed (Uint8Array)
+* hdPathString: optional alternate HD derivation path to use
 
 ### `keystore.isDerivedKeyCorrect(pwDerivedKey)`
 
