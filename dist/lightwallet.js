@@ -77,7 +77,7 @@ function _asymDecryptRaw (keystore, pwDerivedKey, encMsg, theirPubKey, myPubKey,
 
 }
 
-asymEncryptString = function (keystore, pwDerivedKey, msg, myPubKey, theirPubKey, hdPathString) {
+var asymEncryptString = function (keystore, pwDerivedKey, msg, myPubKey, theirPubKey, hdPathString) {
 
   var messageUInt8Array = nacl.util.decodeUTF8(msg);
 
@@ -85,7 +85,7 @@ asymEncryptString = function (keystore, pwDerivedKey, msg, myPubKey, theirPubKey
 
 }
 
-asymDecryptString = function (keystore, pwDerivedKey, encMsg, theirPubKey, myPubKey, hdPathString) {
+var asymDecryptString = function (keystore, pwDerivedKey, encMsg, theirPubKey, myPubKey, hdPathString) {
 
   var cleartext = _asymDecryptRaw(keystore, pwDerivedKey, encMsg, theirPubKey, myPubKey, hdPathString);
 
@@ -98,7 +98,7 @@ asymDecryptString = function (keystore, pwDerivedKey, encMsg, theirPubKey, myPub
 
 }
 
-multiEncryptString = function (keystore, pwDerivedKey, msg, myPubKey, theirPubKeyArray, hdPathString) {
+var multiEncryptString = function (keystore, pwDerivedKey, msg, myPubKey, theirPubKeyArray, hdPathString) {
 
   var messageUInt8Array = nacl.util.decodeUTF8(msg);
   var symEncryptionKey = nacl.randomBytes(nacl.secretbox.keyLength);
@@ -131,7 +131,7 @@ multiEncryptString = function (keystore, pwDerivedKey, msg, myPubKey, theirPubKe
   return output;
 }
 
-multiDecryptString = function (keystore, pwDerivedKey, encMsg, theirPubKey, myPubKey, hdPathString) {
+var multiDecryptString = function (keystore, pwDerivedKey, encMsg, theirPubKey, myPubKey, hdPathString) {
 
   var symKey = false;
   for (var i=0; i < encMsg.encryptedSymKey.length; i++) {
@@ -239,7 +239,7 @@ var KeyStore = function(mnemonic, pwDerivedKey, hdPathString) {
 
   this.ksData = {};
   this.ksData[hdPathString] = {};
-  pathKsData = this.ksData[hdPathString];
+  var pathKsData = this.ksData[hdPathString];
   pathKsData.info = {curve: 'secp256k1', purpose: 'sign'};
 
   this.encSeed = undefined;
@@ -624,9 +624,12 @@ KeyStore.deriveKeyFromPassword = function(password, callback) {
   var interruptStep = 200;
 
   var cb = function(derKey) {
-
-    var ui8arr = (new Uint8Array(derKey));
-    callback(null, ui8arr);
+    try{
+      var ui8arr = (new Uint8Array(derKey));
+      callback(null, ui8arr);
+    } catch (err) {
+      callback(err);
+    }
   }
 
   scrypt(password, salt, logN, r, dkLen, interruptStep, cb, null);
@@ -689,6 +692,7 @@ KeyStore.prototype.signTransaction = function (txParams, callback) {
   this.passwordProvider( function (err, password) {
     if (err) return callback(err);
     KeyStore.deriveKeyFromPassword(password, function (err, pwDerivedKey) {
+      if (err) return callback(err);
       var signedTx = signing.signTx(self, pwDerivedKey, rawTx, signingAddress, self.defaultHdPathString);
       callback(null, '0x' + signedTx);
     })
@@ -706,7 +710,7 @@ module.exports = KeyStore;
 var Transaction = require("ethereumjs-tx")
 var util = require("ethereumjs-util")
 
-signTx = function (keystore, pwDerivedKey, rawTx, signingAddress, hdPathString) {
+var signTx = function (keystore, pwDerivedKey, rawTx, signingAddress, hdPathString) {
 
   if (hdPathString === undefined) {
     hdPathString = keystore.defaultHdPathString;
@@ -727,7 +731,7 @@ signTx = function (keystore, pwDerivedKey, rawTx, signingAddress, hdPathString) 
 
 module.exports.signTx = signTx;
 
-signMsg = function (keystore, pwDerivedKey, rawMsg, signingAddress, hdPathString) {
+var signMsg = function (keystore, pwDerivedKey, rawMsg, signingAddress, hdPathString) {
 
   if (hdPathString === undefined) {
     hdPathString = keystore.defaultHdPathString;
@@ -744,7 +748,7 @@ signMsg = function (keystore, pwDerivedKey, rawMsg, signingAddress, hdPathString
 
 module.exports.signMsg = signMsg;
 
-recoverAddress = function (rawMsg, v, r, s) {
+var recoverAddress = function (rawMsg, v, r, s) {
 
   var msgHash = util.sha3(rawMsg);
 
@@ -753,7 +757,7 @@ recoverAddress = function (rawMsg, v, r, s) {
 
 module.exports.recoverAddress = recoverAddress;
 
-concatSig = function (v, r, s) {
+var concatSig = function (v, r, s) {
   r = util.fromSigned(r);
   s = util.fromSigned(s);
   v = util.bufferToInt(v);
@@ -890,12 +894,12 @@ var Mnemonic = require('bitcore-mnemonic');
 var nacl = require('tweetnacl');
 var scrypt = require('scrypt-async');
 
-legacyDecryptString = function (encryptedStr, password) {
+var legacyDecryptString = function (encryptedStr, password) {
   var decryptedStr = CryptoJS.AES.decrypt(encryptedStr.encStr, password, {'iv': encryptedStr.iv, 'salt': encryptedStr.salt });
   return decryptedStr.toString(CryptoJS.enc.Latin1);
 };
 
-legacyGenerateEncKey = function(password, salt, keyHash) {
+var legacyGenerateEncKey = function(password, salt, keyHash) {
   var encKey = CryptoJS.PBKDF2(password, salt, { keySize: 512 / 32, iterations: 150 }).toString();
   var hash = CryptoJS.SHA3(encKey).toString();
   if (keyHash !== hash){
@@ -904,12 +908,12 @@ legacyGenerateEncKey = function(password, salt, keyHash) {
   return encKey;
 };
 
-upgradeOldSerialized = function (oldSerialized, password, callback) {
+var upgradeOldSerialized = function (oldSerialized, password, callback) {
 
   // Upgrades old serialized version of the keystore
   // to the latest version
   var oldKS = JSON.parse(oldSerialized);
-  
+
   if (oldKS.version === undefined || oldKS.version === 1) {
 
     var derivedKey = legacyGenerateEncKey(password, oldKS.salt, oldKS.keyHash);

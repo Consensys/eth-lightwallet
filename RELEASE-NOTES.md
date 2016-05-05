@@ -1,5 +1,9 @@
 # Release Notes #
 
+## Version 2.3.2 - 2016-04-06 ##
+
+* Add "var" statements for function declarations. Thanks to [dalexj](https://github.com/dalexj) and [pipermerriam](https://github.com/pipermerriam).
+
 ## Version 2.3.1 - 2016-04-06 ##
 
 * Add missing built files. Thanks to [area](https://github.com/area).
