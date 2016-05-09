@@ -4,6 +4,7 @@ var upgrade = require('../lib/upgrade')
 var signing = require('../lib/signing')
 var fixtures = require('./fixtures/keystore')
 var Transaction = require('ethereumjs-tx')
+var util = require("ethereumjs-util")
 var nacl = require('tweetnacl')
 
 describe("Signing", function () {
@@ -58,22 +59,30 @@ describe("Signing", function () {
 
   describe("signMsg", function() {
     it('signs a message deterministically', function(done) {
-      var pw = Uint8Array.from(fixtures.valid[0].pwDerivedKey)
-      var ks = new keyStore(fixtures.valid[0].mnSeed, pw)
-      ks.generateNewAddress(pw)
-      var addr = ks.getAddresses()[0]
-      expect('0x' + addr).to.equal(fixtures.valid[0].ethjsTxParams.from)
+      var pw = Uint8Array.from(fixtures.valid[0].pwDerivedKey);
+      var ks = new keyStore(fixtures.valid[0].mnSeed, pw);
+      ks.generateNewAddress(pw);
+      var addr = ks.getAddresses()[0];
+      expect('0x' + addr).to.equal(fixtures.valid[0].ethjsTxParams.from);
 
-      var msg = "this is a message"
+      var msg = "this is a message";
 
-      var signedMsg = signing.signMsg(ks, pw, msg, addr)
+      var signedMsg = signing.signMsg(ks, pw, msg, addr);
 
-      var recoveredAddress = signing.recoverAddress(msg, signedMsg.v, signedMsg.r, signedMsg.s)
+      var msgHash = util.addHexPrefix(util.sha3(msg).toString('hex'));
 
-      expect(addr).to.equal(recoveredAddress.toString('hex'))
+      var signedMsgHash = signing.signMsgHash(ks, pw, msgHash, addr);
 
-      var concatSig = signing.concatSig(signedMsg.v, signedMsg.r, signedMsg.s)
-      var expectedConcatSig = '0x7b518ee144b8facf3f21b1f97a6d1f8aea448934d89cf5570e92bcca4d375ab6080f17400eafad3c5808e064ee56cd45321382040fb299fa028ea3cddf3488151c'
+      // signedMsg and signedMsgHash have the same signature
+      expect(signedMsg.v).to.equal(signedMsgHash.v);
+      expect(signedMsg.r.toString()).to.equal(signedMsgHash.r.toString());
+      expect(signedMsg.s.toString()).to.equal(signedMsgHash.s.toString());
+
+      var recoveredAddress = signing.recoverAddress(msg, signedMsg.v, signedMsg.r, signedMsg.s);
+
+      expect(addr).to.equal(recoveredAddress.toString('hex'));
+      var concatSig = signing.concatSig(signedMsg);
+      var expectedConcatSig = '0x7b518ee144b8facf3f21b1f97a6d1f8aea448934d89cf5570e92bcca4d375ab6080f17400eafad3c5808e064ee56cd45321382040fb299fa028ea3cddf3488151c';
 
       expect(concatSig).to.equal(expectedConcatSig);
 
