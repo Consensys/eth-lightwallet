@@ -390,11 +390,16 @@ KeyStore.prototype._generatePrivKeys = function(pwDerivedKey, n, hdPathString) {
   }
 
   var hdRoot = KeyStore._decryptString(this.ksData[hdPathString].encHdPathPriv, pwDerivedKey);
+
+  if (hdRoot.length === 0) {
+    throw new Error('Provided password derived key is wrong');
+  }
+
   var keys = [];
   for (var i = 0; i < n; i++){
     var hdprivkey = new bitcore.HDPrivateKey(hdRoot).derive(this.ksData[hdPathString].hdIndex++);
     var privkeyBuf = hdprivkey.privateKey.toBuffer();
-    
+
     var privkeyHex = privkeyBuf.toString('hex');
     if (privkeyBuf.length < 16) {
       // Way too small key, something must have gone wrong
@@ -479,7 +484,7 @@ KeyStore.prototype.isDerivedKeyCorrect = function(pwDerivedKey) {
   }
 
   return false;
-  
+
 };
 
 // Takes keystore serialized as string and returns an instance of KeyStore

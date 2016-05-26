@@ -1,5 +1,10 @@
 # Release Notes #
 
+## Version 2.3.3 - 2016-05-26 ##
+
+* Fixed a bug which would create random addresses if the wrong
+  pwDerivedKey was used.
+
 ## Version 2.3.2 - 2016-04-06 ##
 
 * Add "var" statements for function declarations. Thanks to [dalexj](https://github.com/dalexj) and [pipermerriam](https://github.com/pipermerriam).
