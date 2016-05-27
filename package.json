@@ -44,6 +44,10 @@
     {
       "name": "Marian Oancea",
       "email": "marian.oancea@gmail.com"
+    },
+    {
+      "name": "John McDowall",
+      "email": "john@kantan.io"
     }
   ],
   "license": "MIT",
