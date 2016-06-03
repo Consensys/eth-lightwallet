@@ -163,7 +163,7 @@ Signs a transaction with the private key corresponding to `signingAddress`.
 * `pwDerivedKey`: the users password derived key (Uint8Array)
 * `rawTx`: Hex-string defining an RLP-encoded raw transaction.
 * `signingAddress`: hex-string defining the address to send the transaction from.
-* `hdPathString`: (Optional) A path at which to create the encryption keys. 
+* `hdPathString`: (Optional) A path at which to create the encryption keys.
 
 #### Return value
 
@@ -171,7 +171,7 @@ Hex-string corresponding to the RLP-encoded raw transaction.
 
 ### `signing.signMsg(keystore, pwDerivedKey, rawMsg, signingAddress, hdPathString)`
 
-Signs a message with the private key corresponding to `signingAddress`.
+Creates and signs a sha3 hash of a message with the private key corresponding to `signingAddress`.
 
 #### Inputs
 
@@ -179,11 +179,39 @@ Signs a message with the private key corresponding to `signingAddress`.
 * `pwDerivedKey`: the users password derived key (Uint8Array)
 * `rawMsg`: Message to be signed
 * `signingAddress`: hex-string defining the address corresponding to the signing private key.
-* `hdPathString`: (Optional) A path at which to create the encryption keys. 
+* `hdPathString`: (Optional) A path at which to create the encryption keys.
 
 #### Return value
 
-Hex-string corresponding to the RLP-encoded raw transaction.
+Signed hash as signature object with v, r and s values.
+
+### `signing.signMsgHash(keystore, pwDerivedKey, msgHash, signingAddress, hdPathString)`
+
+Signs a sha3 message hash with the private key corresponding to `signingAddress`.
+
+#### Inputs
+
+* `keystore`: An instance of the keystore with which to sign the TX with.
+* `pwDerivedKey`: the users password derived key (Uint8Array)
+* `msgHash`: SHA3 hash to be signed
+* `signingAddress`: hex-string defining the address corresponding to the signing private key.
+* `hdPathString`: (Optional) A path at which to create the encryption keys.
+
+#### Return value
+
+Signed hash as signature object with v, r and s values.
+
+### `concatSig(signature)`
+
+Concatenates signature object to return signature as hex-string in the same format as `eth_sign` does.
+
+#### Inputs
+
+* `signature`: Signature object as returned from `signMsg` or ``signMsgHash`.
+
+#### Return value
+
+Concatenated signature object as hex-string.
 
 ### `recoverAddress(rawMsg, v, r, s)`
 
