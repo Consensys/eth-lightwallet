@@ -1,5 +1,9 @@
 # Release Notes #
 
+## Version 2.4.0 - 2016-06-08 ##
+
+* Add new message signing function `signMsgHash()`. By [Georgi87](https://github.com/Georgi87)
+
 ## Version 2.3.3 - 2016-05-26 ##
 
 * Fixed a bug which would create random addresses if the wrong
