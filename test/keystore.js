@@ -70,7 +70,7 @@ describe("Keystore", function() {
         expect(decryptedString).to.equal(f.mnSeed)
         done();
       })
-    })    
+    })
   });
 
   describe("_encryptKey _decryptKey", function() {
@@ -108,7 +108,7 @@ describe("Keystore", function() {
       var ks = new keyStore(fixtures.valid[0].mnSeed, derKey);
       var isDerKeyCorrect = ks.isDerivedKeyCorrect(derKey);
       expect(isDerKeyCorrect).to.equal(true);
-      var isDerKey1Correct = ks.isDerivedKeyCorrect(derKey1);     
+      var isDerKey1Correct = ks.isDerivedKeyCorrect(derKey1);
       expect(isDerKey1Correct).to.equal(false);
       done();
     })
@@ -161,6 +161,21 @@ describe("Keystore", function() {
       expect(deserKS.ksData).to.deep.equal(origKS.ksData)
       done();
     });
+
+    it("sets the default HD path to the first path in the keystore when deserializing", function(done){
+      var specificHDpath = "m/44'/60'/0'/0"
+      var origKS = new keyStore(fixtures.valid[0].mnSeed, Uint8Array.from(fixtures.valid[0].pwDerivedKey), specificHDpath)
+
+      //Add Keys
+      origKS.generateNewAddress(Uint8Array.from(fixtures.valid[0].pwDerivedKey), 20, specificHDpath)
+
+      var serKS = origKS.serialize()
+      var deserKS = keyStore.deserialize(serKS)
+
+      // Retains all attributes properly
+      expect(deserKS.defaultHdPathString).to.deep.equal(specificHDpath)
+      done();
+    })
   });
 
 

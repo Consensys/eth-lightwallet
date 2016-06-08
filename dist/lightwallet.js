@@ -949,7 +949,7 @@ var bitcore = module.exports;
 bitcore.version = 'v' + require('./package.json').version;
 bitcore.versionGuard = function(version) {
   if (version !== undefined) {
-    var message = 'More than one instance of bitcore-lib found. ' + 
+    var message = 'More than one instance of bitcore-lib found. ' +
       'Please make sure to require bitcore-lib and check that submodules do' +
       ' not also include their own bitcore-lib dependency.';
     throw new Error(message);
@@ -7126,7 +7126,7 @@ Interpreter.prototype.checkLockTime = function(nLockTime) {
   return true;
 }
 
-/** 
+/**
  * Based on the inner loop of bitcoind's EvalScript function
  * bitcoind commit: b5d1b1092998bc95313856d535c632ea5a8f9104
  */
@@ -14721,7 +14721,7 @@ module.exports = function(cmp,to){
   var c = 0;
   for(var i=0;i<cmp.length;++i){
     if(i == to.length) break;
-    c = cmp[i] < to[i]?-1:cmp[i] > to[i]?1:0;    
+    c = cmp[i] < to[i]?-1:cmp[i] > to[i]?1:0;
     if(c != 0) break;
   }
   if(c == 0){
@@ -32125,7 +32125,7 @@ HMAC.prototype.finalize = function (messageUpdate) {
 
   return hmac;
 }
-  
+
 
 module.exports = HMAC
 
@@ -32135,7 +32135,7 @@ module.exports = require('./sha512')
 module.exports.hmac = require('./hmac')
 },{"./hmac":80,"./sha512":82}],82:[function(require,module,exports){
 
-var Hasher = require('./cryptojs').Hasher 
+var Hasher = require('./cryptojs').Hasher
 
 var C_x64 = require('./x64')
 var X64Word = C_x64.Word;
@@ -32462,7 +32462,7 @@ WordArray.prototype.toBuffer = function() {
     var w = this.words[i]
     buf.writeUInt32BE(w, i*4, true)
   }
-  return buf 
+  return buf
 }
 
 WordArray.fromBuffer = function(buf) {
@@ -32472,7 +32472,7 @@ WordArray.fromBuffer = function(buf) {
 
   if (!process.browser) {
     for (var i = 0; i < len; i += 4) {
-      var n = buf.readUInt32BE(i, true) 
+      var n = buf.readUInt32BE(i, true)
       w.push(n)
     }
     return new WordArray(w, buf.length)
@@ -32489,7 +32489,7 @@ WordArray.fromBuffer = function(buf) {
     if (dif > 0)
       w.push(lw)
     return new WordArray(w, buf.length)
-  } 
+  }
 }
 
 
@@ -49112,7 +49112,7 @@ module.exports = function privateDecrypt(private_key, enc, reverse) {
   } else {
     padding = 4;
   }
-  
+
   var key = parseKeys(private_key);
   var k = key.modulus.byteLength();
   if (enc.length > k || new bn(enc).cmp(key.modulus) >= 0) {
@@ -54136,13 +54136,13 @@ Script.prototype.runInContext = function (context) {
     if (!(context instanceof Context)) {
         throw new TypeError("needs a 'context' argument.");
     }
-    
+
     var iframe = document.createElement('iframe');
     if (!iframe.style) iframe.style = {};
     iframe.style.display = 'none';
-    
+
     document.body.appendChild(iframe);
-    
+
     var win = iframe.contentWindow;
     var wEval = win.eval, wExecScript = win.execScript;
 
@@ -54151,7 +54151,7 @@ Script.prototype.runInContext = function (context) {
         wExecScript.call(win, 'null');
         wEval = win.eval;
     }
-    
+
     forEach(Object_keys(context), function (key) {
         win[key] = context[key];
     });
@@ -54160,11 +54160,11 @@ Script.prototype.runInContext = function (context) {
             win[key] = context[key];
         }
     });
-    
+
     var winKeys = Object_keys(win);
 
     var res = wEval.call(win, this.code);
-    
+
     forEach(Object_keys(win), function (key) {
         // Avoid copying circular objects like `top` and `window` by only
         // updating existing context properties or new properties in the `win`
@@ -54179,9 +54179,9 @@ Script.prototype.runInContext = function (context) {
             defineProp(context, key, win[key]);
         }
     });
-    
+
     document.body.removeChild(iframe);
-    
+
     return res;
 };
 
@@ -66275,8 +66275,8 @@ module.exports = {
   var PADDING = [6, 1536, 393216, 100663296];
   var SHIFT = [0, 8, 16, 24];
   var RC = [1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147483648, 32907, 0, 2147483649,
-            0, 2147516545, 2147483648, 32777, 2147483648, 138, 0, 136, 0, 2147516425, 0, 
-            2147483658, 0, 2147516555, 0, 139, 2147483648, 32905, 2147483648, 32771, 
+            0, 2147516545, 2147483648, 32777, 2147483648, 138, 0, 136, 0, 2147516425, 0,
+            2147483658, 0, 2147516555, 0, 139, 2147483648, 32905, 2147483648, 32771,
             2147483648, 32770, 2147483648, 128, 2147483648, 32778, 0, 2147483658, 2147483648,
             2147516545, 2147483648, 32896, 2147483648, 2147483649, 0, 2147516424, 2147483648];
 
@@ -66322,9 +66322,9 @@ module.exports = {
     }
 
     var block, code, end = false, index = 0, start = 0, length = message.length,
-        n, i, h, l, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9, 
-        b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, 
-        b18, b19, b20, b21, b22, b23, b24, b25, b26, b27, b28, b29, b30, b31, b32, b33, 
+        n, i, h, l, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9,
+        b0, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17,
+        b18, b19, b20, b21, b22, b23, b24, b25, b26, b27, b28, b29, b30, b31, b32, b33,
         b34, b35, b36, b37, b38, b39, b40, b41, b42, b43, b44, b45, b46, b47, b48, b49;
     var blockCount = (1600 - bits * 2) / 32;
     var byteCount = blockCount * 4;
@@ -66659,7 +66659,7 @@ module.exports = {
     }
     return hex;
   };
-  
+
   if(!root.JS_SHA3_TEST && NODE_JS) {
     module.exports = {
       sha3_512: sha3_512,
@@ -71057,7 +71057,7 @@ module.exports = SolidityTypeBytes;
     You should have received a copy of the GNU Lesser General Public License
     along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** 
+/**
  * @file coder.js
  * @author Marek Kotewicz <marek@ethdev.com>
  * @date 2015
@@ -71087,7 +71087,7 @@ var SolidityCoder = function (types) {
  *
  * @method _requireType
  * @param {String} type
- * @returns {SolidityType} 
+ * @returns {SolidityType}
  * @throws {Error} throws if no matching type is found
  */
 SolidityCoder.prototype._requireType = function (type) {
@@ -71135,7 +71135,7 @@ SolidityCoder.prototype.encodeParams = function (types, params) {
         return acc + roundedStaticPartLength;
     }, 0);
 
-    var result = this.encodeMultiWithOffset(types, solidityTypes, encodeds, dynamicOffset); 
+    var result = this.encodeMultiWithOffset(types, solidityTypes, encodeds, dynamicOffset);
 
     return result;
 };
@@ -71160,7 +71160,7 @@ SolidityCoder.prototype.encodeMultiWithOffset = function (types, solidityTypes, 
 
         // TODO: figure out nested arrays
     });
-    
+
     types.forEach(function (type, i) {
         if (isDynamic(i)) {
             var e = self.encodeWithOffset(types[i], solidityTypes[i], encodeds[i], dynamicOffset);
@@ -71180,7 +71180,7 @@ SolidityCoder.prototype.encodeWithOffset = function (type, solidityType, encoded
             var nestedName = solidityType.nestedName(type);
             var nestedStaticPartLength = solidityType.staticPartLength(nestedName);
             var result = encoded[0];
-            
+
             (function () {
                 var previousLength = 2; // in int
                 if (solidityType.isDynamicArray(nestedName)) {
@@ -71190,7 +71190,7 @@ SolidityCoder.prototype.encodeWithOffset = function (type, solidityType, encoded
                     }
                 }
             })();
-            
+
             // first element is length, skip it
             (function () {
                 for (var i = 0; i < encoded.length - 1; i++) {
@@ -71201,7 +71201,7 @@ SolidityCoder.prototype.encodeWithOffset = function (type, solidityType, encoded
 
             return result;
         })();
-       
+
     } else if (solidityType.isStaticArray(type)) {
         return (function () {
             var nestedName = solidityType.nestedName(type);
@@ -71214,7 +71214,7 @@ SolidityCoder.prototype.encodeWithOffset = function (type, solidityType, encoded
                     var previousLength = 0; // in int
                     for (var i = 0; i < encoded.length; i++) {
                         // calculate length of previous item
-                        previousLength += +(encoded[i - 1] || [])[0] || 0; 
+                        previousLength += +(encoded[i - 1] || [])[0] || 0;
                         result += f.formatInputInt(offset + i * nestedStaticPartLength + previousLength * 32).encode();
                     }
                 })();
@@ -71257,7 +71257,7 @@ SolidityCoder.prototype.decodeParam = function (type, bytes) {
 SolidityCoder.prototype.decodeParams = function (types, bytes) {
     var solidityTypes = this.getSolidityTypes(types);
     var offsets = this.getOffsets(types, solidityTypes);
-        
+
     return solidityTypes.map(function (solidityType, index) {
         return solidityType.decode(bytes, offsets[index],  types[index], index);
     });
@@ -71267,16 +71267,16 @@ SolidityCoder.prototype.getOffsets = function (types, solidityTypes) {
     var lengths =  solidityTypes.map(function (solidityType, index) {
         return solidityType.staticPartLength(types[index]);
     });
-    
+
     for (var i = 1; i < lengths.length; i++) {
          // sum with length of previous element
-        lengths[i] += lengths[i - 1]; 
+        lengths[i] += lengths[i - 1];
     }
 
     return lengths.map(function (length, index) {
         // remove the current length, so the length is sum of previous elements
         var staticPartLength = solidityTypes[index].staticPartLength(types[index]);
-        return length - staticPartLength; 
+        return length - staticPartLength;
     });
 };
 
@@ -71346,7 +71346,7 @@ module.exports = SolidityTypeDynamicBytes;
     You should have received a copy of the GNU Lesser General Public License
     along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** 
+/**
  * @file formatters.js
  * @author Marek Kotewicz <marek@ethdev.com>
  * @date 2015
@@ -71490,7 +71490,7 @@ var formatOutputUInt = function (param) {
  * @returns {BigNumber} input bytes formatted to real
  */
 var formatOutputReal = function (param) {
-    return formatOutputInt(param).dividedBy(new BigNumber(2).pow(128)); 
+    return formatOutputInt(param).dividedBy(new BigNumber(2).pow(128));
 };
 
 /**
@@ -71501,7 +71501,7 @@ var formatOutputReal = function (param) {
  * @returns {BigNumber} input bytes formatted to ureal
  */
 var formatOutputUReal = function (param) {
-    return formatOutputUInt(param).dividedBy(new BigNumber(2).pow(128)); 
+    return formatOutputUInt(param).dividedBy(new BigNumber(2).pow(128));
 };
 
 /**
@@ -71636,7 +71636,7 @@ module.exports = SolidityTypeInt;
     You should have received a copy of the GNU Lesser General Public License
     along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** 
+/**
  * @file param.js
  * @author Marek Kotewicz <marek@ethdev.com>
  * @date 2015
@@ -71655,7 +71655,7 @@ var SolidityParam = function (value, offset) {
 
 /**
  * This method should be used to get length of params's dynamic part
- * 
+ *
  * @method dynamicPartLength
  * @returns {Number} length of dynamic part (in bytes)
  */
@@ -71683,7 +71683,7 @@ SolidityParam.prototype.withOffset = function (offset) {
  * @param {SolidityParam} result of combination
  */
 SolidityParam.prototype.combine = function (param) {
-    return new SolidityParam(this.value + param.value); 
+    return new SolidityParam(this.value + param.value);
 };
 
 /**
@@ -71715,8 +71715,8 @@ SolidityParam.prototype.offsetAsBytes = function () {
  */
 SolidityParam.prototype.staticPart = function () {
     if (!this.isDynamic()) {
-        return this.value; 
-    } 
+        return this.value;
+    }
     return this.offsetAsBytes();
 };
 
@@ -71748,7 +71748,7 @@ SolidityParam.prototype.encode = function () {
  * @returns {String}
  */
 SolidityParam.encodeList = function (params) {
-    
+
     // updating offsets
     var totalOffset = params.length * 32;
     var offsetParams = params.map(function (param) {
@@ -71874,13 +71874,13 @@ SolidityType.prototype.staticPartLength = function (name) {
 
 /**
  * Should be used to determine if type is dynamic array
- * eg: 
+ * eg:
  * "type[]" => true
  * "type[4]" => false
  *
  * @method isDynamicArray
  * @param {String} name
- * @return {Bool} true if the type is dynamic array 
+ * @return {Bool} true if the type is dynamic array
  */
 SolidityType.prototype.isDynamicArray = function (name) {
     var nestedTypes = this.nestedTypes(name);
@@ -71889,13 +71889,13 @@ SolidityType.prototype.isDynamicArray = function (name) {
 
 /**
  * Should be used to determine if type is static array
- * eg: 
+ * eg:
  * "type[]" => false
  * "type[4]" => true
  *
  * @method isStaticArray
  * @param {String} name
- * @return {Bool} true if the type is static array 
+ * @return {Bool} true if the type is static array
  */
 SolidityType.prototype.isStaticArray = function (name) {
     var nestedTypes = this.nestedTypes(name);
@@ -71904,7 +71904,7 @@ SolidityType.prototype.isStaticArray = function (name) {
 
 /**
  * Should return length of static array
- * eg. 
+ * eg.
  * "int[32]" => 32
  * "int256[14]" => 14
  * "int[2][3]" => 3
@@ -71979,7 +71979,7 @@ SolidityType.prototype.nestedTypes = function (name) {
  * Should be used to encode the value
  *
  * @method encode
- * @param {Object} value 
+ * @param {Object} value
  * @param {String} name
  * @return {String} encoded value
  */
@@ -71993,7 +71993,7 @@ SolidityType.prototype.encode = function (value, name) {
 
             var result = [];
             result.push(f.formatInputInt(length).encode());
-            
+
             value.forEach(function (v) {
                 result.push(self.encode(v, nestedName));
             });
@@ -72069,12 +72069,12 @@ SolidityType.prototype.decode = function (bytes, offset, name) {
             return result;
         })();
     } else if (this.isDynamicType(name)) {
-        
+
         return (function () {
             var dynamicOffset = parseInt('0x' + bytes.substr(offset * 2, 64));      // in bytes
             var length = parseInt('0x' + bytes.substr(dynamicOffset * 2, 64));      // in bytes
             var roundedLength = Math.floor((length + 31) / 32);                     // in int
-        
+
             return self._outputFormatter(new SolidityParam(bytes.substr(dynamicOffset * 2, ( 1 + roundedLength) * 64), 0));
         })();
     }
@@ -72186,13 +72186,13 @@ module.exports = SolidityTypeUReal;
 
 /**
  * Utils
- * 
+ *
  * @module utils
  */
 
 /**
  * Utility functions
- * 
+ *
  * @class [utils] config
  * @constructor
  */
@@ -72259,7 +72259,7 @@ module.exports = {
     You should have received a copy of the GNU Lesser General Public License
     along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
 */
-/** 
+/**
  * @file sha3.js
  * @author Marek Kotewicz <marek@ethdev.com>
  * @date 2015
@@ -72324,7 +72324,7 @@ var sha3 = require('./sha3.js');
 var utf8 = require('utf8');
 
 var unitMap = {
-    'noether':      '0',    
+    'noether':      '0',
     'wei':          '1',
     'kwei':         '1000',
     'Kwei':         '1000',
@@ -72707,18 +72707,18 @@ var isAddress = function (address) {
  * @param {String} address the given HEX adress
  * @return {Boolean}
 */
-var isChecksumAddress = function (address) {    
+var isChecksumAddress = function (address) {
     // Check each case
     address = address.replace('0x','');
     var addressHash = sha3(address.toLowerCase());
 
-    for (var i = 0; i < 40; i++ ) { 
+    for (var i = 0; i < 40; i++ ) {
         // the nth letter should be uppercase if the nth digit of casemap is 1
         if ((parseInt(addressHash[i], 16) > 7 && address[i].toUpperCase() !== address[i]) || (parseInt(addressHash[i], 16) <= 7 && address[i].toLowerCase() !== address[i])) {
             return false;
         }
     }
-    return true;    
+    return true;
 };
 
 
@@ -72730,15 +72730,15 @@ var isChecksumAddress = function (address) {
  * @param {String} address the given HEX adress
  * @return {String}
 */
-var toChecksumAddress = function (address) { 
+var toChecksumAddress = function (address) {
     if (typeof address === 'undefined') return '';
 
     address = address.toLowerCase().replace('0x','');
     var addressHash = sha3(address);
     var checksumAddress = '0x';
 
-    for (var i = 0; i < address.length; i++ ) { 
-        // If ith character is 9 to f then make it uppercase 
+    for (var i = 0; i < address.length; i++ ) {
+        // If ith character is 9 to f then make it uppercase
         if (parseInt(addressHash[i], 16) > 7) {
           checksumAddress += address[i].toUpperCase();
         } else {
