@@ -1,8 +1,14 @@
 # Release Notes #
 
+## Version 2.4.1 - 2016-06-08 ##
+
+* Add correct deserialization of default HD path. By [johnmcdowall](https://github.com/johnmcdowall).
+
+* Fix a bug where the default HD path was not set correctly in the constructor.
+
 ## Version 2.4.0 - 2016-06-08 ##
 
-* Add new message signing function `signMsgHash()`. By [Georgi87](https://github.com/Georgi87)
+* Add new message signing function `signMsgHash()`. By [Georgi87](https://github.com/Georgi87).
 
 ## Version 2.3.3 - 2016-05-26 ##
 
