@@ -3,6 +3,9 @@ var keyStore = require('../lib/keystore')
 var upgrade = require('../lib/upgrade')
 var fixtures = require('./fixtures/keystore')
 var Promise = require('bluebird')
+var bitcore = require('bitcore-lib');
+var Random = bitcore.crypto.Random;
+
 
 // Test with 100 private keys
 var addrprivkeyvector = require('./fixtures/addrprivkey100.json')
@@ -55,6 +58,64 @@ describe("Keystore", function() {
       // add
       done();
     });
+  });
+
+  describe("generateRandomSeed", function() {
+    it("generates a new new seed everytime", function(done) {
+      var seed = keyStore.generateRandomSeed();
+      expect(keyStore.isSeedValid(seed)).to.equal(true);
+      expect(seed.split(" ").length).to.equal(12);
+      expect(seed).to.not.equal(keyStore.generateRandomSeed());
+      done();
+    });
+
+    it("respects entropy and generates a new new seed everytime", function(done) {
+      // Can't really test that entropy creates a better key, but we can test it doesn't break
+      var entropy = 'bad-entropy';
+      var seed = keyStore.generateRandomSeed(entropy);
+      expect(keyStore.isSeedValid(seed)).to.equal(true);
+      expect(seed.split(" ").length).to.equal(12);
+      expect(seed).to.not.equal(keyStore.generateRandomSeed(entropy));
+      done();
+    });
+
+    it("respects a passed in externally generated random number", function(done) {
+      var randBuf = Random.getRandomBuffer(16);
+      var seed = keyStore.generateRandomSeed(undefined, randBuf);
+      expect(keyStore.isSeedValid(seed)).to.equal(true);
+      expect(seed.split(" ").length).to.equal(12);
+      expect(seed).to.equal(keyStore.generateRandomSeed(undefined, randBuf));
+      done();
+    });
+
+    it("throws an exception if randombuffer is too small", function(done) {
+      var randBuf = Random.getRandomBuffer(15);
+      expect(function(){
+        keyStore.generateRandomSeed(undefined, randBuf);
+      }).to.throw(Error)
+      done();
+    });
+
+
+    it("respects entropy and generates a new new seed with differing entropies", function(done) {
+      var randBuf = Random.getRandomBuffer(16);
+      var seed = keyStore.generateRandomSeed('bad-entropy',randBuf);
+      expect(keyStore.isSeedValid(seed)).to.equal(true);
+      expect(seed.split(" ").length).to.equal(12);
+      expect(seed).to.not.equal(keyStore.generateRandomSeed('worse-entropy',randBuf));
+      done();
+    });
+
+    it("generates the same seed with same entropy and random number", function(done) {
+      var randBuf = Random.getRandomBuffer(16);
+      var seed = keyStore.generateRandomSeed('bad-entropy',randBuf);
+      expect(keyStore.isSeedValid(seed)).to.equal(true);
+      expect(seed.split(" ").length).to.equal(12);
+      expect(seed).to.equal(keyStore.generateRandomSeed('bad-entropy',randBuf));
+      done();
+    });
+
+
   });
 
   // Can't directly test the encrypt/decrypt functions
@@ -365,4 +426,48 @@ describe("Keystore", function() {
 
   });
 
+  describe("Signer Interface", function () {
+    var pw = Uint8Array.from(fixtures.valid[0].pwDerivedKey);
+    var ks = new keyStore(fixtures.valid[0].mnSeed, pw);
+    ks.generateNewAddress(pw, 1);
+    ks.passwordProvider = function(callback) {callback(null, fixtures.valid[0].password)}
+    var address = fixtures.valid[0].address;
+    var signer = ks.signer();
+
+
+    describe("hasAddress", function() {
+      it("returns true for it's address", function(done) {
+        signer.hasAddress(address,function(e, result) {
+          expect(e).to.equal(null);
+          expect(result).to.equal(true);
+          done();
+        })
+      })
+
+      it("returns false for any other address", function(done) {
+        signer.hasAddress("0xdaeee689e6fb3e0971ecffba4082a24cfb23ed48",function(e, result) {
+          expect(result).to.equal(false);
+          done();
+        })
+      })
+    })
+
+    describe("getAddresses", function() {
+      it("returns its address", function(done) {
+        expect(signer.getAddress()).to.equal(address);
+        done();
+      })
+    })
+
+    describe("signRawTx", function() {
+      it("signs transaction", function(done) {
+        signer.signRawTx(fixtures.valid[0].rawUnsignedTx,
+          function(e, signedRawTx) {
+            expect(e).to.equal(null);
+            expect(signedRawTx).to.equal("0x"+fixtures.valid[0].rawSignedTx);
+            done();
+        });
+      })
+    })
+  });
 });
