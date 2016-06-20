@@ -1,5 +1,9 @@
 # Release Notes #
 
+## Version 2.4.2 - 2016-06-20 ##
+
+* Add more safety checks for valid password derived keys.
+
 ## Version 2.4.1 - 2016-06-08 ##
 
 * Add correct deserialization of default HD path. By [johnmcdowall](https://github.com/johnmcdowall).
