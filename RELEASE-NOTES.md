@@ -1,5 +1,9 @@
 # Release Notes #
 
+## Version 2.4.3 - 2016-06-20 ##
+
+* Update README.
+
 ## Version 2.4.2 - 2016-06-20 ##
 
 * Add more safety checks for valid password derived keys.

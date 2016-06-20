@@ -4,7 +4,7 @@ A minimal ethereum javascript wallet.
 
 ## Security advisory
 
-Please make sure to update to version 2.3.3. Previous versions contained a bug that could generate addresses that were unrelated to the HD seed if the wrong value of `pwDerivedKey` was passed in to `generateNewAddress()`. This could lead to loss of funds.
+Please make sure to update to a version higher than 2.3.3. Previous versions contained a bug that could generate addresses that were unrelated to the HD seed if the wrong value of `pwDerivedKey` was passed in to `generateNewAddress()`. This could lead to loss of funds.
 
 ## About
 
