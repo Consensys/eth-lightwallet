@@ -1,5 +1,9 @@
 # Release Notes #
 
+## Version 2.4.4 - 2016-08-17 ##
+
+* Fixed an issue that caused lightwallet to fail in Firefox 48+. By [miladmostavi](https://github.com/miladmostavi).
+
 ## Version 2.4.3 - 2016-06-20 ##
 
 * Update README.

@@ -1,6 +1,6 @@
 {
   "name": "eth-lightwallet",
-  "version": "2.4.3",
+  "version": "2.4.4",
   "description": "A lightweight ethereum javascript wallet.",
   "main": "index.js",
   "repository": {
@@ -48,6 +48,10 @@
     {
       "name": "John McDowall",
       "email": "john@kantan.io"
+    },
+    {
+      "name": "Milad Mostavi",
+      "email": "milad.mostavi@gmail.com"
     }
   ],
   "license": "MIT",
