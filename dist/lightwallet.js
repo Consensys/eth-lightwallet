@@ -1,30 +1,34 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.lightwallet = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+'use strict';
+
 module.exports = {
   txutils: require('./lib/txutils.js'),
   encryption: require('./lib/encryption.js'),
   signing: require('./lib/signing.js'),
   keystore: require('./lib/keystore.js'),
-  upgrade: require('./lib/upgrade.js'),
+  upgrade: require('./lib/upgrade.js')
 };
 
 },{"./lib/encryption.js":2,"./lib/keystore.js":3,"./lib/signing.js":4,"./lib/txutils.js":5,"./lib/upgrade.js":6}],2:[function(require,module,exports){
 (function (Buffer){
+'use strict';
+
 var util = require("ethereumjs-util");
 var nacl = require('tweetnacl');
 
 function nacl_encodeHex(msgUInt8Arr) {
   var msgBase64 = nacl.util.encodeBase64(msgUInt8Arr);
-  return (new Buffer(msgBase64, 'base64')).toString('hex');
+  return new Buffer(msgBase64, 'base64').toString('hex');
 }
 
 function nacl_decodeHex(msgHex) {
-  var msgBase64 = (new Buffer(msgHex, 'hex')).toString('base64');
+  var msgBase64 = new Buffer(msgHex, 'hex').toString('base64');
   return nacl.util.decodeBase64(msgBase64);
 }
 
-function _asymEncryptRaw (keystore, pwDerivedKey, msgUint8Array, myPubKey, theirPubKey, hdPathString) {
+function _asymEncryptRaw(keystore, pwDerivedKey, msgUint8Array, myPubKey, theirPubKey, hdPathString) {
 
-  if(!keystore.isDerivedKeyCorrect(pwDerivedKey)) {
+  if (!keystore.isDerivedKeyCorrect(pwDerivedKey)) {
     throw new Error("Incorrect derived key!");
   }
 
@@ -55,9 +59,9 @@ function _asymEncryptRaw (keystore, pwDerivedKey, msgUint8Array, myPubKey, their
   return output;
 }
 
-function _asymDecryptRaw (keystore, pwDerivedKey, encMsg, theirPubKey, myPubKey, hdPathString) {
+function _asymDecryptRaw(keystore, pwDerivedKey, encMsg, theirPubKey, myPubKey, hdPathString) {
 
-  if(!keystore.isDerivedKeyCorrect(pwDerivedKey)) {
+  if (!keystore.isDerivedKeyCorrect(pwDerivedKey)) {
     throw new Error("Incorrect derived key!");
   }
 
@@ -82,24 +86,22 @@ function _asymDecryptRaw (keystore, pwDerivedKey, encMsg, theirPubKey, myPubKey,
   var cleartext = nacl.box.open(ciphertext, nonce, pubKeyUInt8Array, privKeyUInt8Array);
 
   return cleartext;
-
 }
 
-var asymEncryptString = function (keystore, pwDerivedKey, msg, myPubKey, theirPubKey, hdPathString) {
+var asymEncryptString = function asymEncryptString(keystore, pwDerivedKey, msg, myPubKey, theirPubKey, hdPathString) {
 
-  if(!keystore.isDerivedKeyCorrect(pwDerivedKey)) {
+  if (!keystore.isDerivedKeyCorrect(pwDerivedKey)) {
     throw new Error("Incorrect derived key!");
   }
 
   var messageUInt8Array = nacl.util.decodeUTF8(msg);
 
   return _asymEncryptRaw(keystore, pwDerivedKey, messageUInt8Array, myPubKey, theirPubKey, hdPathString);
+};
 
-}
+var asymDecryptString = function asymDecryptString(keystore, pwDerivedKey, encMsg, theirPubKey, myPubKey, hdPathString) {
 
-var asymDecryptString = function (keystore, pwDerivedKey, encMsg, theirPubKey, myPubKey, hdPathString) {
-
-  if(!keystore.isDerivedKeyCorrect(pwDerivedKey)) {
+  if (!keystore.isDerivedKeyCorrect(pwDerivedKey)) {
     throw new Error("Incorrect derived key!");
   }
 
@@ -107,16 +109,14 @@ var asymDecryptString = function (keystore, pwDerivedKey, encMsg, theirPubKey, m
 
   if (cleartext === false) {
     return false;
-  }
-  else {
+  } else {
     return nacl.util.encodeUTF8(cleartext);
   }
+};
 
-}
+var multiEncryptString = function multiEncryptString(keystore, pwDerivedKey, msg, myPubKey, theirPubKeyArray, hdPathString) {
 
-var multiEncryptString = function (keystore, pwDerivedKey, msg, myPubKey, theirPubKeyArray, hdPathString) {
-
-  if(!keystore.isDerivedKeyCorrect(pwDerivedKey)) {
+  if (!keystore.isDerivedKeyCorrect(pwDerivedKey)) {
     throw new Error("Incorrect derived key!");
   }
 
@@ -131,8 +131,8 @@ var multiEncryptString = function (keystore, pwDerivedKey, msg, myPubKey, theirP
   }
 
   var encryptedSymKey = {};
-  encryptedSymKey = []
-  for (var i=0; i<theirPubKeyArray.length; i++) {
+  encryptedSymKey = [];
+  for (var i = 0; i < theirPubKeyArray.length; i++) {
 
     var encSymKey = _asymEncryptRaw(keystore, pwDerivedKey, symEncryptionKey, myPubKey, theirPubKeyArray[i], hdPathString);
 
@@ -149,17 +149,17 @@ var multiEncryptString = function (keystore, pwDerivedKey, msg, myPubKey, theirP
   output.encryptedSymKey = encryptedSymKey;
 
   return output;
-}
+};
 
-var multiDecryptString = function (keystore, pwDerivedKey, encMsg, theirPubKey, myPubKey, hdPathString) {
+var multiDecryptString = function multiDecryptString(keystore, pwDerivedKey, encMsg, theirPubKey, myPubKey, hdPathString) {
 
-  if(!keystore.isDerivedKeyCorrect(pwDerivedKey)) {
+  if (!keystore.isDerivedKeyCorrect(pwDerivedKey)) {
     throw new Error("Incorrect derived key!");
   }
 
   var symKey = false;
-  for (var i=0; i < encMsg.encryptedSymKey.length; i++) {
-    var result = _asymDecryptRaw(keystore, pwDerivedKey, encMsg.encryptedSymKey[i], theirPubKey, myPubKey, hdPathString)
+  for (var i = 0; i < encMsg.encryptedSymKey.length; i++) {
+    var result = _asymDecryptRaw(keystore, pwDerivedKey, encMsg.encryptedSymKey[i], theirPubKey, myPubKey, hdPathString);
     if (result !== false) {
       symKey = result;
       break;
@@ -168,32 +168,31 @@ var multiDecryptString = function (keystore, pwDerivedKey, encMsg, theirPubKey, 
 
   if (symKey === false) {
     return false;
-  }
-  else {
+  } else {
     var symNonce = nacl.util.decodeBase64(encMsg.symNonce);
     var symEncMessage = nacl.util.decodeBase64(encMsg.symEncMessage);
     var msg = nacl.secretbox.open(symEncMessage, symNonce, symKey);
 
     if (msg === false) {
       return false;
-    }
-    else {
+    } else {
       return nacl.util.encodeUTF8(msg);
     }
   }
-
-}
+};
 
 module.exports = {
   asymEncryptString: asymEncryptString,
   asymDecryptString: asymDecryptString,
   multiEncryptString: multiEncryptString,
-  multiDecryptString: multiDecryptString,
+  multiDecryptString: multiDecryptString
 };
 
 }).call(this,require("buffer").Buffer)
 },{"buffer":158,"ethereumjs-util":247,"tweetnacl":332}],3:[function(require,module,exports){
 (function (Buffer){
+'use strict';
+
 var CryptoJS = require('crypto-js');
 var Transaction = require('ethereumjs-tx');
 var EC = require('elliptic').ec;
@@ -208,66 +207,60 @@ var scrypt = require('scrypt-async');
 var encryption = require('./encryption');
 var signing = require('./signing');
 
-function strip0x (input) {
-  if (typeof(input) !== 'string') {
+function strip0x(input) {
+  if (typeof input !== 'string') {
     return input;
-  }
-  else if (input.length >= 2 && input.slice(0,2) === '0x') {
+  } else if (input.length >= 2 && input.slice(0, 2) === '0x') {
     return input.slice(2);
-  }
-  else {
+  } else {
     return input;
   }
 }
 
-function add0x (input) {
-  if (typeof(input) !== 'string') {
+function add0x(input) {
+  if (typeof input !== 'string') {
     return input;
-  }
-  else if (input.length < 2 || input.slice(0,2) !== '0x') {
+  } else if (input.length < 2 || input.slice(0, 2) !== '0x') {
     return '0x' + input;
-  }
-  else {
+  } else {
     return input;
   }
 }
 
-function leftPadString (stringToPad, padChar, length) {
+function leftPadString(stringToPad, padChar, length) {
 
   var repreatedPadChar = '';
-  for (var i=0; i<length; i++) {
+  for (var i = 0; i < length; i++) {
     repreatedPadChar += padChar;
   }
 
-  return ( (repreatedPadChar + stringToPad).slice(-length) );
+  return (repreatedPadChar + stringToPad).slice(-length);
 }
 
 function nacl_encodeHex(msgUInt8Arr) {
   var msgBase64 = nacl.util.encodeBase64(msgUInt8Arr);
-  return (new Buffer(msgBase64, 'base64')).toString('hex');
+  return new Buffer(msgBase64, 'base64').toString('hex');
 }
 
 function nacl_decodeHex(msgHex) {
-  var msgBase64 = (new Buffer(msgHex, 'hex')).toString('base64');
+  var msgBase64 = new Buffer(msgHex, 'hex').toString('base64');
   return nacl.util.decodeBase64(msgBase64);
 }
 
-
-var KeyStore = function(mnemonic, pwDerivedKey, hdPathString) {
+var KeyStore = function KeyStore(mnemonic, pwDerivedKey, hdPathString) {
 
   this.defaultHdPathString = "m/0'/0'/0'";
 
   if (hdPathString === undefined) {
     hdPathString = this.defaultHdPathString;
-  }
-  else {
-    this.defaultHdPathString = hdPathString;    
+  } else {
+    this.defaultHdPathString = hdPathString;
   }
 
   this.ksData = {};
   this.ksData[hdPathString] = {};
   var pathKsData = this.ksData[hdPathString];
-  pathKsData.info = {curve: 'secp256k1', purpose: 'sign'};
+  pathKsData.info = { curve: 'secp256k1', purpose: 'sign' };
 
   this.encSeed = undefined;
   this.encHdRootPriv = undefined;
@@ -278,10 +271,10 @@ var KeyStore = function(mnemonic, pwDerivedKey, hdPathString) {
   pathKsData.encPrivKeys = {};
   pathKsData.addresses = [];
 
-  if ( (typeof pwDerivedKey !== 'undefined') && (typeof mnemonic !== 'undefined') ){
+  if (typeof pwDerivedKey !== 'undefined' && typeof mnemonic !== 'undefined') {
 
     var words = mnemonic.split(' ');
-    if (!Mnemonic.isValid(mnemonic, Mnemonic.Words.ENGLISH) || words.length !== 12){
+    if (!Mnemonic.isValid(mnemonic, Mnemonic.Words.ENGLISH) || words.length !== 12) {
       throw new Error('KeyStore: Invalid mnemonic');
     }
 
@@ -306,7 +299,7 @@ var KeyStore = function(mnemonic, pwDerivedKey, hdPathString) {
   }
 };
 
-KeyStore.prototype.isDerivedKeyCorrect = function(pwDerivedKey) {
+KeyStore.prototype.isDerivedKeyCorrect = function (pwDerivedKey) {
 
   var paddedSeed = KeyStore._decryptString(this.encSeed, pwDerivedKey);
   if (paddedSeed.length > 0) {
@@ -314,7 +307,6 @@ KeyStore.prototype.isDerivedKeyCorrect = function(pwDerivedKey) {
   }
 
   return false;
-
 };
 
 KeyStore._encryptString = function (string, pwDerivedKey) {
@@ -322,7 +314,7 @@ KeyStore._encryptString = function (string, pwDerivedKey) {
   var nonce = nacl.randomBytes(nacl.secretbox.nonceLength);
   var encObj = nacl.secretbox(nacl.util.decodeUTF8(string), nonce, pwDerivedKey);
   var encString = { 'encStr': nacl.util.encodeBase64(encObj),
-                    'nonce': nacl.util.encodeBase64(nonce)};
+    'nonce': nacl.util.encodeBase64(nonce) };
   return encString;
 };
 
@@ -346,7 +338,7 @@ KeyStore._encryptKey = function (privKey, pwDerivedKey) {
   var nonce = nacl.randomBytes(nacl.secretbox.nonceLength);
 
   var encKey = nacl.secretbox(privKeyArray, nonce, pwDerivedKey);
-  encKey = { 'key': nacl.util.encodeBase64(encKey), 'nonce': nacl.util.encodeBase64(nonce)};
+  encKey = { 'key': nacl.util.encodeBase64(encKey), 'nonce': nacl.util.encodeBase64(nonce) };
 
   return encKey;
 };
@@ -379,21 +371,21 @@ KeyStore._computeAddressFromPrivKey = function (privKey) {
 KeyStore._computePubkeyFromPrivKey = function (privKey, curve) {
 
   if (curve !== 'curve25519') {
-    throw new Error('KeyStore._computePubkeyFromPrivKey: Only "curve25519" supported.')
+    throw new Error('KeyStore._computePubkeyFromPrivKey: Only "curve25519" supported.');
   }
 
-  var privKeyBase64 = (new Buffer(privKey, 'hex')).toString('base64')
+  var privKeyBase64 = new Buffer(privKey, 'hex').toString('base64');
   var privKeyUInt8Array = nacl.util.decodeBase64(privKeyBase64);
   var pubKey = nacl.box.keyPair.fromSecretKey(privKeyUInt8Array).publicKey;
   var pubKeyBase64 = nacl.util.encodeBase64(pubKey);
-  var pubKeyHex = (new Buffer(pubKeyBase64, 'base64')).toString('hex');
+  var pubKeyHex = new Buffer(pubKeyBase64, 'base64').toString('hex');
 
   return pubKeyHex;
-}
+};
 
 KeyStore.prototype.addHdDerivationPath = function (hdPathString, pwDerivedKey, info) {
 
-  if(!this.isDerivedKeyCorrect(pwDerivedKey)) {
+  if (!this.isDerivedKeyCorrect(pwDerivedKey)) {
     throw new Error("Incorrect derived key!");
   }
 
@@ -417,12 +409,10 @@ KeyStore.prototype.addHdDerivationPath = function (hdPathString, pwDerivedKey, i
 
   if (info.purpose === 'sign') {
     this.ksData[hdPathString].addresses = [];
-  }
-  else if (info.purpose === 'asymEncrypt') {
+  } else if (info.purpose === 'asymEncrypt') {
     this.ksData[hdPathString].pubKeys = [];
   }
-
-}
+};
 
 KeyStore.prototype.setDefaultHdDerivationPath = function (hdPathString) {
 
@@ -431,11 +421,11 @@ KeyStore.prototype.setDefaultHdDerivationPath = function (hdPathString) {
   }
 
   this.defaultHdPathString = hdPathString;
-}
+};
 
-KeyStore.prototype._generatePrivKeys = function(pwDerivedKey, n, hdPathString) {
+KeyStore.prototype._generatePrivKeys = function (pwDerivedKey, n, hdPathString) {
 
-  if(!this.isDerivedKeyCorrect(pwDerivedKey)) {
+  if (!this.isDerivedKeyCorrect(pwDerivedKey)) {
     throw new Error("Incorrect derived key!");
   }
 
@@ -450,7 +440,7 @@ KeyStore.prototype._generatePrivKeys = function(pwDerivedKey, n, hdPathString) {
   }
 
   var keys = [];
-  for (var i = 0; i < n; i++){
+  for (var i = 0; i < n; i++) {
     var hdprivkey = new bitcore.HDPrivateKey(hdRoot).derive(this.ksData[hdPathString].hdIndex++);
     var privkeyBuf = hdprivkey.privateKey.toBuffer();
 
@@ -459,14 +449,12 @@ KeyStore.prototype._generatePrivKeys = function(pwDerivedKey, n, hdPathString) {
       // Way too small key, something must have gone wrong
       // Halt and catch fire
       throw new Error('Private key suspiciously small: < 16 bytes. Aborting!');
-    }
-    else if (privkeyBuf.length < 32) {
+    } else if (privkeyBuf.length < 32) {
       // Pad private key if too short
       // bitcore has a bug where it sometimes returns
       // truncated keys
       privkeyHex = leftPadString(privkeyBuf.toString('hex'), '0', 64);
-    }
-    else if (privkeyBuf.length > 32) {
+    } else if (privkeyBuf.length > 32) {
       throw new Error('Private key larger than 32 bytes. Aborting!');
     }
 
@@ -474,26 +462,25 @@ KeyStore.prototype._generatePrivKeys = function(pwDerivedKey, n, hdPathString) {
     keys[i] = {
       privKey: privkeyHex,
       encPrivKey: encPrivKey
-    }
+    };
   }
 
   return keys;
 };
 
-
 // This function is tested using the test vectors here:
 // http://www.di-mgt.com.au/sha_testvectors.html
-KeyStore._concatAndSha256 = function(entropyBuf0, entropyBuf1) {
+KeyStore._concatAndSha256 = function (entropyBuf0, entropyBuf1) {
 
   var totalEnt = Buffer.concat([entropyBuf0, entropyBuf1]);
   if (totalEnt.length !== entropyBuf0.length + entropyBuf1.length) {
-    throw new Error('generateRandomSeed: Logic error! Concatenation of entropy sources failed.')
+    throw new Error('generateRandomSeed: Logic error! Concatenation of entropy sources failed.');
   }
 
   var hashedEnt = Hash.sha256(totalEnt);
 
   return hashedEnt;
-}
+};
 
 // External static functions
 
@@ -507,27 +494,25 @@ KeyStore._concatAndSha256 = function(entropyBuf0, entropyBuf1) {
 // If extraEntropy is not set, the random number generator
 // is used directly.
 
-KeyStore.generateRandomSeed = function(extraEntropy) {
+KeyStore.generateRandomSeed = function (extraEntropy) {
 
   var seed = '';
   if (extraEntropy === undefined) {
     seed = new Mnemonic(Mnemonic.Words.ENGLISH);
-  }
-  else if (typeof extraEntropy === 'string') {
+  } else if (typeof extraEntropy === 'string') {
     var entBuf = new Buffer(extraEntropy);
     var randBuf = Random.getRandomBuffer(256 / 8);
     var hashedEnt = this._concatAndSha256(randBuf, entBuf).slice(0, 128 / 8);
     seed = new Mnemonic(hashedEnt, Mnemonic.Words.ENGLISH);
-  }
-  else {
-    throw new Error('generateRandomSeed: extraEntropy is set but not a string.')
+  } else {
+    throw new Error('generateRandomSeed: extraEntropy is set but not a string.');
   }
 
   return seed.toString();
 };
 
-KeyStore.isSeedValid = function(seed) {
-  return Mnemonic.isValid(seed, Mnemonic.Words.ENGLISH)
+KeyStore.isSeedValid = function (seed) {
+  return Mnemonic.isValid(seed, Mnemonic.Words.ENGLISH);
 };
 
 // Takes keystore serialized as string and returns an instance of KeyStore
@@ -535,15 +520,15 @@ KeyStore.deserialize = function (keystore) {
   var jsonKS = JSON.parse(keystore);
 
   if (jsonKS.version === undefined || jsonKS.version === 1) {
-    throw new Error('Old version of serialized keystore. Please use KeyStore.upgradeOldSerialized() to convert it to the latest version.')
+    throw new Error('Old version of serialized keystore. Please use KeyStore.upgradeOldSerialized() to convert it to the latest version.');
   }
 
   // Create keystore
   var keystoreX = new KeyStore();
 
-  keystoreX.encSeed       = jsonKS.encSeed;
+  keystoreX.encSeed = jsonKS.encSeed;
   keystoreX.encHdRootPriv = jsonKS.encHdRootPriv;
-  keystoreX.ksData        = jsonKS.ksData;
+  keystoreX.ksData = jsonKS.ksData;
 
   // Set the defaultHdPathString to an entry that is actuall in the
   // deserialized key store, otherwise the keystore will operate with
@@ -557,10 +542,10 @@ KeyStore.deserialize = function (keystore) {
 // External API functions
 
 KeyStore.prototype.serialize = function () {
-  var jsonKS = {'encSeed': this.encSeed,
-                'ksData' : this.ksData,
-                'encHdRootPriv' : this.encHdRootPriv,
-                'version' : this.version};
+  var jsonKS = { 'encSeed': this.encSeed,
+    'ksData': this.ksData,
+    'encHdRootPriv': this.encHdRootPriv,
+    'version': this.version };
 
   return JSON.stringify(jsonKS);
 };
@@ -576,12 +561,11 @@ KeyStore.prototype.getAddresses = function (hdPathString) {
   }
 
   return this.ksData[hdPathString].addresses;
-
 };
 
 KeyStore.prototype.getSeed = function (pwDerivedKey) {
 
-  if(!this.isDerivedKeyCorrect(pwDerivedKey)) {
+  if (!this.isDerivedKeyCorrect(pwDerivedKey)) {
     throw new Error("Incorrect derived key!");
   }
 
@@ -591,7 +575,7 @@ KeyStore.prototype.getSeed = function (pwDerivedKey) {
 
 KeyStore.prototype.exportPrivateKey = function (address, pwDerivedKey, hdPathString) {
 
-  if(!this.isDerivedKeyCorrect(pwDerivedKey)) {
+  if (!this.isDerivedKeyCorrect(pwDerivedKey)) {
     throw new Error("Incorrect derived key!");
   }
 
@@ -610,9 +594,9 @@ KeyStore.prototype.exportPrivateKey = function (address, pwDerivedKey, hdPathStr
   return privKey;
 };
 
-KeyStore.prototype.generateNewAddress = function(pwDerivedKey, n, hdPathString) {
+KeyStore.prototype.generateNewAddress = function (pwDerivedKey, n, hdPathString) {
 
-  if(!this.isDerivedKeyCorrect(pwDerivedKey)) {
+  if (!this.isDerivedKeyCorrect(pwDerivedKey)) {
     throw new Error("Incorrect derived key!");
   }
 
@@ -636,12 +620,11 @@ KeyStore.prototype.generateNewAddress = function(pwDerivedKey, n, hdPathString) 
     this.ksData[hdPathString].encPrivKeys[address] = keyObj.encPrivKey;
     this.ksData[hdPathString].addresses.push(address);
   }
-
 };
 
-KeyStore.prototype.generateNewEncryptionKeys = function(pwDerivedKey, n, hdPathString) {
+KeyStore.prototype.generateNewEncryptionKeys = function (pwDerivedKey, n, hdPathString) {
 
-  if(!this.isDerivedKeyCorrect(pwDerivedKey)) {
+  if (!this.isDerivedKeyCorrect(pwDerivedKey)) {
     throw new Error("Incorrect derived key!");
   }
 
@@ -666,7 +649,6 @@ KeyStore.prototype.generateNewEncryptionKeys = function(pwDerivedKey, n, hdPathS
     this.ksData[hdPathString].encPrivKeys[pubkey] = keyObj.encPrivKey;
     this.ksData[hdPathString].pubKeys.push(pubkey);
   }
-
 };
 
 KeyStore.prototype.getPubKeys = function (hdPathString) {
@@ -684,9 +666,9 @@ KeyStore.prototype.getPubKeys = function (hdPathString) {
   }
 
   return this.ksData[hdPathString].pubKeys;
-}
+};
 
-KeyStore.deriveKeyFromPassword = function(password, callback) {
+KeyStore.deriveKeyFromPassword = function (password, callback) {
 
   var salt = 'lightwalletSalt'; // should we have user-defined salt?
   var logN = 14;
@@ -694,19 +676,17 @@ KeyStore.deriveKeyFromPassword = function(password, callback) {
   var dkLen = 32;
   var interruptStep = 200;
 
-  var cb = function(derKey) {
-    try{
-      var ui8arr = (new Uint8Array(derKey));
+  var cb = function cb(derKey) {
+    try {
+      var ui8arr = new Uint8Array(derKey);
       callback(null, ui8arr);
     } catch (err) {
       callback(err);
     }
-  }
+  };
 
   scrypt(password, salt, logN, r, dkLen, interruptStep, cb, null);
-}
-
-
+};
 
 // Async functions exposed for Hooked Web3-provider
 // hasAddress(address, callback)
@@ -725,11 +705,9 @@ KeyStore.deriveKeyFromPassword = function(password, callback) {
 
 KeyStore.prototype.passwordProvider = function (callback) {
 
-  var password = prompt("Enter password to continue","Enter password");
+  var password = prompt("Enter password to continue", "Enter password");
   callback(null, password);
-
-}
-
+};
 
 KeyStore.prototype.hasAddress = function (address, callback) {
 
@@ -737,11 +715,9 @@ KeyStore.prototype.hasAddress = function (address, callback) {
 
   if (this.ksData[this.defaultHdPathString].encPrivKeys[addrToCheck] === undefined) {
     callback('Address not found!', false);
-  }
-  else {
+  } else {
     callback(null, true);
   }
-
 };
 
 KeyStore.prototype.signTransaction = function (txParams, callback) {
@@ -760,32 +736,32 @@ KeyStore.prototype.signTransaction = function (txParams, callback) {
   var rawTx = txObj.serialize().toString('hex');
   var signingAddress = strip0x(txParams.from);
   var self = this;
-  this.passwordProvider( function (err, password) {
+  this.passwordProvider(function (err, password) {
     if (err) return callback(err);
     KeyStore.deriveKeyFromPassword(password, function (err, pwDerivedKey) {
       if (err) return callback(err);
       var signedTx = signing.signTx(self, pwDerivedKey, rawTx, signingAddress, self.defaultHdPathString);
       callback(null, '0x' + signedTx);
-    })
-  })
-
+    });
+  });
 };
-
 
 module.exports = KeyStore;
 
 }).call(this,require("buffer").Buffer)
 },{"./encryption":2,"./signing":4,"bitcore-lib":25,"bitcore-mnemonic":98,"buffer":158,"crypto-js":193,"elliptic":230,"ethereumjs-tx":246,"scrypt-async":298,"tweetnacl":332}],4:[function(require,module,exports){
 (function (Buffer){
-var Transaction = require("ethereumjs-tx")
-var util = require("ethereumjs-util")
+"use strict";
 
-var signTx = function (keystore, pwDerivedKey, rawTx, signingAddress, hdPathString) {
+var Transaction = require("ethereumjs-tx");
+var util = require("ethereumjs-util");
 
-  if(!keystore.isDerivedKeyCorrect(pwDerivedKey)) {
+var signTx = function signTx(keystore, pwDerivedKey, rawTx, signingAddress, hdPathString) {
+
+  if (!keystore.isDerivedKeyCorrect(pwDerivedKey)) {
     throw new Error("Incorrect derived key!");
   }
-  
+
   if (hdPathString === undefined) {
     hdPathString = keystore.defaultHdPathString;
   }
@@ -805,9 +781,9 @@ var signTx = function (keystore, pwDerivedKey, rawTx, signingAddress, hdPathStri
 
 module.exports.signTx = signTx;
 
-var signMsg = function (keystore, pwDerivedKey, rawMsg, signingAddress, hdPathString) {
+var signMsg = function signMsg(keystore, pwDerivedKey, rawMsg, signingAddress, hdPathString) {
 
-  if(!keystore.isDerivedKeyCorrect(pwDerivedKey)) {
+  if (!keystore.isDerivedKeyCorrect(pwDerivedKey)) {
     throw new Error("Incorrect derived key!");
   }
 
@@ -817,9 +793,9 @@ var signMsg = function (keystore, pwDerivedKey, rawMsg, signingAddress, hdPathSt
 
 module.exports.signMsg = signMsg;
 
-var signMsgHash = function (keystore, pwDerivedKey, msgHash, signingAddress, hdPathString) {
+var signMsgHash = function signMsgHash(keystore, pwDerivedKey, msgHash, signingAddress, hdPathString) {
 
-  if(!keystore.isDerivedKeyCorrect(pwDerivedKey)) {
+  if (!keystore.isDerivedKeyCorrect(pwDerivedKey)) {
     throw new Error("Incorrect derived key!");
   }
 
@@ -836,7 +812,7 @@ var signMsgHash = function (keystore, pwDerivedKey, msgHash, signingAddress, hdP
 
 module.exports.signMsgHash = signMsgHash;
 
-var recoverAddress = function (rawMsg, v, r, s) {
+var recoverAddress = function recoverAddress(rawMsg, v, r, s) {
 
   var msgHash = util.sha3(rawMsg);
 
@@ -845,7 +821,7 @@ var recoverAddress = function (rawMsg, v, r, s) {
 
 module.exports.recoverAddress = recoverAddress;
 
-var concatSig = function (signature) {
+var concatSig = function concatSig(signature) {
   var v = signature.v;
   var r = signature.r;
   var s = signature.s;
@@ -863,24 +839,24 @@ module.exports.concatSig = concatSig;
 }).call(this,require("buffer").Buffer)
 },{"buffer":158,"ethereumjs-tx":246,"ethereumjs-util":247}],5:[function(require,module,exports){
 (function (Buffer){
+'use strict';
+
 var Transaction = require('ethereumjs-tx');
 var coder = require('web3/lib/solidity/coder');
 var rlp = require('rlp');
 var CryptoJS = require('crypto-js');
 
-function add0x (input) {
-  if (typeof(input) !== 'string') {
+function add0x(input) {
+  if (typeof input !== 'string') {
     return input;
-  }
-  else if (input.length < 2 || input.slice(0,2) !== '0x') {
+  } else if (input.length < 2 || input.slice(0, 2) !== '0x') {
     return '0x' + input;
-  }
-  else {
+  } else {
     return input;
   }
 }
 
-function _encodeFunctionTxData (functionName, types, args) {
+function _encodeFunctionTxData(functionName, types, args) {
 
   var fullName = functionName + '(' + types.join() + ')';
   var signature = CryptoJS.SHA3(fullName, { outputLength: 256 }).toString(CryptoJS.enc.Hex).slice(0, 8);
@@ -889,10 +865,10 @@ function _encodeFunctionTxData (functionName, types, args) {
   return dataHex;
 }
 
-function _getTypesFromAbi (abi, functionName) {
+function _getTypesFromAbi(abi, functionName) {
 
   function matchesFunctionName(json) {
-    return (json.name === functionName && json.type === 'function');
+    return json.name === functionName && json.type === 'function';
   }
 
   function getTypes(json) {
@@ -901,10 +877,10 @@ function _getTypesFromAbi (abi, functionName) {
 
   var funcJson = abi.filter(matchesFunctionName)[0];
 
-  return (funcJson.inputs).map(getTypes);
+  return funcJson.inputs.map(getTypes);
 }
 
-function functionTx (abi, functionName, args, txObject) {
+function functionTx(abi, functionName, args, txObject) {
   // txObject contains gasPrice, gasLimit, nonce, to, value
 
   var types = _getTypesFromAbi(abi, functionName);
@@ -918,18 +894,18 @@ function functionTx (abi, functionName, args, txObject) {
   txObjectCopy.data = add0x(txData);
   txObjectCopy.value = add0x(txObject.value);
 
-  return (new Transaction(txObjectCopy)).serialize().toString('hex');
+  return new Transaction(txObjectCopy).serialize().toString('hex');
 }
 
-function createdContractAddress (fromAddress, nonce) {
+function createdContractAddress(fromAddress, nonce) {
   var rlpEncodedHex = rlp.encode([new Buffer(fromAddress, 'hex'), nonce]).toString('hex');
   var rlpEncodedWordArray = CryptoJS.enc.Hex.parse(rlpEncodedHex);
-  var hash = CryptoJS.SHA3(rlpEncodedWordArray, {outputLength: 256}).toString(CryptoJS.enc.Hex);
+  var hash = CryptoJS.SHA3(rlpEncodedWordArray, { outputLength: 256 }).toString(CryptoJS.enc.Hex);
 
   return hash.slice(24);
 }
 
-function createContractTx (fromAddress, txObject) {
+function createContractTx(fromAddress, txObject) {
   // txObject contains gasPrice, gasLimit, value, data, nonce
 
   var txObjectCopy = {};
@@ -943,10 +919,10 @@ function createContractTx (fromAddress, txObject) {
   var contractAddress = createdContractAddress(fromAddress, txObject.nonce);
   var tx = new Transaction(txObjectCopy);
 
-  return {tx: tx.serialize().toString('hex'), addr: contractAddress};
+  return { tx: tx.serialize().toString('hex'), addr: contractAddress };
 }
 
-function valueTx (txObject) {
+function valueTx(txObject) {
   // txObject contains gasPrice, gasLimit, value, nonce
 
   var txObjectCopy = {};
@@ -972,6 +948,8 @@ module.exports = {
 
 }).call(this,require("buffer").Buffer)
 },{"buffer":158,"crypto-js":193,"ethereumjs-tx":246,"rlp":297,"web3/lib/solidity/coder":344}],6:[function(require,module,exports){
+'use strict';
+
 var CryptoJS = require('crypto-js');
 var keystore = require('./keystore');
 
@@ -985,21 +963,21 @@ var Mnemonic = require('bitcore-mnemonic');
 var nacl = require('tweetnacl');
 var scrypt = require('scrypt-async');
 
-var legacyDecryptString = function (encryptedStr, password) {
-  var decryptedStr = CryptoJS.AES.decrypt(encryptedStr.encStr, password, {'iv': encryptedStr.iv, 'salt': encryptedStr.salt });
+var legacyDecryptString = function legacyDecryptString(encryptedStr, password) {
+  var decryptedStr = CryptoJS.AES.decrypt(encryptedStr.encStr, password, { 'iv': encryptedStr.iv, 'salt': encryptedStr.salt });
   return decryptedStr.toString(CryptoJS.enc.Latin1);
 };
 
-var legacyGenerateEncKey = function(password, salt, keyHash) {
+var legacyGenerateEncKey = function legacyGenerateEncKey(password, salt, keyHash) {
   var encKey = CryptoJS.PBKDF2(password, salt, { keySize: 512 / 32, iterations: 150 }).toString();
   var hash = CryptoJS.SHA3(encKey).toString();
-  if (keyHash !== hash){
-      throw new Error('Invalid Password');
+  if (keyHash !== hash) {
+    throw new Error('Invalid Password');
   }
   return encKey;
 };
 
-var upgradeOldSerialized = function (oldSerialized, password, callback) {
+var upgradeOldSerialized = function upgradeOldSerialized(oldSerialized, password, callback) {
 
   // Upgrades old serialized version of the keystore
   // to the latest version
@@ -1009,19 +987,17 @@ var upgradeOldSerialized = function (oldSerialized, password, callback) {
 
     var derivedKey = legacyGenerateEncKey(password, oldKS.salt, oldKS.keyHash);
     var seed = legacyDecryptString(oldKS.encSeed, derivedKey);
-    keystore.deriveKeyFromPassword(password, function(err, pwDerivedKey) {
+    keystore.deriveKeyFromPassword(password, function (err, pwDerivedKey) {
       var newKeyStore = new keystore(seed, pwDerivedKey);
       var hdIndex = oldKS.hdIndex;
       newKeyStore.generateNewAddress(pwDerivedKey, hdIndex);
 
       callback(null, newKeyStore.serialize());
-    })
+    });
+  } else {
+    throw new Error('Keystore is not of correct version.');
   }
-  else {
-    throw new Error('Keystore is not of correct version.')
-  }
-}
-
+};
 
 module.exports.upgradeOldSerialized = upgradeOldSerialized;
 
@@ -58529,7 +58505,7 @@ Transaction.prototype.validate = function (stringError) {
   }
 
   if (this.getBaseFee().cmp(new BN(this.gasLimit)) > 0) {
-    errors.push(['gas limit is to low. Need at least ${this.getBaseFee()}'])
+    errors.push([`gas limit is to low. Need at least ${this.getBaseFee()}`])
   }
 
   if (stringError === undefined || stringError === false) {
