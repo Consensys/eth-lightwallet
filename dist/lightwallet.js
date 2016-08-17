@@ -58406,7 +58406,7 @@ Transaction.prototype.toCreationAddress = function () {
  * @return {Buffer}
  */
 Transaction.prototype.hash = function (signature) {
-  let toHash
+  var toHash
 
   if (typeof signature === 'undefined') {
     signature = true
@@ -58529,7 +58529,7 @@ Transaction.prototype.validate = function (stringError) {
   }
 
   if (this.getBaseFee().cmp(new BN(this.gasLimit)) > 0) {
-    errors.push([`gas limit is to low. Need at least ${this.getBaseFee()}`])
+    errors.push(['gas limit is to low. Need at least ${this.getBaseFee()}'])
   }
 
   if (stringError === undefined || stringError === false) {
