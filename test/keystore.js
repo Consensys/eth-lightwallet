@@ -74,13 +74,10 @@ describe("Keystore", function() {
   });
 
   describe("_encryptKey _decryptKey", function() {
-
     fixtures.valid.forEach(function (f) {
       it('encrypts the key then returns same key decrypted ' + '"' + f.privKeyHex.substring(0,15) + '..."', function (done) {
-
         var encryptedKey = keyStore._encryptKey(f.privKeyHex, Uint8Array.from(f.pwDerivedKey))
         var decryptedKey = keyStore._decryptKey(encryptedKey, Uint8Array.from(f.pwDerivedKey))
-
         expect(decryptedKey).to.equal(f.privKeyHex)
         done();
       })
@@ -89,10 +86,29 @@ describe("Keystore", function() {
 
   describe("deriveKeyFromPassword", function () {
     it("derives a key correctly from the password", function(done) {
+
+      // only testing fixtures with a lightwalletSalt
+      var valid = fixtures.valid.filter(function (f) {
+        return f.salt === 'lightwalletSalt'
+      })
+      var derKeyProm = Promise.promisify(keyStore.deriveKeyFromPassword);
+      var promArray = [];
+      valid.forEach(function (f) {
+        promArray.push(derKeyProm(f.password));
+      })
+      Promise.all(promArray).then(function(derived) {
+        for(var i=0; i<derived.length; i++) {
+         expect(derived[i]).to.deep.equal(Uint8Array.from(valid[i].pwDerivedKey))
+        }
+        done();
+      })
+    })
+
+    it("derives a key correctly from the password and salt", function(done) {
       var derKeyProm = Promise.promisify(keyStore.deriveKeyFromPassword);
       var promArray = [];
       fixtures.valid.forEach(function (f) {
-        promArray.push(derKeyProm(f.password));
+        promArray.push(derKeyProm(f.password, f.salt));
       })
       Promise.all(promArray).then(function(derived) {
         for(var i=0; i<derived.length; i++) {
@@ -288,14 +304,34 @@ describe("Keystore", function() {
       done();
     });
 
+    it('implements signTransaction correctly with old behavior', function(done) {
+      var pw = Uint8Array.from(fixtures.valid[1].pwDerivedKey)
+      var ks = new keyStore(fixtures.valid[1].mnSeed, pw)
+      ks.generateNewAddress(pw)
+      var addr = ks.getAddresses()[1]
+
+      // Trivial passwordProvider
+      ks.passwordProvider = function(callback) {callback(null, fixtures.valid[1].password)}
+
+      var txParams = fixtures.valid[1].web3TxParams
+      ks.signTransaction(txParams, function (err, signedTx) {
+        expect(signedTx.slice(2)).to.equal(fixtures.valid[1].rawSignedTx)
+        done();
+      });
+    });
+
     it('implements signTransaction correctly', function(done) {
-      var pw = Uint8Array.from(fixtures.valid[0].pwDerivedKey)
-      var ks = new keyStore(fixtures.valid[0].mnSeed, pw)
+      var fixture = fixtures.valid[0]
+      var mnSeed = fixture.mnSeed
+      var hdPathString = "m/0'/0'/0'"
+      var pw = Uint8Array.from(fixture.pwDerivedKey)
+      var salt = fixture.salt
+      var ks = new keyStore(mnSeed, pw, hdPathString, salt)
       ks.generateNewAddress(pw)
       var addr = ks.getAddresses()[0]
 
       // Trivial passwordProvider
-      ks.passwordProvider = function(callback) {callback(null, fixtures.valid[0].password)}
+      ks.passwordProvider = function(callback) {callback(null, fixture.password, fixture.salt)}
 
       var txParams = fixtures.valid[0].web3TxParams
       ks.signTransaction(txParams, function (err, signedTx) {

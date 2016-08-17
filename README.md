@@ -45,9 +45,13 @@ var secretSeed = lightwallet.keystore.generateRandomSeed();
 
 // the seed is stored encrypted by a user-defined password
 var password = prompt('Enter password for encryption', 'password');
-lightwallet.keystore.deriveKeyFromPassword(password, function (err, pwDerivedKey) {
+var salt = 'accountSpecificSalt' // Salt is optional but recommended.
+lightwallet.keystore.deriveKeyFromPassword(password, function (err, pwDerivedKey, salt) {
 
-var ks = new lightwallet.keystore(secretSeed, pwDerivedKey);
+// If providing an optional salt, the `hdPathString` is required.
+// This is the default value you can provide when using a salt:
+var hdPathString = "m/0'/0'/0'";
+var ks = new lightwallet.keystore(secretSeed, pwDerivedKey, hdPathString, salt);
 
 // generate five new address/private key pairs
 // the corresponding private keys are also encrypted
@@ -59,7 +63,8 @@ var addr = ks.getAddresses();
 // call.
 ks.passwordProvider = function (callback) {
   var pw = prompt("Please enter password", "Password");
-  callback(null, pw);
+  // You must include the salt here if you've included the salt elsewhere:
+  callback(null, pw, salt);
 };
 
 // Now set ks as transaction_signer in the hooked web3 provider
@@ -73,11 +78,11 @@ These are the interface functions for the keystore object. The keystore object h
 
 Note: Addresses and RLP encoded data are in the form of hex-strings. Hex-strings do not start with `0x`.
 
-### `keystore.deriveKeyFromPassword(password, callback)`
+### `keystore.deriveKeyFromPassword(password, [salt], callback)`
 
 Inputs the users password and generates a symmetric key of type `Uint8Array` that is used to encrypt/decrypt the keystore.
 
-### `keystore(seed, pwDerivedKey [,hdPathString])`
+### `keystore(seed, pwDerivedKey [,hdPathString] [,salt])`
 
 Constructor of the keystore object. The seed `seed` is encrypted with `pwDerivedKey` and stored encrypted in the keystore.
 
@@ -86,6 +91,7 @@ Constructor of the keystore object. The seed `seed` is encrypted with `pwDerived
 * words: string defining a 12-word seed according to [BIP39][]
 * pwDerivedKey: symmetric key to encrypt the seed (Uint8Array)
 * hdPathString: optional alternate HD derivation path to use
+* salt: optional value added to password to encrypt the seed.
 
 ### `keystore.isDerivedKeyCorrect(pwDerivedKey)`
 
