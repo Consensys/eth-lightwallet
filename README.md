@@ -47,7 +47,6 @@ var secretSeed = lightwallet.keystore.generateRandomSeed();
 var password = prompt('Enter password for encryption', 'password');
 var salt = lightwallet.keystore.generateSalt(); // You can also provide your own salt.
 
-// If you do not provide a salt, it defaults to 'lightwalletSalt' for backwards-compatibility.
 lightwallet.keystore.deriveKeyFromPassword(password, salt, function (err, pwDerivedKey) {
 
 // This is the default recommended hdPathString value.
