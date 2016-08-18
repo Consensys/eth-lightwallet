@@ -4,6 +4,8 @@ var upgrade = require('../lib/upgrade')
 var fixtures = require('./fixtures/keystore')
 var Promise = require('bluebird')
 
+var defaultHdPathString = "m/0'/0'/0'"
+
 // Test with 100 private keys
 var addrprivkeyvector = require('./fixtures/addrprivkey100.json')
 // Test with 10000 private keys - takes about 40 seconds to run
@@ -24,12 +26,19 @@ describe("Keystore", function() {
       expect(ks.ksData[ks.defaultHdPathString].encHdRootPrivkey).to.equal(undefined)
       expect(ks.ksData[ks.defaultHdPathString].encPrivKeys).to.deep.equal({})
       expect(ks.ksData[ks.defaultHdPathString].addresses).to.deep.equal([])
+      expect(ks.ksData[ks.defaultHdPathString].salt).to.equal(undefined)
       done();
     });
 
     it("sets the hd index to 0", function(done) {
       var ks = new keyStore(fixtures.valid[0].mnSeed, Uint8Array.from(fixtures.valid[0].pwDerivedKey))
       expect(ks.ksData[ks.defaultHdPathString].hdIndex).to.equal(0)
+      done();
+    })
+
+    it("generates a random 16 character salt", function(done) {
+      var ks = new keyStore(fixtures.valid[0].mnSeed, Uint8Array.from(fixtures.valid[0].pwDerivedKey))
+      expect(ks.salt.length).to.equal(16)
       done();
     })
 
@@ -168,6 +177,22 @@ describe("Keystore", function() {
 
       //Add Keys
       origKS.generateNewAddress(Uint8Array.from(fixtures.valid[0].pwDerivedKey), 20)
+
+      var serKS = origKS.serialize()
+      var deserKS = keyStore.deserialize(serKS)
+
+      // Retains all attributes properly
+      expect(deserKS.encSeed).to.deep.equal(origKS.encSeed)
+      expect(deserKS.ksData).to.deep.equal(origKS.ksData)
+      done();
+    });
+
+    it("serializes non-empty keystore and returns same non-empty keystore when deserialized with salt", function(done) {
+      var fixture = fixtures.valid[0]
+      var origKS = new keyStore(fixture.mnSeed, Uint8Array.from(fixture.pwDerivedKey), defaultHdPathString, fixture.salt)
+
+      //Add Keys
+      origKS.generateNewAddress(Uint8Array.from(fixture.pwDerivedKey), 20)
 
       var serKS = origKS.serialize()
       var deserKS = keyStore.deserialize(serKS)
@@ -323,10 +348,9 @@ describe("Keystore", function() {
     it('implements signTransaction correctly', function(done) {
       var fixture = fixtures.valid[0]
       var mnSeed = fixture.mnSeed
-      var hdPathString = "m/0'/0'/0'"
       var pw = Uint8Array.from(fixture.pwDerivedKey)
       var salt = fixture.salt
-      var ks = new keyStore(mnSeed, pw, hdPathString, salt)
+      var ks = new keyStore(mnSeed, pw, defaultHdPathString, salt)
       ks.generateNewAddress(pw)
       var addr = ks.getAddresses()[0]
 
