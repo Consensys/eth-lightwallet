@@ -36,9 +36,9 @@ describe("Keystore", function() {
       done();
     })
 
-    it("generates a random 16 character salt", function(done) {
+    it("salt defaults to original value for backwards-compatibility", function(done) {
       var ks = new keyStore(fixtures.valid[0].mnSeed, Uint8Array.from(fixtures.valid[0].pwDerivedKey))
-      expect(ks.salt.length).to.equal(16)
+      expect(ks.salt).to.equal('lightwalletSalt')
       done();
     })
 
@@ -90,6 +90,21 @@ describe("Keystore", function() {
         expect(decryptedKey).to.equal(f.privKeyHex)
         done();
       })
+    })
+  });
+
+  describe("generateSalt", function () {
+    it("generates a different 16-character salt each time", function() {
+      var salt, salts = [];
+      for (var i = 0; i < 10; i++) {
+        salt = keyStore.generateSalt()
+        expect(salt.length).to.equal(16)
+
+        salts.forEach(function (otherSalt) {
+          expect(salt).not.to.equal(otherSalt)
+        })
+        salts.push(salt)
+      }
     })
   });
 
