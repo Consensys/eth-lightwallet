@@ -4,6 +4,8 @@ var upgrade = require('../lib/upgrade')
 var fixtures = require('./fixtures/keystore')
 var Promise = require('bluebird')
 
+var defaultHdPathString = "m/0'/0'/0'"
+
 // Test with 100 private keys
 var addrprivkeyvector = require('./fixtures/addrprivkey100.json')
 // Test with 10000 private keys - takes about 40 seconds to run
@@ -24,12 +26,19 @@ describe("Keystore", function() {
       expect(ks.ksData[ks.defaultHdPathString].encHdRootPrivkey).to.equal(undefined)
       expect(ks.ksData[ks.defaultHdPathString].encPrivKeys).to.deep.equal({})
       expect(ks.ksData[ks.defaultHdPathString].addresses).to.deep.equal([])
+      expect(ks.ksData[ks.defaultHdPathString].salt).to.equal(undefined)
       done();
     });
 
     it("sets the hd index to 0", function(done) {
       var ks = new keyStore(fixtures.valid[0].mnSeed, Uint8Array.from(fixtures.valid[0].pwDerivedKey))
       expect(ks.ksData[ks.defaultHdPathString].hdIndex).to.equal(0)
+      done();
+    })
+
+    it("salt defaults to original value for backwards-compatibility", function(done) {
+      var ks = new keyStore(fixtures.valid[0].mnSeed, Uint8Array.from(fixtures.valid[0].pwDerivedKey))
+      expect(ks.salt).to.equal('lightwalletSalt')
       done();
     })
 
@@ -74,25 +83,56 @@ describe("Keystore", function() {
   });
 
   describe("_encryptKey _decryptKey", function() {
-
     fixtures.valid.forEach(function (f) {
       it('encrypts the key then returns same key decrypted ' + '"' + f.privKeyHex.substring(0,15) + '..."', function (done) {
-
         var encryptedKey = keyStore._encryptKey(f.privKeyHex, Uint8Array.from(f.pwDerivedKey))
         var decryptedKey = keyStore._decryptKey(encryptedKey, Uint8Array.from(f.pwDerivedKey))
-
         expect(decryptedKey).to.equal(f.privKeyHex)
         done();
       })
     })
   });
 
+  describe("generateSalt", function () {
+    it("generates a different 16-character salt each time", function() {
+      var salt, salts = [];
+      for (var i = 0; i < 10; i++) {
+        salt = keyStore.generateSalt()
+        expect(salt.length).to.equal(16)
+
+        salts.forEach(function (otherSalt) {
+          expect(salt).not.to.equal(otherSalt)
+        })
+        salts.push(salt)
+      }
+    })
+  });
+
   describe("deriveKeyFromPassword", function () {
     it("derives a key correctly from the password", function(done) {
+
+      // only testing fixtures with a lightwalletSalt
+      var valid = fixtures.valid.filter(function (f) {
+        return f.salt === 'lightwalletSalt'
+      })
+      var derKeyProm = Promise.promisify(keyStore.deriveKeyFromPassword);
+      var promArray = [];
+      valid.forEach(function (f) {
+        promArray.push(derKeyProm(f.password));
+      })
+      Promise.all(promArray).then(function(derived) {
+        for(var i=0; i<derived.length; i++) {
+         expect(derived[i]).to.deep.equal(Uint8Array.from(valid[i].pwDerivedKey))
+        }
+        done();
+      })
+    })
+
+    it("derives a key correctly from the password and salt", function(done) {
       var derKeyProm = Promise.promisify(keyStore.deriveKeyFromPassword);
       var promArray = [];
       fixtures.valid.forEach(function (f) {
-        promArray.push(derKeyProm(f.password));
+        promArray.push(derKeyProm(f.password, f.salt));
       })
       Promise.all(promArray).then(function(derived) {
         for(var i=0; i<derived.length; i++) {
@@ -152,6 +192,22 @@ describe("Keystore", function() {
 
       //Add Keys
       origKS.generateNewAddress(Uint8Array.from(fixtures.valid[0].pwDerivedKey), 20)
+
+      var serKS = origKS.serialize()
+      var deserKS = keyStore.deserialize(serKS)
+
+      // Retains all attributes properly
+      expect(deserKS.encSeed).to.deep.equal(origKS.encSeed)
+      expect(deserKS.ksData).to.deep.equal(origKS.ksData)
+      done();
+    });
+
+    it("serializes non-empty keystore and returns same non-empty keystore when deserialized with salt", function(done) {
+      var fixture = fixtures.valid[0]
+      var origKS = new keyStore(fixture.mnSeed, Uint8Array.from(fixture.pwDerivedKey), defaultHdPathString, fixture.salt)
+
+      //Add Keys
+      origKS.generateNewAddress(Uint8Array.from(fixture.pwDerivedKey), 20)
 
       var serKS = origKS.serialize()
       var deserKS = keyStore.deserialize(serKS)
@@ -288,14 +344,33 @@ describe("Keystore", function() {
       done();
     });
 
+    it('implements signTransaction correctly with old behavior', function(done) {
+      var pw = Uint8Array.from(fixtures.valid[1].pwDerivedKey)
+      var ks = new keyStore(fixtures.valid[1].mnSeed, pw)
+      ks.generateNewAddress(pw)
+      var addr = ks.getAddresses()[1]
+
+      // Trivial passwordProvider
+      ks.passwordProvider = function(callback) {callback(null, fixtures.valid[1].password)}
+
+      var txParams = fixtures.valid[1].web3TxParams
+      ks.signTransaction(txParams, function (err, signedTx) {
+        expect(signedTx.slice(2)).to.equal(fixtures.valid[1].rawSignedTx)
+        done();
+      });
+    });
+
     it('implements signTransaction correctly', function(done) {
-      var pw = Uint8Array.from(fixtures.valid[0].pwDerivedKey)
-      var ks = new keyStore(fixtures.valid[0].mnSeed, pw)
+      var fixture = fixtures.valid[0]
+      var mnSeed = fixture.mnSeed
+      var pw = Uint8Array.from(fixture.pwDerivedKey)
+      var salt = fixture.salt
+      var ks = new keyStore(mnSeed, pw, defaultHdPathString, salt)
       ks.generateNewAddress(pw)
       var addr = ks.getAddresses()[0]
 
       // Trivial passwordProvider
-      ks.passwordProvider = function(callback) {callback(null, fixtures.valid[0].password)}
+      ks.passwordProvider = function(callback) {callback(null, fixture.password, fixture.salt)}
 
       var txParams = fixtures.valid[0].web3TxParams
       ks.signTransaction(txParams, function (err, signedTx) {
