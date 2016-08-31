@@ -37,7 +37,36 @@ The `eth-lightwallet` package contains `dist/lightwallet.min.js` that can be inc
 
 The file `lightwallet.min.js` exposes the global object `lightwallet` to the browser which has the two main modules `lightwallet.keystore` and `lightwallet.txutils`.
 
-Sample usage with hooked web3 provider:
+Sample recommended usage with hooked web3 provider:
+
+```js
+// the seed is stored encrypted by a user-defined password
+var password = prompt('Enter password for encryption', 'password');
+
+keyStore.createVault({
+  password: password,
+  // seedPhrase: seedPhrase, // Optionally provide a 12-word seed phrase
+  // salt: fixture.salt,     // Optionally provide a salt.
+                             // A unique salt will be generated otherwise.
+  // hdPathString: hdPath    // Optional custom HD Path String
+}, function (err, ks) {
+
+  // generate five new address/private key pairs
+  // the corresponding private keys are also encrypted
+  ks.generateNewAddress(pwDerivedKey, 5);
+  var addr = ks.getAddresses();
+
+  ks.passwordProvider = function (callback) {
+    var pw = prompt("Please enter password", "Password");
+    callback(null, pw);
+  };
+
+  // Now set ks as transaction_signer in the hooked web3 provider
+  // and you can start using web3 using the keys/addresses in ks!
+});
+```
+
+Sample old-style usage with hooked web3 provider:
 
 ```js
 // generate a new BIP32 12-word seed
@@ -72,6 +101,17 @@ ks.passwordProvider = function (callback) {
 These are the interface functions for the keystore object. The keystore object holds a 12-word seed according to [BIP39][] spec. From this seed you can generate addresses and private keys, and use the private keys to sign transactions.
 
 Note: Addresses and RLP encoded data are in the form of hex-strings. Hex-strings do not start with `0x`.
+
+### `keystore.createVault(options, callback)`
+
+The current recommended keystore construction method. Has popular defaults, handles salting internally, and is the easiest interface to use.
+
+#### Options
+
+* password: (mandatory) A string used to encrypt the vault when serialized.
+* seedPhrase: (optional) A twelve-word mnemonic used to generate all accounts.
+* salt: (optional) The user may supply the salt used to encrypt & decrypt the vault, otherwise a random salt will be generated.
+* hdPathString: (optional) The user may provide a `BIP39` compliant HD Path String. The default is `m/0'/0'/0'`.
 
 ### `keystore.deriveKeyFromPassword(password, callback)`
 
@@ -110,9 +150,13 @@ Adds the HD derivation path `hdPathString` to the keystore. The `info` structure
 
 Set the default HD Derivation path. This path will be used if the `hdPathString` is omitted from other functions. This is also the path that's used if the keystore is used with the Hooked Web3 Provider.
 
-### `keystore.generateNewAddress(pwDerivedKey [, num, hdPathString])`
+### `keystore.generateNewAddress([pwDerivedKey], num, [hdPathString])`
 
-Generates a new address/private key pair from the seed and stores them in the keystore. The private key is stored encrypted with the users password derived key. If the integer `num` is supplied a batch of `num` address/key pairs is generated. If `hdPathString` is supplied the new key pairs are generated at that HD Path, otherwise they are generated at `defaultHdPathString`.
+The simplest usage is `ks.generateNewAddress(quantityToGenerate)`.
+
+Generates `num` new address/private key pairs in the keystore from the seed phrase, which will be returned with calls to `ks.getAddresses()`.
+
+To support backwards compatibility, you may optionally include the `pwDerivedKey` as the first argument, and the `hdPathString` as the third argument.
 
 ### `keystore.deserialize(serialized_keystore)`
 
