@@ -51,22 +51,29 @@ keyStore.createVault({
   // hdPathString: hdPath    // Optional custom HD Path String
 }, function (err, ks) {
 
-  // generate five new address/private key pairs
-  // the corresponding private keys are also encrypted
-  ks.generateNewAddress(pwDerivedKey, 5);
-  var addr = ks.getAddresses();
+  // Some methods will require providing the `pwDerivedKey`,
+  // Allowing you to only decrypt private keys on an as-needed basis.
+  // You can generate that value with this convenient method:
+  ks.keyFromPassword(password, function (err, pwDerivedKey) {
+    if (err) throw err;
 
-  ks.passwordProvider = function (callback) {
-    var pw = prompt("Please enter password", "Password");
-    callback(null, pw);
-  };
+    // generate five new address/private key pairs
+    // the corresponding private keys are also encrypted
+    ks.generateNewAddress(pwDerivedKey, 5);
+    var addr = ks.getAddresses();
 
-  // Now set ks as transaction_signer in the hooked web3 provider
-  // and you can start using web3 using the keys/addresses in ks!
+    ks.passwordProvider = function (callback) {
+      var pw = prompt("Please enter password", "Password");
+      callback(null, pw);
+    };
+
+    // Now set ks as transaction_signer in the hooked web3 provider
+    // and you can start using web3 using the keys/addresses in ks!
+  });
 });
 ```
 
-Sample old-style usage with hooked web3 provider:
+Sample old-style usage with hooked web3 provider (still works, but less secure because uses fixed salts).
 
 ```js
 // generate a new BIP32 12-word seed
@@ -113,13 +120,23 @@ The current recommended keystore construction method. Has popular defaults, hand
 * salt: (optional) The user may supply the salt used to encrypt & decrypt the vault, otherwise a random salt will be generated.
 * hdPathString: (optional) The user may provide a `BIP39` compliant HD Path String. The default is `m/0'/0'/0'`.
 
-### `keystore.deriveKeyFromPassword(password, callback)`
+### `keystore.keyFromPassword(password, callback)`
 
-Inputs the users password and generates a symmetric key of type `Uint8Array` that is used to encrypt/decrypt the keystore.
+This instance method uses any internally-configured salt to return the appropriate `pwDerivedKey`.
 
-### `keystore(seed, pwDerivedKey [,hdPathString])`
+Takes the user's password as input and generates a symmetric key of type `Uint8Array` that is used to encrypt/decrypt the keystore.
+
+### `keystore.deriveKeyFromPassword(password, callback)` (deprecated)
+
+Deprecated class method that uses a fixed salt to derive a `pwDerivedKey` from a password.
+
+Takes the user's password as input and generates a symmetric key of type `Uint8Array` that is used to encrypt/decrypt the keystore.
+
+### `keystore(seed, pwDerivedKey [,hdPathString])` (deprecated)
 
 Constructor of the keystore object. The seed `seed` is encrypted with `pwDerivedKey` and stored encrypted in the keystore.
+
+This method has been deprecated because it relies on a hard-coded salt, but still exists for backwards-compatibility.
 
 #### Inputs
 

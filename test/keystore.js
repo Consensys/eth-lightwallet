@@ -336,17 +336,20 @@ describe("Keystore", function() {
         seedPhrase: fixture.mnSeed,
         salt: fixture.salt,
       }, function (err, ks) {
-        ks.generateNewAddress(1)
-        var addr = ks.getAddresses()[0]
 
-        // Trivial passwordProvider
-        ks.passwordProvider = function(callback) {callback(null, fixture.password)}
+        ks.keyFromPassword(fixture.password, function(err, pwDerivedKey) {
+          ks.generateNewAddress(pwDerivedKey, 1)
+          var addr = ks.getAddresses()[0]
 
-        var txParams = fixture.web3TxParams
-        ks.signTransaction(txParams, function (err, signedTx) {
-          expect(signedTx.slice(2)).to.equal(fixture.rawSignedTx)
-          done();
-        });
+          // Trivial passwordProvider
+          ks.passwordProvider = function(callback) {callback(null, fixture.password)}
+
+          var txParams = fixture.web3TxParams
+          ks.signTransaction(txParams, function (err, signedTx) {
+            expect(signedTx.slice(2)).to.equal(fixture.rawSignedTx)
+            done();
+          });
+        })
       });
     });
 
