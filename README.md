@@ -167,13 +167,13 @@ Adds the HD derivation path `hdPathString` to the keystore. The `info` structure
 
 Set the default HD Derivation path. This path will be used if the `hdPathString` is omitted from other functions. This is also the path that's used if the keystore is used with the Hooked Web3 Provider.
 
-### `keystore.generateNewAddress([pwDerivedKey], num, [hdPathString])`
+### `keystore.generateNewAddress(pwDerivedKey, [num,] [hdPathString])`
 
-The simplest usage is `ks.generateNewAddress(quantityToGenerate)`.
+Allows the vault to generate additional internal address/private key pairs.
 
-Generates `num` new address/private key pairs in the keystore from the seed phrase, which will be returned with calls to `ks.getAddresses()`.
+The simplest usage is `ks.generateNewAddress(pwDerivedKey)`.
 
-To support backwards compatibility, you may optionally include the `pwDerivedKey` as the first argument, and the `hdPathString` as the third argument.
+Generates `num` new address/private key pairs (defaults to 1) in the keystore from the seed phrase, which will be returned with calls to `ks.getAddresses()`.
 
 ### `keystore.deserialize(serialized_keystore)`
 
