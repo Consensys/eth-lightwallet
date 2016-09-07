@@ -2,10 +2,6 @@
 
 A minimal ethereum javascript wallet.
 
-## Security advisory
-
-Please make sure to update to a version higher than 2.3.3. Previous versions contained a bug that could generate addresses that were unrelated to the HD seed if the wrong value of `pwDerivedKey` was passed in to `generateNewAddress()`. This could lead to loss of funds.
-
 ## About
 
 LightWallet is a HD wallet that can store your private keys encrypted in the browser to allow you to run Ethereum dapps even if you're not running a local Ethereum node. It uses [BIP32][] and [BIP39][] to generate an HD tree of addresses from a randomly generated 12-word seed.
@@ -17,7 +13,6 @@ The default BIP32 HD derivation path is `m/0'/0'/0'/i`.
 ## Security
 
 Please note that LightWallet has not been through a comprehensive security review at this point. It is still experimental software, intended for small amounts of Ether to be used for interacting with smart contracts on the Ethereum blockchain. Do not rely on it to store larger amounts of Ether yet.
-
 
 ## Get Started
 

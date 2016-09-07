@@ -32,7 +32,37 @@ describe("Keystore", function() {
         done();
       });
     });
+
+    it('generates a random salt for key generation', function(done) {
+      this.timeout(10000);
+      var fixture = fixtures.valid[0];
+
+      keyStore.createVault({
+        password: fixture.password,
+        seedPhrase: fixture.mnSeed
+      }, function(err, ks) {
+        var salt0 = ks.salt;
+        expect(ks.salt).to.not.equal(undefined);
+        ks.keyFromPassword(fixture.password, function(err, derivedKey) {
+          var decryptedPaddedSeed = keyStore._decryptString(ks.encSeed, derivedKey);
+          // Check padding
+          expect(decryptedPaddedSeed.length).to.equal(120);
+          expect(decryptedPaddedSeed.trim()).to.equal(fixtures.valid[0].mnSeed);
+          keyStore.createVault({
+            password: fixture.password,
+            seedPhrase: fixture.mnSeed
+          }, function(err, ks1) {
+            var salt1 = ks1.salt;
+            expect(salt0).to.not.equal(salt1);
+            done();
+          })
+        });
+      });
+    });
+
   });
+
+
 
   describe("Constructor", function() {
 

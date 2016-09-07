@@ -1,5 +1,9 @@
 # Release Notes #
 
+## Version 2.5.0 - 2016-09-07 ##
+
+* Introduced a new constructor function that introduces a random seed in key derivation, which protects against rainbow attacks. By [flyswatter](https://github.com/flyswatter).
+
 ## Version 2.4.4 - 2016-08-17 ##
 
 * Fixed an issue that caused lightwallet to fail in Firefox 48+. By [miladmostavi](https://github.com/miladmostavi).
