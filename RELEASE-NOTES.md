@@ -1,5 +1,9 @@
 # Release Notes #
 
+## Version 2.5.1 - 2016-09-07 ##
+
+* Update dist files.
+
 ## Version 2.5.0 - 2016-09-07 ##
 
 * Introduced a new constructor function that introduces a random seed in key derivation, which protects against rainbow attacks. By [flyswatter](https://github.com/flyswatter).
