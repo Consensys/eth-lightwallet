@@ -37,7 +37,43 @@ The `eth-lightwallet` package contains `dist/lightwallet.min.js` that can be inc
 
 The file `lightwallet.min.js` exposes the global object `lightwallet` to the browser which has the two main modules `lightwallet.keystore` and `lightwallet.txutils`.
 
-Sample usage with hooked web3 provider:
+Sample recommended usage with hooked web3 provider:
+
+```js
+// the seed is stored encrypted by a user-defined password
+var password = prompt('Enter password for encryption', 'password');
+
+keyStore.createVault({
+  password: password,
+  // seedPhrase: seedPhrase, // Optionally provide a 12-word seed phrase
+  // salt: fixture.salt,     // Optionally provide a salt.
+                             // A unique salt will be generated otherwise.
+  // hdPathString: hdPath    // Optional custom HD Path String
+}, function (err, ks) {
+
+  // Some methods will require providing the `pwDerivedKey`,
+  // Allowing you to only decrypt private keys on an as-needed basis.
+  // You can generate that value with this convenient method:
+  ks.keyFromPassword(password, function (err, pwDerivedKey) {
+    if (err) throw err;
+
+    // generate five new address/private key pairs
+    // the corresponding private keys are also encrypted
+    ks.generateNewAddress(pwDerivedKey, 5);
+    var addr = ks.getAddresses();
+
+    ks.passwordProvider = function (callback) {
+      var pw = prompt("Please enter password", "Password");
+      callback(null, pw);
+    };
+
+    // Now set ks as transaction_signer in the hooked web3 provider
+    // and you can start using web3 using the keys/addresses in ks!
+  });
+});
+```
+
+Sample old-style usage with hooked web3 provider (still works, but less secure because uses fixed salts).
 
 ```js
 // generate a new BIP32 12-word seed
@@ -73,13 +109,34 @@ These are the interface functions for the keystore object. The keystore object h
 
 Note: Addresses and RLP encoded data are in the form of hex-strings. Hex-strings do not start with `0x`.
 
-### `keystore.deriveKeyFromPassword(password, callback)`
+### `keystore.createVault(options, callback)`
 
-Inputs the users password and generates a symmetric key of type `Uint8Array` that is used to encrypt/decrypt the keystore.
+The current recommended keystore construction method. Has popular defaults, handles salting internally, and is the easiest interface to use.
 
-### `keystore(seed, pwDerivedKey [,hdPathString])`
+#### Options
+
+* password: (mandatory) A string used to encrypt the vault when serialized.
+* seedPhrase: (optional) A twelve-word mnemonic used to generate all accounts.
+* salt: (optional) The user may supply the salt used to encrypt & decrypt the vault, otherwise a random salt will be generated.
+* hdPathString: (optional) The user may provide a `BIP39` compliant HD Path String. The default is `m/0'/0'/0'`.
+
+### `keystore.keyFromPassword(password, callback)`
+
+This instance method uses any internally-configured salt to return the appropriate `pwDerivedKey`.
+
+Takes the user's password as input and generates a symmetric key of type `Uint8Array` that is used to encrypt/decrypt the keystore.
+
+### `keystore.deriveKeyFromPassword(password, callback)` (deprecated)
+
+Deprecated class method that uses a fixed salt to derive a `pwDerivedKey` from a password.
+
+Takes the user's password as input and generates a symmetric key of type `Uint8Array` that is used to encrypt/decrypt the keystore.
+
+### `keystore(seed, pwDerivedKey [,hdPathString])` (deprecated)
 
 Constructor of the keystore object. The seed `seed` is encrypted with `pwDerivedKey` and stored encrypted in the keystore.
+
+This method has been deprecated because it relies on a hard-coded salt, but still exists for backwards-compatibility.
 
 #### Inputs
 
@@ -110,9 +167,13 @@ Adds the HD derivation path `hdPathString` to the keystore. The `info` structure
 
 Set the default HD Derivation path. This path will be used if the `hdPathString` is omitted from other functions. This is also the path that's used if the keystore is used with the Hooked Web3 Provider.
 
-### `keystore.generateNewAddress(pwDerivedKey [, num, hdPathString])`
+### `keystore.generateNewAddress(pwDerivedKey, [num,] [hdPathString])`
 
-Generates a new address/private key pair from the seed and stores them in the keystore. The private key is stored encrypted with the users password derived key. If the integer `num` is supplied a batch of `num` address/key pairs is generated. If `hdPathString` is supplied the new key pairs are generated at that HD Path, otherwise they are generated at `defaultHdPathString`.
+Allows the vault to generate additional internal address/private key pairs.
+
+The simplest usage is `ks.generateNewAddress(pwDerivedKey)`.
+
+Generates `num` new address/private key pairs (defaults to 1) in the keystore from the seed phrase, which will be returned with calls to `ks.getAddresses()`.
 
 ### `keystore.deserialize(serialized_keystore)`
 
