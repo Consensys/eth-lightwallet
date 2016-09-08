@@ -1,5 +1,11 @@
 # Release Notes #
 
+## Version 2.5.2 - 2016-09-08 ##
+
+* Fixed a bug that caused the dist files to fail in browsers.
+
+* Update dist files.
+
 ## Version 2.5.1 - 2016-09-07 ##
 
 * Update dist files.
