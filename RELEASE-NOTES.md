@@ -1,5 +1,9 @@
 # Release Notes #
 
+## Version 2.5.3 - 2016-11-05 ##
+
+* Make sure the deprecation warning doesn't show up when we are using the new constructor. By [flyswatter](https://github.com/flyswatter).
+
 ## Version 2.5.2 - 2016-09-08 ##
 
 * Fixed a bug that caused the dist files to fail in browsers.
