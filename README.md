@@ -190,6 +190,10 @@ Given the pwDerivedKey, decrypts and returns the users 12-word seed.
 
 Given the derived key, decrypts and returns the private key corresponding to `address`. This should be done sparingly as the recommended practice is for the `keystore` to sign transactions using `signing.signTx`, so there is normally no need to export private keys.
 
+### `keystore.importPrivateKey(privatekey,pwDerivedKey)`
+
+Given a private key, calculates the associated public key and stores the keypair in the keystore.
+
 ## `upgrade` Function definitions
 
 ### `keystore.upgradeOldSerialized(oldSerialized, password, callback)`
