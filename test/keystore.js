@@ -17,23 +17,6 @@ var Transaction = require('ethereumjs-tx');
 describe("Keystore", function() {
 
   describe("createVault constructor", function() {
-    it('accepts a variety of options', function(done) {
-      var fixture = fixtures.valid[0];
-
-      keyStore.createVault({
-        password: fixture.password,
-        seedPhrase: fixture.mnSeed,
-        salt: fixture.salt,
-      }, function(err, ks) {
-        expect(ks.encSeed).to.not.equal(undefined);
-        var decryptedPaddedSeed = keyStore._decryptString(ks.encSeed, Uint8Array.from(fixtures.valid[0].pwDerivedKey));
-        // Check padding
-        expect(decryptedPaddedSeed.length).to.equal(120);
-        expect(decryptedPaddedSeed.trim()).to.equal(fixtures.valid[0].mnSeed);
-        done();
-      });
-    });
-
     Object.keys(Mnemonic.Words).forEach(function (lang) {
       it('should generete random seed of language ' + lang, function (done) {
         var fixture = fixtures.valid[0];
@@ -45,8 +28,7 @@ describe("Keystore", function() {
         }, function (err, ks) {
           if (err) return done(err)
           expect(ks.encSeed).to.not.equal(undefined);
-          var decryptedPaddedSeed = keyStore._decryptString(ks.encSeed, Uint8Array.from(fixtures.valid[0].pwDerivedKey));
-          // Check padding
+          var decryptedPaddedSeed = keyStore._decryptString(ks.encSeed, Uint8Array.from(fixture.pwDerivedKey));
           var words = decryptedPaddedSeed.trim().split(/\s/);
           words.forEach(function (w) {
             expect(Mnemonic.Words[lang].indexOf(w)).to.not.equal(-1, 'word ' + w + ' is not in dictionary');
@@ -55,6 +37,40 @@ describe("Keystore", function() {
         });
       });
     })
+
+    fixtures.mnemonicSeedTests.forEach(function (fixture) {
+      it('should store mnemonic seed "' + fixture.mnSeed + '"', function (done) {
+        keyStore.createVault({
+          password: fixture.password,
+          seedPhrase: fixture.mnSeed,
+          salt: fixture.salt,
+        }, function(err, ks) {
+          if (err) return done(err)
+          expect(ks.encSeed).to.not.equal(undefined);
+          var decryptedPaddedSeed = keyStore._decryptString(ks.encSeed, Uint8Array.from(fixture.pwDerivedKey));
+          // Check padding
+          expect(decryptedPaddedSeed.length).to.equal(120);
+          expect(decryptedPaddedSeed.trim()).to.equal(fixture.mnSeed);
+          done();
+        });
+      })
+    });
+
+    fixtures.mnemonicSeedTests.forEach(function (fixture) {
+      it('should generate HD root key for seed "' + fixture.mnSeed + '"', function (done) {
+        keyStore.createVault({
+          password: fixture.password,
+          seedPhrase: fixture.mnSeed,
+          salt: fixture.salt,
+        }, function (err, ks) {
+          if (err) return done(err)
+          expect(ks.encSeed).to.not.equal(undefined);
+          var decryptedHdRootPriv = keyStore._decryptString(ks.encHdRootPriv, Uint8Array.from(fixture.pwDerivedKey));
+          expect(decryptedHdRootPriv.trim()).to.equal(fixture.hdRootPriv);
+          done();
+        });
+      });
+    });
 
     it('generates a random salt for key generation', function(done) {
       this.timeout(10000);
