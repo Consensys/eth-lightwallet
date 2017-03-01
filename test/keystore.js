@@ -72,7 +72,7 @@ describe("Keystore", function() {
 
       // No values are set
       expect(ks.encSeed).to.equal(undefined)
-      expect(ks.ksData[ks.defaultHdPathString].encHdRootPrivkey).to.equal(undefined)
+      expect(ks.ksData[ks.defaultHdPathString].encHdRootPriv).to.equal(undefined)
       expect(ks.ksData[ks.defaultHdPathString].encPrivKeys).to.deep.equal({})
       expect(ks.ksData[ks.defaultHdPathString].addresses).to.deep.equal([])
       done();
