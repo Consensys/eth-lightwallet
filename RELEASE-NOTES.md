@@ -1,5 +1,13 @@
 # Release Notes #
 
+## Version 2.5.4 - 2017-03-16 ##
+
+* Upgrade bitcore-lib and explicitly increase version of bitcore-mnemonic. By [roderik](https://github.com/roderik).
+
+* Upgrade ethereumjs-util and add needed babel plugins.
+
+* Update dist files
+
 ## Version 2.5.3 - 2016-11-05 ##
 
 * Make sure the deprecation warning doesn't show up when we are using the new constructor. By [flyswatter](https://github.com/flyswatter).
