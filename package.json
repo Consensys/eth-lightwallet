@@ -57,8 +57,8 @@
   "license": "MIT",
   "dependencies": {
     "bignumber.js": "debris/bignumber.js#94d7146671b9719e00a09c29b01a691bc85048c2",
-    "bitcore-lib": "^0.13.19",
-    "bitcore-mnemonic": "^1.0.1",
+    "bitcore-lib": "^0.14.0",
+    "bitcore-mnemonic": "^1.2.2",
     "buffer": "^4.9.0",
     "crypto-js": "^3.1.5",
     "elliptic": "^3.1.0",
