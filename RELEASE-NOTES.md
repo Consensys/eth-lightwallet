@@ -1,5 +1,9 @@
 # Release Notes #
 
+## Version 2.5.6 - 2017-06-24 ##
+
+* Switch back to using npm version of `web3.js`, since version `0.19.1` is now fixed.
+
 ## Version 2.5.5 - 2017-06-23 ##
 
 * Remove redundant dependency on `bignumber.js` library which has stopped working. Temporarily use a fork of `web3.js` since this library also breaks because of the issues with the `bignumber.js` library. 
