@@ -3,6 +3,7 @@ var keyStore = require('../lib/keystore')
 var upgrade = require('../lib/upgrade')
 var fixtures = require('./fixtures/keystore')
 var Promise = require('bluebird')
+var Mnemonic = require('bitcore-mnemonic');
 
 var defaultHdPathString = "m/0'/0'/0'";
 
@@ -16,20 +17,58 @@ var Transaction = require('ethereumjs-tx');
 describe("Keystore", function() {
 
   describe("createVault constructor", function() {
-    it('accepts a variety of options', function(done) {
-      var fixture = fixtures.valid[0];
+    Object.keys(Mnemonic.Words).forEach(function (lang) {
+      it('should generete random seed of language ' + lang, function (done) {
+        var fixture = fixtures.valid[0];
 
-      keyStore.createVault({
-        password: fixture.password,
-        seedPhrase: fixture.mnSeed,
-        salt: fixture.salt,
-      }, function(err, ks) {
-        expect(ks.encSeed).to.not.equal(undefined);
-        var decryptedPaddedSeed = keyStore._decryptString(ks.encSeed, Uint8Array.from(fixtures.valid[0].pwDerivedKey));
-        // Check padding
-        expect(decryptedPaddedSeed.length).to.equal(120);
-        expect(decryptedPaddedSeed.trim()).to.equal(fixtures.valid[0].mnSeed);
-        done();
+        keyStore.createVault({
+          password: fixture.password,
+          seedLanguage: lang,
+          salt: fixture.salt,
+        }, function (err, ks) {
+          if (err) return done(err)
+          expect(ks.encSeed).to.not.equal(undefined);
+          var decryptedPaddedSeed = keyStore._decryptString(ks.encSeed, Uint8Array.from(fixture.pwDerivedKey));
+          var words = decryptedPaddedSeed.trim().split(/\s/);
+          words.forEach(function (w) {
+            expect(Mnemonic.Words[lang].indexOf(w)).to.not.equal(-1, 'word ' + w + ' is not in dictionary');
+          })
+          done();
+        });
+      });
+    })
+
+    fixtures.mnemonicSeedTests.forEach(function (fixture) {
+      it('should store mnemonic seed "' + fixture.mnSeed + '"', function (done) {
+        keyStore.createVault({
+          password: fixture.password,
+          seedPhrase: fixture.mnSeed,
+          salt: fixture.salt,
+        }, function(err, ks) {
+          if (err) return done(err)
+          expect(ks.encSeed).to.not.equal(undefined);
+          var decryptedPaddedSeed = keyStore._decryptString(ks.encSeed, Uint8Array.from(fixture.pwDerivedKey));
+          // Check padding
+          expect(decryptedPaddedSeed.length).to.equal(120);
+          expect(decryptedPaddedSeed.trim()).to.equal(fixture.mnSeed);
+          done();
+        });
+      })
+    });
+
+    fixtures.mnemonicSeedTests.forEach(function (fixture) {
+      it('should generate HD root key for seed "' + fixture.mnSeed + '"', function (done) {
+        keyStore.createVault({
+          password: fixture.password,
+          seedPhrase: fixture.mnSeed,
+          salt: fixture.salt,
+        }, function (err, ks) {
+          if (err) return done(err)
+          expect(ks.encSeed).to.not.equal(undefined);
+          var decryptedHdRootPriv = keyStore._decryptString(ks.encHdRootPriv, Uint8Array.from(fixture.pwDerivedKey));
+          expect(decryptedHdRootPriv.trim()).to.equal(fixture.hdRootPriv);
+          done();
+        });
       });
     });
 
@@ -72,7 +111,7 @@ describe("Keystore", function() {
 
       // No values are set
       expect(ks.encSeed).to.equal(undefined)
-      expect(ks.ksData[ks.defaultHdPathString].encHdRootPrivkey).to.equal(undefined)
+      expect(ks.ksData[ks.defaultHdPathString].encHdRootPriv).to.equal(undefined)
       expect(ks.ksData[ks.defaultHdPathString].encPrivKeys).to.deep.equal({})
       expect(ks.ksData[ks.defaultHdPathString].addresses).to.deep.equal([])
       done();
@@ -281,6 +320,16 @@ describe("Keystore", function() {
   });
 
   describe("Seed functions", function() {
+    Object.keys(Mnemonic.Words).forEach(function (lang) {
+      it('should generate a random phrase of language ' + lang, function() {
+        var seed = keyStore.generateRandomSeed(null, lang);
+        var words = seed.split(/\s/);
+        words.forEach(function (w) {
+          expect(Mnemonic.Words[lang].indexOf(w)).to.not.equal(-1, 'word ' + w + ' is not in dictionary');
+        })
+      });
+    });
+
     it('returns the unencrypted seed', function(done) {
       var ks = new keyStore(fixtures.valid[0].mnSeed, Uint8Array.from(fixtures.valid[0].pwDerivedKey))
       expect(ks.getSeed(Uint8Array.from(fixtures.valid[0].pwDerivedKey))).to.equal(fixtures.valid[0].mnSeed)
