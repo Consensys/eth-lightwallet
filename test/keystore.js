@@ -280,6 +280,62 @@ describe("Keystore", function() {
 
   });
 
+  describe("dumpAddress", function() {
+
+    it("returns a valid dump", function() {
+      var validKS = fixtures.valid[0];
+      let pwDerivedKey = Uint8Array.from(validKS.pwDerivedKey);
+
+      var ks = new keyStore(validKS.mnSeed, pwDerivedKey)
+      ks.generateNewAddress(pwDerivedKey, 5);
+
+      var addr = ks.getAddresses();
+      addr = addr[0];
+
+      var ser = ks.dumpAddress(addr);
+      var jsonAddr = JSON.parse(ser);
+      expect(jsonAddr.address).to.eql(addr);
+      expect(jsonAddr.encPrivKey).to.eql(ks.ksData[ks.defaultHdPathString].encPrivKeys[addr]);
+    });
+
+    it('check if the address exists', function() {
+      var validKS = fixtures.valid[0];
+      var pwDerivedKey = Uint8Array.from(validKS.pwDerivedKey);
+
+      var ks = new keyStore(validKS.mnSeed, pwDerivedKey)
+
+      expect(function() { 
+        ks.dumpAddress('0x0'); 
+      }).to.throw();
+    });
+  });
+
+  describe('loadAddress', function() {
+    it('loads the addresss dump', function(done) {
+      var validKS = fixtures.valid[0];
+      var pwDerivedKey = Uint8Array.from(validKS.pwDerivedKey);
+
+      var ks = new keyStore(validKS.mnSeed, pwDerivedKey)
+
+      var ser = JSON.stringify({
+        address: '12345',
+        encPrivKey: {
+          key: '12345=privKey',
+          nonce: '12345=nonce'
+        }
+      });
+
+      ks.loadAddress(ser);
+
+      ks.hasAddress('12345', function(err, has) {
+        expect(err).to.be.null;
+        expect(has).to.be.true;
+        done();
+      });
+
+    });
+  });
+
   describe("Seed functions", function() {
     it('returns the unencrypted seed', function(done) {
       var ks = new keyStore(fixtures.valid[0].mnSeed, Uint8Array.from(fixtures.valid[0].pwDerivedKey))
