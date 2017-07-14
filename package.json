@@ -65,7 +65,8 @@
     "ethereumjs-util": "^5.1.1",
     "rlp": "^2.0.0",
     "scrypt-async": "^1.2.0",
-    "tweetnacl": "0.13.2",
+    "tweetnacl": "^1.0.0",
+    "tweetnacl-util": "^0.15.0",
     "web3": "^0.19.1"
   },
   "devDependencies": {
