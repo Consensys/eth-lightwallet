@@ -38,7 +38,7 @@ Sample recommended usage with hooked web3 provider:
 // the seed is stored encrypted by a user-defined password
 var password = prompt('Enter password for encryption', 'password');
 
-keyStore.createVault({
+keystore.createVault({
   password: password,
   // seedPhrase: seedPhrase, // Optionally provide a 12-word seed phrase
   // salt: fixture.salt,     // Optionally provide a salt.
