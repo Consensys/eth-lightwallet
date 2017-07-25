@@ -170,6 +170,17 @@ The simplest usage is `ks.generateNewAddress(pwDerivedKey)`.
 
 Generates `num` new address/private key pairs (defaults to 1) in the keystore from the seed phrase, which will be returned with calls to `ks.getAddresses()`.
 
+### `keystore.generateNewAddressOnPath(pwDerivedKey, [hdPathString], [index])`
+
+Allows the vault to generate and export custom HD path address/private key pairs.
+
+The simplest usage is `ks.generateNewAddressOnPath(pwDerivedKey)`, this would generate first index of the default hdPathString.
+
+This function is more useful when a secondary backend app is using eth-lightwallet library to generate and manage addresses and the actual keys are not stored by eth-lightwallet.
+
+Checkout `/test/keystore/ generateNewAddressOnPath` for an example.
+
+
 ### `keystore.deserialize(serialized_keystore)`
 
 Takes a serialized keystore string `serialized_keystore` and returns a new keystore object.
