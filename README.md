@@ -102,7 +102,7 @@ ks.passwordProvider = function (callback) {
 
 These are the interface functions for the keystore object. The keystore object holds a 12-word seed according to [BIP39][] spec. From this seed you can generate addresses and private keys, and use the private keys to sign transactions.
 
-Note: Addresses and RLP encoded data are in the form of hex-strings. Hex-strings do not start with `0x`.
+__Note: Addresses and RLP encoded data are in the form of hex-strings. Hex-strings do not start with `0x`.__
 
 ### `keystore.createVault(options, callback)`
 
@@ -217,7 +217,7 @@ Signs a transaction with the private key corresponding to `signingAddress`.
 
 * `keystore`: An instance of the keystore with which to sign the TX with.
 * `pwDerivedKey`: the users password derived key (Uint8Array)
-* `rawTx`: Hex-string defining an RLP-encoded raw transaction.
+* `rawTx`: Hex-string defining an RLP-encoded raw transaction. You can use [txutils.valueTx](https://github.com/ConsenSys/eth-lightwallet#txutilsvaluetxtxobject) or [txutils.functionTx](https://github.com/ConsenSys/eth-lightwallet#txutilsfunctiontxabi-functionname-args-txobject) to create the raw transaction.
 * `signingAddress`: hex-string defining the address to send the transaction from.
 * `hdPathString`: (Optional) A path at which to create the encryption keys.
 
@@ -341,10 +341,10 @@ Creates a transaction calling a function with name `functionName`, with argument
 * `functionName`: string with the function name
 * `args`: Array with the arguments to the function
 * `txObject.to`: Address of the contract
-* `txObject.gasLimit`: Gas limit
-* `txObject.gasPrice`: Gas price
-* `txObject.value`: Value to send
-* `txObject.nonce`: Nonce of sending address
+* `txObject.gasLimit`: Gas limit in hexadecimal
+* `txObject.gasPrice`: Gas price in hexadecimal
+* `txObject.value`: Value to send in hexadecimal
+* `txObject.nonce`: Nonce of sending address in hexadecimal
 
 #### Output
 
@@ -358,10 +358,10 @@ Creates a transaction sending value to `txObject.to`.
 #### Inputs
 
 * `txObject.to`: Address to send to
-* `txObject.gasLimit`: Gas limit
-* `txObject.gasPrice`: Gas price
-* `txObject.value`: Value to send
-* `txObject.nonce`: Nonce of sending address
+* `txObject.gasLimit`: Gas limit in hexadecimal
+* `txObject.gasPrice`: Gas price in hexadecimal
+* `txObject.value`: Wei value to send in hexadecimal
+* `txObject.nonce`: Nonce of sending address in hexadecimal
 
 #### Output
 
