@@ -1,6 +1,6 @@
 {
   "name": "eth-lightwallet",
-  "version": "2.5.6",
+  "version": "2.5.7",
   "description": "A lightweight ethereum javascript wallet.",
   "main": "index.js",
   "repository": {
@@ -56,7 +56,6 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "bitcore-lib": "^0.14.0",
     "bitcore-mnemonic": "^1.2.2",
     "buffer": "^4.9.0",
     "crypto-js": "^3.1.5",
