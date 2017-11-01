@@ -65,7 +65,7 @@
     "rlp": "^2.0.0",
     "scrypt-async": "^1.2.0",
     "tweetnacl": "0.13.2",
-    "web3": "1.0.0-beta.22"
+    "web3": "0.20.2"
   },
   "devDependencies": {
     "async": "^1.4.2",
