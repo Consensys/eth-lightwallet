@@ -138,7 +138,7 @@ describe("Keystore", function() {
   describe("_computeAddressFromPrivKey", function() {
     fixtures.valid.forEach(function (f) {
       it('generates valid address from private key ' + '"' + f.privKeyHex.substring(0,15) + '..."', function (done) {
-        var address = keyStore._computeAddressFromPrivKey(f.privKeyHex)
+        var address = '0x' + keyStore._computeAddressFromPrivKey(f.privKeyHex)
         expect(address).to.equal(f.address)
         done();
       })
@@ -246,15 +246,17 @@ describe("Keystore", function() {
         hdPathString: fixture.hdPathString 
       }, function (err, ks) {
 
+        var add0x = function (addr) {return ('0x' + addr)}
+
         var pwKey = Uint8Array.from(fixture.pwDerivedKey)
         expect(ks.addresses.length).to.equal(0)
-        expect(ks.getAddresses()).to.equal(ks.addresses)
+        expect(ks.getAddresses()).to.deep.equal(ks.addresses)
         ks.generateNewAddress(pwKey)
         expect(ks.addresses.length).to.equal(1)
-        expect(ks.getAddresses()).to.equal(ks.addresses)
+        expect(ks.getAddresses()).to.deep.equal(ks.addresses.map(add0x))
         ks.generateNewAddress(pwKey, 5)
         expect(ks.addresses.length).to.equal(6)
-        expect(ks.getAddresses()).to.equal(ks.addresses)
+        expect(ks.getAddresses()).to.deep.equal(ks.addresses.map(add0x))
         done();
       })
     });
@@ -321,8 +323,8 @@ describe("Keystore", function() {
         var exportedPriv0 = ks.exportPrivateKey(addr[0], pw)
         var exportedPriv1 = ks.exportPrivateKey(addr[1], pw)
 
-        var addrFromExported0 = keyStore._computeAddressFromPrivKey(exportedPriv0)
-        var addrFromExported1 = keyStore._computeAddressFromPrivKey(exportedPriv1)
+        var addrFromExported0 = '0x' + keyStore._computeAddressFromPrivKey(exportedPriv0)
+        var addrFromExported1 = '0x' + keyStore._computeAddressFromPrivKey(exportedPriv1)
 
         expect(addrFromExported0).to.equal(addr[0])
         expect(addrFromExported1).to.equal(addr[1])
@@ -351,7 +353,7 @@ describe("Keystore", function() {
           ks.hasAddress(addr[i], function (err, hasAddr) {
             expect(hasAddr).to.equal(true)
           })
-          ks.hasAddress('0x' + addr[i], function (err, hasAddr) {
+          ks.hasAddress(addr[i], function (err, hasAddr) {
             expect(hasAddr).to.equal(true)
           })
         }
@@ -405,8 +407,7 @@ describe("Keystore", function() {
       var oldSerialized = JSON.stringify(oldKS);
       upgrade.upgradeOldSerialized(oldSerialized, 'test', function(err, upgradedKeystore) {
         var newKS = keyStore.deserialize(upgradedKeystore);
-        var addresses = newKS.getAddresses();
-        expect(addresses).to.deep.equal(oldKS.addresses);
+        expect(newKS.addresses).to.deep.equal(oldKS.addresses);
         done();
       })
     })
@@ -417,8 +418,7 @@ describe("Keystore", function() {
       var oldSerialized = JSON.stringify(oldKS);
       upgrade.upgradeOldSerialized(oldSerialized, 'PHveKjhQ&8dwWEdhu]q6', function(err, upgradedKeystore) {
         var newKS = keyStore.deserialize(upgradedKeystore);
-        var addresses = newKS.getAddresses();
-        expect(addresses).to.deep.equal(oldKS.ksData[newKS.hdPathString].addresses);
+        expect(newKS.addresses).to.deep.equal(oldKS.ksData[newKS.hdPathString].addresses);
         done();
       })
     })

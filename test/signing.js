@@ -21,7 +21,7 @@ describe("Signing", function () {
 
         ks.generateNewAddress(pw)
         var addr = ks.getAddresses()[0]
-        expect('0x' + addr).to.equal(fixtures.valid[0].ethjsTxParams.from)
+        expect(addr).to.equal(fixtures.valid[0].ethjsTxParams.from)
 
         var tx = new Transaction(fixtures.valid[0].ethjsTxParams)
         var rawTx = tx.serialize().toString('hex')
@@ -55,10 +55,10 @@ describe("Signing", function () {
 
           var hexSeedETH = keystore.exportPrivateKey(address, pwDerivedKey)
           var addr0 = keyStore._computeAddressFromPrivKey(hexSeedETH)
-          expect(address).to.equal(addr0)
+          expect(address).to.equal('0x' + addr0)
 
-          var tx = new Transaction({from: '0x' + address,
-                                    to: '0x' + address,
+          var tx = new Transaction({from: address,
+                                    to: address,
                                     value: 100000000})
           var rawTx = tx.serialize().toString('hex');
 
@@ -85,7 +85,7 @@ describe("Signing", function () {
 
           ks.generateNewAddress(pw);
           var addr = ks.getAddresses()[0];
-          expect('0x' + addr).to.equal(fixtures.valid[0].ethjsTxParams.from);
+          expect(addr).to.equal(fixtures.valid[0].ethjsTxParams.from);
 
           var msg = "this is a message";
 
@@ -102,7 +102,7 @@ describe("Signing", function () {
 
           var recoveredAddress = signing.recoverAddress(msg, signedMsg.v, signedMsg.r, signedMsg.s);
 
-          expect(addr).to.equal(recoveredAddress.toString('hex'));
+          expect(addr).to.equal('0x' + recoveredAddress.toString('hex'));
           var concatSig = signing.concatSig(signedMsg);
           var expectedConcatSig = '0x7b518ee144b8facf3f21b1f97a6d1f8aea448934d89cf5570e92bcca4d375ab6080f17400eafad3c5808e064ee56cd45321382040fb299fa028ea3cddf3488151c';
 
