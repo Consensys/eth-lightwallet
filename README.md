@@ -8,7 +8,7 @@ LightWallet is a HD wallet that can store your private keys encrypted in the bro
 
 LightWallet is primarily intended to be a signing provider for the [Hooked Web3 provider](https://github.com/ConsenSys/hooked-web3-provider) through the `keystore` module. This allows you to have full control over your private keys while still connecting to a remote node to relay signed transactions. Moreover, the `txutils` functions can be used to construct transactions when offline, for use in e.g. air-gapped coldwallet implementations.
 
-The default BIP32 HD derivation path is `m/0'/0'/0'/i`.
+The default BIP32 HD derivation path has been `m/0'/0'/0'/i`, but any HD path can be chosen.
 
 ## Security
 
@@ -102,42 +102,24 @@ ks.passwordProvider = function (callback) {
 
 These are the interface functions for the keystore object. The keystore object holds a 12-word seed according to [BIP39][] spec. From this seed you can generate addresses and private keys, and use the private keys to sign transactions.
 
-Note: Addresses and RLP encoded data are in the form of hex-strings. Hex-strings do not start with `0x`.
+Note: Addresses and RLP encoded data are in the form of hex-strings. Hex-strings start with `0x`.
 
 ### `keystore.createVault(options, callback)`
 
-The current recommended keystore construction method. Has popular defaults, handles salting internally, and is the easiest interface to use.
+This is the interface to create a new lightwallet keystore.
 
 #### Options
 
 * password: (mandatory) A string used to encrypt the vault when serialized.
-* seedPhrase: (optional) A twelve-word mnemonic used to generate all accounts.
+* seedPhrase: (mandatory) A twelve-word mnemonic used to generate all accounts.
 * salt: (optional) The user may supply the salt used to encrypt & decrypt the vault, otherwise a random salt will be generated.
-* hdPathString: (optional) The user may provide a `BIP39` compliant HD Path String. The default is `m/0'/0'/0'`.
+* hdPathString (mandatory): The user must provide a `BIP39` compliant HD Path String. Previously the default has been `m/0'/0'/0'`, another popular one is the BIP44 path string `m/44'/60'/0'/0`.
 
 ### `keystore.keyFromPassword(password, callback)`
 
 This instance method uses any internally-configured salt to return the appropriate `pwDerivedKey`.
 
 Takes the user's password as input and generates a symmetric key of type `Uint8Array` that is used to encrypt/decrypt the keystore.
-
-### `keystore.deriveKeyFromPassword(password, callback)` (deprecated)
-
-Deprecated class method that uses a fixed salt to derive a `pwDerivedKey` from a password.
-
-Takes the user's password as input and generates a symmetric key of type `Uint8Array` that is used to encrypt/decrypt the keystore.
-
-### `keystore(seed, pwDerivedKey [,hdPathString])` (deprecated)
-
-Constructor of the keystore object. The seed `seed` is encrypted with `pwDerivedKey` and stored encrypted in the keystore.
-
-This method has been deprecated because it relies on a hard-coded salt, but still exists for backwards-compatibility.
-
-#### Inputs
-
-* words: string defining a 12-word seed according to [BIP39][]
-* pwDerivedKey: symmetric key to encrypt the seed (Uint8Array)
-* hdPathString: optional alternate HD derivation path to use
 
 ### `keystore.isDerivedKeyCorrect(pwDerivedKey)`
 
@@ -151,18 +133,7 @@ Generates a string consisting of a random 12-word seed and returns it. If the op
 
 Checks if `seed` is a valid 12-word seed according to the [BIP39][] specification.
 
-### `keystore.addHdDerivationPath(hdPathString, pwDerivedKey, info)`
-
-Adds the HD derivation path `hdPathString` to the keystore. The `info` structure denotes the curve and purpose for the keys in that path. Supported structures are
-
-* `{curve: 'secp256k1', purpose: 'sign'}`
-* `{curve: 'curve25519', purpose: 'asymEncrypt'}`
-
-### `keystore.setDefaultHdDerivationPath(hdPathString)`
-
-Set the default HD Derivation path. This path will be used if the `hdPathString` is omitted from other functions. This is also the path that's used if the keystore is used with the Hooked Web3 Provider.
-
-### `keystore.generateNewAddress(pwDerivedKey, [num,] [hdPathString])`
+### `keystore.generateNewAddress(pwDerivedKey, [num])`
 
 Allows the vault to generate additional internal address/private key pairs.
 
@@ -195,17 +166,6 @@ Given the derived key, decrypts and returns the private key corresponding to `ad
 ### `keystore.upgradeOldSerialized(oldSerialized, password, callback)`
 
 Takes a serialized keystore in an old format and a password. The callback takes the upgraded serialized keystore as its second argument.
-
-
-### `keystore.generateNewEncryptionKeys(pwDerivedKey [, num, hdPathString])`
-
-Generate `num` new encryption keys at the path `hdPathString`. Only
-defined when the purpose of the HD path is `asymEncrypt`.
-
-### `keystore.getPubKeys([hdPathString])`
-
-Return the pubkeys at `hdPathString`, or at the default HD path. Only
-defined when the purpose of the HD path is `asymEncrypt`.
 
 ## `signing` Function definitions
 
@@ -257,7 +217,7 @@ Signs a sha3 message hash with the private key corresponding to `signingAddress`
 
 Signed hash as signature object with v, r and s values.
 
-### `concatSig(signature)`
+### `signing.concatSig(signature)`
 
 Concatenates signature object to return signature as hex-string in the same format as `eth_sign` does.
 
@@ -269,14 +229,14 @@ Concatenates signature object to return signature as hex-string in the same form
 
 Concatenated signature object as hex-string.
 
-### `recoverAddress(rawMsg, v, r, s)`
+### `signing.recoverAddress(rawMsg, v, r, s)`
 
 Recovers the signing address from the message `rawMsg` and the signature `v, r, s`.
 
 
 ## `encryption` Function definitions
 
-### `encryption.multiEncryptString(keystore, pwDerivedKey, msg, myPubKey, theirPubKeyArray [, hdPathString])`
+### `encryption.multiEncryptString(keystore, pwDerivedKey, msg, myAddress, theirPubKeyArray)`
 
 **NOTE:** The format of encrypted messages has not been finalized and may change at any time, so only use this for ephemeral messages that do not need to be stored encrypted for a long time.
 
@@ -301,11 +261,15 @@ Encrypts the string `msg` with a randomly generated symmetric key, then encrypts
 
 Note that no padding is applied to `msg`, so it's possible to deduce the length of the string `msg` from the ciphertext. If you don't want this information to be known, please apply padding to `msg` before calling this function.
 
-### `encryption.multiDecryptString(keystore, pwDerivedKey, encMsg, theirPubKey, myPubKey [, hdPathString])`
+### `encryption.multiDecryptString(keystore, pwDerivedKey, encMsg, theirPubKey, myAddress)`
 
 Decrypt a message `encMsg` created with the function
 `multiEncryptString()`. If successful, returns the original message
 string. If not successful, returns `false`.
+
+### `encryption.addressToPublicEncKey(keystore, pwDerivedKey, address)`
+
+Gets the public encryption key corresponding to the private key of `address` in the `keystore`.
 
 ## `txutils` Function definitions
 
