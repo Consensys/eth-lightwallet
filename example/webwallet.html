@@ -112,8 +112,8 @@
 
         global_keystore.keyFromPassword(password, function(err, pwDerivedKey) {
         var seed = global_keystore.getSeed(pwDerivedKey);
-        alert('Your seed is: "' + seed + '". Please write it down.')
-        })
+        alert('Your seed is: "' + seed + '". Please write it down.');
+        });
       }
 
       function sendEth() {
