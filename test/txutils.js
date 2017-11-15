@@ -44,7 +44,6 @@ describe("Utils", function() {
         var contractTxData = txutils.createContractTx(f.fromAddress, f.txObject)
         var txData = txutils.valueTx(f.txObject)
         var address = txutils.createdContractAddress(f.fromAddress, f.txObject.nonce)
-
         expect(address).to.equal(contractTxData.addr)
         expect(txData).to.equal(contractTxData.tx)
       })

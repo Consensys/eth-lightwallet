@@ -1,5 +1,21 @@
 # Release Notes #
 
+## Version 3.0.0 - 2017-11-01 ##
+
+* Major cleanup - not backwards compatible!
+
+* Remove legacy constructor - now only `createVault` is supported. Also `createVault` now require seed and hd path as inputs.
+
+* Remove `deriveKeyFromPassword` function in favor of `keyFromPassword` function.
+
+* Remove special handling of encryption keys in the keystore. You can still use keystore keys to encrypt, but they no longer use pubkeys to index. To get the pubkey corresponding to an address, please use the function `encryption.addressToPublicEncKey`.
+
+* Make the keystore and interfaces simpler by only allowing one `hdPathString`. If you need to derive from more HD paths you need to create more keystores.
+
+* Add `0x` prefix for all addresses and transaction hex data.
+
+* Remove unneeded `bitcore-lib` package dependency. Thanks to [Srirangan](https://github.com/Srirangan).
+
 ## Version 2.5.6 - 2017-06-24 ##
 
 * Switch back to using npm version of `web3.js`, since version `0.19.1` is now fixed.

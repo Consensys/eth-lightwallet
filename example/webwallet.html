@@ -12,7 +12,7 @@
 
       function setWeb3Provider(keystore) {
         var web3Provider = new HookedWeb3Provider({
-          host: "http://104.236.65.136:8545",
+          host: "https://rinkeby.infura.io/",
           transaction_signer: keystore
         });
 
@@ -27,7 +27,7 @@
 
         var numAddr = parseInt(document.getElementById('numAddr').value)
 
-        lightwallet.keystore.deriveKeyFromPassword(password, function(err, pwDerivedKey) {
+        global_keystore.keyFromPassword(password, function(err, pwDerivedKey) {
 
         global_keystore.generateNewAddress(pwDerivedKey, numAddr);
 
@@ -62,12 +62,15 @@
 
       function setSeed() {
         var password = prompt('Enter Password to encrypt your seed', 'Password');
-                                              
-        lightwallet.keystore.deriveKeyFromPassword(password, function(err, pwDerivedKey) {
 
-        global_keystore = new lightwallet.keystore(
-          document.getElementById('seed').value, 
-          pwDerivedKey);
+      lightwallet.keystore.createVault({
+        password: password,
+        seedPhrase: document.getElementById('seed').value,
+        //random salt 
+        hdPathString: "m/0'/0'/0'"
+      }, function (err, ks) {
+
+        global_keystore = ks
 
         document.getElementById('seed').value = ''
         
@@ -88,11 +91,15 @@
           'Please enter a password to encrypt your seed while in the browser.'
         var password = prompt(infoString, 'Password');
 
-        lightwallet.keystore.deriveKeyFromPassword(password, function(err, pwDerivedKey) {
 
-        global_keystore = new lightwallet.keystore(
-          randomSeed,
-          pwDerivedKey);
+      lightwallet.keystore.createVault({
+        password: password,
+        seedPhrase: randomSeed,
+        //random salt 
+        hdPathString: "m/0'/0'/0'"
+      }, function (err, ks) {
+
+        global_keystore = ks
                 
         newAddresses(password);
         setWeb3Provider(global_keystore);
@@ -103,10 +110,10 @@
       function showSeed() {
         var password = prompt('Enter password to show your seed. Do not let anyone else see your seed.', 'Password');
 
-        lightwallet.keystore.deriveKeyFromPassword(password, function(err, pwDerivedKey) {
+        global_keystore.keyFromPassword(password, function(err, pwDerivedKey) {
         var seed = global_keystore.getSeed(pwDerivedKey);
-        alert('Your seed is: "' + seed + '". Please write it down.')
-        })
+        alert('Your seed is: "' + seed + '". Please write it down.');
+        });
       }
 
       function sendEth() {
@@ -114,7 +121,7 @@
         var toAddr = document.getElementById('sendTo').value
         var valueEth = document.getElementById('sendValueAmount').value
         var value = parseFloat(valueEth)*1.0e18
-        var gasPrice = 50000000000
+        var gasPrice = 18000000000
         var gas = 50000
         web3.eth.sendTransaction({from: fromAddr, to: toAddr, value: value, gasPrice: gasPrice, gas: gas}, function (err, txhash) {
           console.log('error: ' + err)
@@ -132,7 +139,7 @@
         var valueEth = document.getElementById('sendValueAmount').value
         var value = parseFloat(valueEth)*1.0e18
         var gasPrice = 50000000000
-        var gas = 3141592
+        var gas = 4541592
         args.push({from: fromAddr, value: value, gasPrice: gasPrice, gas: gas})
         var callback = function(err, txhash) {
           console.log('error: ' + err)
