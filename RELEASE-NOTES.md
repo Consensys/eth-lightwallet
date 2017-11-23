@@ -3,6 +3,7 @@
 ## Version 3.0.1 - 2017-11-14 ##
 
 * Fixed an issue with `signing.concatSig` where the `r` and `s` were not left padded, and the resulting signature was invalid.
+* Removed dist files from git.
 
 ## Version 3.0.0 - 2017-11-01 ##
 
