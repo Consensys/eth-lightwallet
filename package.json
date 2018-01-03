@@ -11,7 +11,8 @@
     "build-js": "browserify index.js --s lightwallet -g [ babelify --presets [ es2015 react ] ] | uglifyjs -c > dist/lightwallet.min.js",
     "build-dev": "browserify index.js -o dist/lightwallet.js --s lightwallet -g [ babelify --presets [ es2015 react ] ]",
     "test": "./node_modules/.bin/mocha --reporter spec",
-    "coverage": "istanbul cover _mocha -- -R spec; open coverage/lcov-report/index.html"
+    "coverage": "istanbul cover _mocha -- -R spec; open coverage/lcov-report/index.html",
+    "prepublish": "mkdir -p dist && npm run build-dev && npm run build-js"
   },
   "keywords": [
     "ethereum",
