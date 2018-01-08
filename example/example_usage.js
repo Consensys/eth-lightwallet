@@ -18,10 +18,13 @@ var code = '6060604052610381806100136000396000f30060606040526000357c010000000000
 // and the nonce of the first address
 var seed = 'unhappy nerve cancel reject october fix vital pulse cash behind curious bicycle'
 var nonce = 2
+var hdPath = "m/44'/60'/103'/0'"
 
-lightwallet.keystore.deriveKeyFromPassword('mypassword', function(err, pwDerivedKey) {
+lightwallet.keystore.deriveKeyFromPasswordAndSalt('mypassword', function(err, pwDerivedKey) {
 
-var keystore = new lightwallet.keystore(seed, pwDerivedKey)
+var keystore = new lightwallet.keystore()
+keystore.init(seed, pwDerivedKey,hdPath)
+
 keystore.generateNewAddress(pwDerivedKey)
 
 var sendingAddr = keystore.getAddresses()[0]
