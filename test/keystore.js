@@ -166,7 +166,7 @@ describe("Keystore", function() {
       }, function (err, origKS) {
 
         var serKS = origKS.serialize()
-        var deserKS = keyStore.deserialize(serKS)
+        var deserKS = keyStore.deserialize(serKS,fixture.salt)
 
         // Retains all attributes properly
         expect(deserKS).to.deep.equal(origKS)
@@ -190,7 +190,7 @@ describe("Keystore", function() {
         origKS.generateNewAddress(Uint8Array.from(fixtures.valid[0].pwDerivedKey), 20)
 
         var serKS = origKS.serialize()
-        var deserKS = keyStore.deserialize(serKS)
+        var deserKS = keyStore.deserialize(serKS,fixture.salt)
 
         // Retains all attributes properly
         expect(deserKS).to.deep.equal(origKS)
