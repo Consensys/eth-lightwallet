@@ -34,7 +34,7 @@ describe("Keystore", function() {
             Uint8Array.from(fixtures.valid[0].pwDerivedKey)
           );
           // Check padding
-          expect(decryptedPaddedSeed.length).to.equal(120);
+          expect(decryptedPaddedSeed.length).to.equal(240);
           expect(decryptedPaddedSeed.trim()).to.equal(fixtures.valid[0].mnSeed);
           done();
         }
@@ -60,7 +60,7 @@ describe("Keystore", function() {
               derivedKey
             );
             // Check padding
-            expect(decryptedPaddedSeed.length).to.equal(120);
+            expect(decryptedPaddedSeed.length).to.equal(240);
             expect(decryptedPaddedSeed.trim()).to.equal(
               fixtures.valid[0].mnSeed
             );
@@ -100,7 +100,6 @@ describe("Keystore", function() {
             encryptedString,
             Uint8Array.from(f.pwDerivedKey)
           );
-
           expect(decryptedString).to.equal(f.mnSeed);
           done();
         }
