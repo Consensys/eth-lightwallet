@@ -169,7 +169,7 @@ Takes a serialized keystore in an old format and a password. The callback takes 
 
 ## `signing` Function definitions
 
-### `signing.signTx(keystore, pwDerivedKey, rawTx, signingAddress, hdPathString)`
+### `signing.signTx(keystore, pwDerivedKey, rawTx, signingAddress)`
 
 Signs a transaction with the private key corresponding to `signingAddress`.
 
@@ -179,13 +179,12 @@ Signs a transaction with the private key corresponding to `signingAddress`.
 * `pwDerivedKey`: the users password derived key (Uint8Array)
 * `rawTx`: Hex-string defining an RLP-encoded raw transaction.
 * `signingAddress`: hex-string defining the address to send the transaction from.
-* `hdPathString`: (Optional) A path at which to create the encryption keys.
 
 #### Return value
 
 Hex-string corresponding to the RLP-encoded raw transaction.
 
-### `signing.signMsg(keystore, pwDerivedKey, rawMsg, signingAddress, hdPathString)`
+### `signing.signMsg(keystore, pwDerivedKey, rawMsg, signingAddress)`
 
 Creates and signs a sha3 hash of a message with the private key corresponding to `signingAddress`.
 
@@ -195,13 +194,12 @@ Creates and signs a sha3 hash of a message with the private key corresponding to
 * `pwDerivedKey`: the users password derived key (Uint8Array)
 * `rawMsg`: Message to be signed
 * `signingAddress`: hex-string defining the address corresponding to the signing private key.
-* `hdPathString`: (Optional) A path at which to create the encryption keys.
 
 #### Return value
 
 Signed hash as signature object with v, r and s values.
 
-### `signing.signMsgHash(keystore, pwDerivedKey, msgHash, signingAddress, hdPathString)`
+### `signing.signMsgHash(keystore, pwDerivedKey, msgHash, signingAddress)`
 
 Signs a sha3 message hash with the private key corresponding to `signingAddress`.
 
@@ -211,7 +209,6 @@ Signs a sha3 message hash with the private key corresponding to `signingAddress`
 * `pwDerivedKey`: the users password derived key (Uint8Array)
 * `msgHash`: SHA3 hash to be signed
 * `signingAddress`: hex-string defining the address corresponding to the signing private key.
-* `hdPathString`: (Optional) A path at which to create the encryption keys.
 
 #### Return value
 
