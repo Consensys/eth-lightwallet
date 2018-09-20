@@ -293,8 +293,8 @@ describe("Keystore", function() {
 
       var N = fixtures.sha256Test.length;
       for (var i=0; i<N; i++) {
-        var ent0 = new Buffer(fixtures.sha256Test[i].ent0);
-        var ent1 = new Buffer(fixtures.sha256Test[i].ent1);
+        var ent0 = Buffer.from(fixtures.sha256Test[i].ent0);
+        var ent1 = Buffer.from(fixtures.sha256Test[i].ent1);
         var outputString = keyStore._concatAndSha256(ent0, ent1).toString('hex');
         expect(outputString).to.equal(fixtures.sha256Test[i].targetHash);
       }
