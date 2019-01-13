@@ -1,3 +1,7 @@
+# Preface
+
+This project is LightWallet with fix some potentially dependencies setting, I have submit PR but origin team does not handle it, so I have to release it myself.
+
 # LightWallet
 
 A minimal ethereum javascript wallet.
