@@ -21,10 +21,10 @@ Please note that LightWallet has not been through a comprehensive security revie
 ## Get Started
 
 ```
-npm install eth-lightwallet
+npm install jcc_eth_lightwallet
 ```
 
-The `eth-lightwallet` package contains `dist/lightwallet.min.js` that can be included in an HTML page:
+The `jcc_eth_lightwallet` package contains `dist/lightwallet.min.js` that can be included in an HTML page:
 
 ```html
 <html>

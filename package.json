@@ -1,11 +1,11 @@
 {
   "name": "jcc_eth_lightwallet",
-  "version": "3.0.1",
-  "description": "A lightweight ethereum javascript wallet.",
+  "version": "3.0.4",
+  "description": "A lightweight ethereum javascript wallet by jccdex.",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ConsenSys/eth-lightwallet.git"
+    "url": "https://github.com/JCCDex/jcc_eth_lightwallet.git"
   },
   "scripts": {
     "build-js": "browserify index.js --s lightwallet -g [ babelify --presets [ es2015 react ] ] | uglifyjs -c > dist/lightwallet.min.js",
@@ -19,6 +19,7 @@
     "blockchain",
     "transactions",
     "contracts",
+    "jccdex",
     "wallet"
   ],
   "contributors": [
@@ -53,6 +54,10 @@
     {
       "name": "Milad Mostavi",
       "email": "milad.mostavi@gmail.com"
+    },
+    {
+      "name": "chtian",
+      "email": "chtian@anfengde.com"
     }
   ],
   "license": "MIT",
