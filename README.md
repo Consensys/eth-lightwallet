@@ -1,3 +1,7 @@
+# Preface
+
+This project is LightWallet with fix some potentially dependencies setting, I have submit PR but origin team does not handle it, so I have to release it myself.
+
 # LightWallet
 
 A minimal ethereum javascript wallet.
@@ -17,10 +21,10 @@ Please note that LightWallet has not been through a comprehensive security revie
 ## Get Started
 
 ```
-npm install eth-lightwallet
+npm install jcc_eth_lightwallet
 ```
 
-The `eth-lightwallet` package contains `dist/lightwallet.min.js` that can be included in an HTML page:
+The `jcc_eth_lightwallet` package contains `dist/lightwallet.min.js` that can be included in an HTML page:
 
 ```html
 <html>
