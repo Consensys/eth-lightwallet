@@ -1,6 +1,5 @@
 var expect = require("chai").expect;
 var keyStore = require("../lib/keystore");
-var upgrade = require("../lib/upgrade");
 var fixtures = require("./fixtures/keystore");
 var Promise = require("bluebird");
 
@@ -457,39 +456,6 @@ describe("Keystore", function() {
               done();
             });
           });
-        }
-      );
-    });
-  });
-
-  describe("upgrade old serialized keystore", function() {
-    it("upgrades a keystore older than version 2", function(done) {
-      this.timeout(10000);
-      var oldKS = require("./fixtures/lightwallet.json");
-      var oldSerialized = JSON.stringify(oldKS);
-      upgrade.upgradeOldSerialized(oldSerialized, "test", function(
-        err,
-        upgradedKeystore
-      ) {
-        var newKS = keyStore.deserialize(upgradedKeystore);
-        expect(newKS.addresses).to.deep.equal(oldKS.addresses);
-        done();
-      });
-    });
-
-    it("upgrades a version 2 keystore", function(done) {
-      this.timeout(10000);
-      var oldKS = require("./fixtures/lightwalletv2.json");
-      var oldSerialized = JSON.stringify(oldKS);
-      upgrade.upgradeOldSerialized(
-        oldSerialized,
-        "PHveKjhQ&8dwWEdhu]q6",
-        function(err, upgradedKeystore) {
-          var newKS = keyStore.deserialize(upgradedKeystore);
-          expect(newKS.addresses).to.deep.equal(
-            oldKS.ksData[newKS.hdPathString].addresses
-          );
-          done();
         }
       );
     });

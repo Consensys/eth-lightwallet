@@ -1,6 +1,5 @@
 var expect = require('chai').expect
 var keyStore = require('../lib/keystore')
-var upgrade = require('../lib/upgrade')
 var encryption = require('../lib/encryption')
 var fixtures = require('./fixtures/keystore')
 

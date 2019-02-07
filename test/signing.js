@@ -1,6 +1,5 @@
 var expect = require('chai').expect
 var keyStore = require('../lib/keystore')
-var upgrade = require('../lib/upgrade')
 var signing = require('../lib/signing')
 var fixtures = require('./fixtures/keystore')
 var Transaction = require('ethereumjs-tx')
@@ -91,7 +90,7 @@ describe("Signing", function () {
 
           var signedMsg = signing.signMsg(ks, pw, msg, addr);
 
-          var msgHash = util.addHexPrefix(util.sha3(msg).toString('hex'));
+          var msgHash = util.addHexPrefix(util.keccak(msg).toString('hex'));
 
           var signedMsgHash = signing.signMsgHash(ks, pw, msgHash, addr);
 
