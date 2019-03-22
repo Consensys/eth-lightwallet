@@ -1,6 +1,6 @@
 {
   "name": "eth-lightwallet",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "A lightweight ethereum javascript wallet.",
   "main": "index.js",
   "repository": {
@@ -8,8 +8,8 @@
     "url": "https://github.com/ConsenSys/eth-lightwallet.git"
   },
   "scripts": {
-    "build-js": "browserify index.js --s lightwallet -g [ babelify --presets [ es2015 react ] ] | uglifyjs -c > dist/lightwallet.min.js",
-    "build-dev": "browserify index.js -o dist/lightwallet.js --s lightwallet -g [ babelify --presets [ es2015 react ] ]",
+    "build-js": "browserify index.js --s lightwallet -g [ babelify --presets [ @babel/preset-env @babel/preset-react ] ] | uglifyjs -c > dist/lightwallet.min.js",
+    "build-dev": "browserify index.js -o dist/lightwallet.js --s lightwallet -g [ babelify --presets [ @babel/preset-env @babel/preset-react ] ]",
     "test": "./node_modules/.bin/mocha --reporter spec",
     "coverage": "istanbul cover _mocha -- -R spec; open coverage/lcov-report/index.html",
     "prepublish": "mkdir -p dist && npm run build-dev && npm run build-js"
@@ -53,36 +53,38 @@
     {
       "name": "Milad Mostavi",
       "email": "milad.mostavi@gmail.com"
+    },
+    {
+      "name": "Slava Matvienco",
+      "email": "slava.matvienco@gmail.com"
     }
   ],
   "license": "MIT",
   "dependencies": {
-    "bitcore-lib": "^0.15.0",
-    "bitcore-mnemonic": "^1.5.0",
-    "buffer": "^4.9.0",
-    "crypto-js": "^3.1.5",
-    "elliptic": "^3.1.0",
-    "ethereumjs-tx": "^1.3.3",
-    "ethereumjs-util": "^5.1.1",
-    "rlp": "^2.0.0",
-    "scrypt-async": "^1.2.0",
-    "tweetnacl": "0.13.2",
-    "web3": "0.20.2"
+    "bitcore-lib": "8.1.1",
+    "bitcore-mnemonic": "8.1.1",
+    "crypto-js": "3.1.8",
+    "elliptic": "6.4.1",
+    "ethereumjs-tx": "1.3.7",
+    "ethereumjs-util": "6.1.0",
+    "rlp": "2.2.3",
+    "scrypt-async": "2.0.1",
+    "tweetnacl": "1.0.1",
+    "tweetnacl-util": "0.15.0",
+    "web3": "0.20.7"
   },
   "devDependencies": {
-    "async": "^1.4.2",
-    "babel-preset-es2015": "^6.13.2",
-    "babel-preset-react": "^6.11.1",
-    "babel-plugin-transform-object-rest-spread": "^6.23.0",
-    "babel-plugin-transform-es3-member-expression-literals": "^6.22.0",
-    "babel-plugin-transform-es3-property-literals": "^6.22.0",
-    "babelify": "^7.3.0",
-    "bluebird": "^3.3.1",
-    "browserify": "^13.1.0",
-    "chai": "^3.0.0",
+    "@babel/core": "7.4.0",
+    "@babel/preset-env": "7.4.2",
+    "@babel/preset-react": "7.0.0",
+    "async": "2.6.2",
+    "babelify": "10.0.0",
+    "bluebird": "3.5.3",
+    "browserify": "16.2.3",
+    "chai": "4.2.0",
     "hooked-web3-provider": "christianlundkvist/hooked-web3-provider#updates_web3_14",
-    "istanbul": "^0.3.15",
-    "mocha": "^2.2.5",
-    "uglify-js": "^2.7.2"
+    "istanbul": "0.4.5",
+    "mocha": "6.0.2",
+    "uglify-js": "3.5.1"
   }
 }

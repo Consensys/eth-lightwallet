@@ -16,7 +16,7 @@ describe("Signing", function () {
         password: fixture.password,
         seedPhrase: fixture.mnSeed,
         salt: fixture.salt,
-        hdPathString: fixture.hdPathString 
+        hdPathString: fixture.hdPathString
       }, function (err, ks) {
 
         ks.generateNewAddress(pw)
@@ -80,7 +80,7 @@ describe("Signing", function () {
           password: fixture.password,
           seedPhrase: fixture.mnSeed,
           salt: fixture.salt,
-          hdPathString: fixture.hdPathString 
+          hdPathString: fixture.hdPathString
         }, function (err, ks) {
 
           ks.generateNewAddress(pw);
@@ -91,7 +91,7 @@ describe("Signing", function () {
 
           var signedMsg = signing.signMsg(ks, pw, msg, addr);
 
-          var msgHash = util.addHexPrefix(util.sha3(msg).toString('hex'));
+          var msgHash = util.addHexPrefix(util.keccak(msg).toString('hex'));
 
           var signedMsgHash = signing.signMsgHash(ks, pw, msgHash, addr);
 
