@@ -1,2 +1,3 @@
 node_modules/
-dist/
+# dist folder was added to the repo in order to optimize compilation time as this is git repo
+# dist/
