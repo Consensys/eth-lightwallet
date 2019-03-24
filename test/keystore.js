@@ -3,14 +3,10 @@ var keyStore = require("../lib/keystore");
 var fixtures = require("./fixtures/keystore");
 var Promise = require("bluebird");
 
-var defaultHdPathString = "m/0'/0'/0'";
-
 // Test with 100 private keys
 var addrprivkeyvector = require("./fixtures/addrprivkey100.json");
 // Test with 10000 private keys - takes about 40 seconds to run
 // var addrprivkeyvector = require('./fixtures/addrprivkey10000.json')
-
-var Transaction = require("ethereumjs-tx");
 
 var createVaultProm = Promise.promisify(keyStore.createVault);
 
