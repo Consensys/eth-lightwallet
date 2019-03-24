@@ -10,8 +10,7 @@
   "scripts": {
     "build-js": "browserify index.js --s lightwallet -g [ babelify --presets [ es2015 react ] ] | uglifyjs -c > dist/lightwallet.min.js",
     "build-dev": "browserify index.js -o dist/lightwallet.js --s lightwallet -g [ babelify --presets [ es2015 react ] ]",
-    "test": "./node_modules/.bin/mocha",
-    "prepublish": "mkdir -p dist && npm run build-js"
+    "test": "./node_modules/.bin/mocha"
   },
   "keywords": [
     "ethereum",
@@ -52,13 +51,16 @@
     {
       "name": "Milad Mostavi",
       "email": "milad.mostavi@gmail.com"
+    },
+    {
+      "name": "Mohamed Alsharif",
+      "email": "mohammed.elsharif@gmail.com"
     }
   ],
   "license": "MIT",
   "dependencies": {
     "bitcore-lib": "^0.16.0",
     "bitcore-mnemonic": "^1.7.0",
-    "buffer": "^5.2.1",
     "crypto-js": "^3.1.9-1",
     "ethereumjs-tx": "^1.3.7",
     "ethereumjs-util": "^6.0.0",
@@ -80,6 +82,7 @@
     "eslint": "^4.18.1",
     "hooked-web3-provider": "christianlundkvist/hooked-web3-provider#updates_web3_14",
     "mocha": "^2.2.5",
+    "patch-package": "^6.0.7",
     "uglify-js": "^2.7.2"
   }
 }
