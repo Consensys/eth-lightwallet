@@ -1,53 +1,48 @@
-var expect = require('chai').expect
-var txutils = require('../lib/txutils')
-var fixtures = require('./fixtures/txutils')
+const { expect } = require('chai');
+const TxUtils = require('../lib/txutils');
+const fixtures = require('./fixtures/txutils');
 
-describe("Utils", function() {
-
-  describe("_getTypesFromAbi", function() {
+describe('Utils', function () {
+  describe('_getTypesFromAbi', function () {
     fixtures.valid.forEach(function (f) {
       it('returns valid types of function ' + '"' + f.func + '"', function () {
+        const types = TxUtils._getTypesFromAbi(f.abi, f.func);
 
-        var types = txutils._getTypesFromAbi(f.abi, f.func)
-
-        expect(types).to.deep.equal(f.types)
-      })
-    })
+        expect(types).to.deep.equal(f.types);
+      });
+    });
   });
 
-  describe("functionTx", function() {
+  describe('functionTx', function () {
     fixtures.valid.forEach(function (f) {
       it('correct transaction generated', function () {
+        const tx = TxUtils.functionTx(f.abi, f.func, f.args, f.txObject);
 
-        var tx = txutils.functionTx(f.abi, f.func, f.args, f.txObject)
-
-        expect(tx).to.equal(f.funcTx)
-      })
-    })
+        expect(tx).to.equal(f.funcTx);
+      });
+    });
   });
 
-  describe("createdContractAddress", function() {
+  describe('createdContractAddress', function () {
     fixtures.valid.forEach(function (f) {
       it('correct contract address is generated', function () {
+        const address = TxUtils.createdContractAddress(f.fromAddress, f.txObject.nonce);
 
-        var address = txutils.createdContractAddress(f.fromAddress, f.txObject.nonce)
-
-        expect(address).to.equal(f.contractAddress)
-      })
-    })
+        expect(address).to.equal(f.contractAddress);
+      });
+    });
   });
 
-  describe("createContractTx valueTx", function() {
+  describe('createContractTx valueTx', function () {
     fixtures.valid.forEach(function (f) {
       it('createContractTx returns the same as valueTx and contractAddress', function () {
+        const contractTxData = TxUtils.createContractTx(f.fromAddress, f.txObject);
+        const txData = TxUtils.valueTx(f.txObject);
+        const address = TxUtils.createdContractAddress(f.fromAddress, f.txObject.nonce);
 
-        var contractTxData = txutils.createContractTx(f.fromAddress, f.txObject)
-        var txData = txutils.valueTx(f.txObject)
-        var address = txutils.createdContractAddress(f.fromAddress, f.txObject.nonce)
-        expect(address).to.equal(contractTxData.addr)
-        expect(txData).to.equal(contractTxData.tx)
-      })
-    })
+        expect(address).to.equal(contractTxData.addr);
+        expect(txData).to.equal(contractTxData.tx);
+      });
+    });
   });
-
 });
