@@ -1,5 +1,11 @@
 # Release Notes #
 
+## Version 3.0.2 - 2019-03-26 ##
+
+* Major cleanup - backwards compatible!
+* Updated all dependencies
+* Code optimizations
+
 ## Version 3.0.1 - 2017-11-14 ##
 
 * Fixed an issue with `signing.concatSig` where the `r` and `s` were not left padded, and the resulting signature was invalid.
