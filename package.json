@@ -85,6 +85,6 @@
     "hooked-web3-provider": "christianlundkvist/hooked-web3-provider#updates_web3_14",
     "istanbul": "0.4.5",
     "mocha": "6.0.2",
-    "uglify-js": "3.5.1"
+    "uglify-js": "3.5.2"
   }
 }
