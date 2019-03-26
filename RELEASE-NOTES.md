@@ -1,10 +1,11 @@
 # Release Notes #
 
-## Version 3.0.2 - 2019-03-26 ##
+## Version 4.0.0 - 2019-03-26 ##
 
 * Major cleanup - backwards compatible!
 * Updated all dependencies
 * Code optimizations
+* Migrated to ES6
 
 ## Version 3.0.1 - 2017-11-14 ##
 
