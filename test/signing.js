@@ -91,7 +91,7 @@ describe("Signing", function () {
 
           var signedMsg = signing.signMsg(ks, pw, msg, addr);
 
-          var msgHash = util.addHexPrefix(util.sha3(msg).toString('hex'));
+          var msgHash = util.addHexPrefix(util.keccak(msg).toString('hex'));
 
           var signedMsgHash = signing.signMsgHash(ks, pw, msgHash, addr);
 
