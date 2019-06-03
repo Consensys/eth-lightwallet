@@ -750,10 +750,10 @@ bip66@^1.1.3:
   dependencies:
     safe-buffer "^5.0.1"
 
-bitcore-lib@^8.1.1:
-  version "8.1.1"
-  resolved "https://registry.yarnpkg.com/bitcore-lib/-/bitcore-lib-8.1.1.tgz#ba9e142a1fdf0b181729658010da2c0784546a80"
-  integrity sha512-YyzpyKtwBIeOUu55oqltfk3/Uz8SYi1ayWq3JnaoGSzR4BNpD54sYejv2gZ5TuDe4KwBqvA2C5X1zkPBtlkGhQ==
+bitcore-lib@^8.3.3:
+  version "8.3.3"
+  resolved "https://registry.yarnpkg.com/bitcore-lib/-/bitcore-lib-8.3.3.tgz#c3fdee79ad0cc27027d509ded4466732b5e6f0f9"
+  integrity sha512-mDgz1xnBvJfyMW/2Xt7218l9IPhHaHfOqH/M90FIIt6riiKKm2FXhMrxp/ip0Mh0496MI6dXPsBlE0X3+YKIfg==
   dependencies:
     bn.js "=4.11.8"
     bs58 "^4.0.1"
@@ -762,12 +762,12 @@ bitcore-lib@^8.1.1:
     inherits "=2.0.1"
     lodash "=4.17.11"
 
-bitcore-mnemonic@^8.1.1:
-  version "8.1.1"
-  resolved "https://registry.yarnpkg.com/bitcore-mnemonic/-/bitcore-mnemonic-8.1.1.tgz#f3d970e0e6f20e32708060960806ae630a6bd722"
-  integrity sha512-F9R+PKN6m8jDikmNbuD7yp47vdyWcNYGdu9jokiNW46VOm5E+HJM41BiIJdUIVeY9mf+U8T7URq6Knr985NVTg==
+bitcore-mnemonic@^8.3.3:
+  version "8.3.3"
+  resolved "https://registry.yarnpkg.com/bitcore-mnemonic/-/bitcore-mnemonic-8.3.3.tgz#f18bb61819795ac40673d83b2cc0fbb3928180b5"
+  integrity sha512-ZrtcOJPWR03UDjjtlvsia2S39LOfv+AdtjsL/vJ+9VkV8zwm7y+8c5+0puehr6sSdXa9e+uhG72u+f5WLre9aw==
   dependencies:
-    bitcore-lib "^8.1.1"
+    bitcore-lib "^8.3.3"
     unorm "^1.4.1"
 
 bluebird@^3.3.1:
@@ -1589,7 +1589,7 @@ ethereumjs-util@^5.0.0:
     safe-buffer "^5.1.1"
     secp256k1 "^3.0.1"
 
-ethereumjs-util@^6.0.0:
+ethereumjs-util@^6.1.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-6.1.0.tgz#e9c51e5549e8ebd757a339cc00f5380507e799c8"
   integrity sha512-URESKMFbDeJxnAxPppnk2fN6Y3BIatn9fwn76Lm8bQlt+s52TpG8dN9M66MLPuRAiAOIqL3dfwqWJf0sd0fL0Q==
